@@ -1,10 +1,12 @@
 package com.shawckz.myhcf;
 
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.java.JavaPlugin;
+
 import com.shawckz.myhcf.command.CommandManager;
 import com.shawckz.myhcf.database.DatabaseManager;
+import com.shawckz.myhcf.pearl.PearlCooldown;
 import com.shawckz.myhcf.player.HCFCache;
-
-import org.bukkit.plugin.java.JavaPlugin;
 
 /**
  * myHCF
@@ -22,6 +24,7 @@ public class Factions extends JavaPlugin {
     @Override
     public void onEnable(){
         instance = this;
+        Bukkit.getPluginManager().registerEvents(new PearlCooldown(), this); // Unsure how you want event registering done, this might need changed.
         databaseManager = new DatabaseManager(this);
         cache = new HCFCache(this);
         commandManager = new CommandManager(this);

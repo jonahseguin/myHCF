@@ -9,5 +9,4 @@ public abstract class AbstractSerializer<T> {
     public abstract String toString(T data);
 
     public abstract T fromString(Object data);
-
 }

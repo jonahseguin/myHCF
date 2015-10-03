@@ -13,5 +13,4 @@ public @interface MongoColumn {
     String name();
 
     boolean identifier() default false;
-
 }

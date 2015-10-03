@@ -19,5 +19,4 @@ public abstract class CachePlayer extends AutoMongo {
     public abstract String getName();
 
     public abstract String getUniqueId();
-
 }

@@ -1,9 +1,5 @@
 package com.shawckz.myhcf.player.cache;
 
-import com.mongodb.BasicDBObject;
-import com.shawckz.myhcf.database.mongo.AutoMongo;
-import com.shawckz.myhcf.database.mongo.annotations.MongoColumn;
-
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -19,6 +15,10 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import com.mongodb.BasicDBObject;
+import com.shawckz.myhcf.database.mongo.AutoMongo;
+import com.shawckz.myhcf.database.mongo.annotations.MongoColumn;
 
 /*
  * Copyright (c) 2015 Jonah Seguin (Shawckz).  All rights reserved.  You may not modify, decompile, distribute or use any code/text contained in this document(plugin) without explicit signed permission from Jonah Seguin.
@@ -170,5 +170,4 @@ public abstract class AbstractCache implements Listener {
             }.runTaskAsynchronously(plugin);
         }
     }
-
 }

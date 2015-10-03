@@ -23,6 +23,17 @@ public class HCFPlayer extends CachePlayer {
     @MongoColumn(name = "factionId")
     private String factionId = null;
 
+    @MongoColumn(name = "pearlCooldown")
+    private long timeCanThrow = 0;
+
+    public void setTimeCanThrow(long time) {
+        timeCanThrow = time;
+    }
+
+    public long getTimeCanThrow() {
+        return timeCanThrow;
+    }
+
     public boolean inFaction(){
         return getFaction() != null;
     }
@@ -31,7 +42,4 @@ public class HCFPlayer extends CachePlayer {
         //TODO: Check if a faction with id this#factionId != null, return if not null, else return null
         return null;
     }
-
-
-
 }

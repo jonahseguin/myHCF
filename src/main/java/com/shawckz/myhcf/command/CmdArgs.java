@@ -31,6 +31,7 @@ public class CmdArgs {
      * @param end the arg index to stop appending at; -1 to stop appending at the args length
      * @return The appended String
      */
+
     public String getJoinedArgs(int start,int end){
         if(args.length < start) return "";
         String s = "";
@@ -47,6 +48,7 @@ public class CmdArgs {
      * Returns a String[] of the args; without flags.
      * @return String[] of arguments without flags
      */
+
     public String[] getArgs() {
         return filterFlags(args);
     }
@@ -56,6 +58,7 @@ public class CmdArgs {
      * @param a The String[] to filter
      * @return The filtered String[]
      */
+
     private String[] filterFlags(String[] a){//removes the flags
         int x = 0;
         int removed = 0;
@@ -234,5 +237,4 @@ public class CmdArgs {
         }
         return newArgs;
     }
-
 }

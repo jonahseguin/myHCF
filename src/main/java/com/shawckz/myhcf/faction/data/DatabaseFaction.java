@@ -6,6 +6,5 @@ import com.shawckz.myhcf.database.mongo.annotations.CollectionName;
 @CollectionName(name = "myhcffactions")
 public class DatabaseFaction extends AutoMongo{
 
-    public DatabaseFaction() { } //Leave empty constructor so that AutoMongo can instantiate
-
+    public DatabaseFaction() { } //Leave empty constructor so that AutoMongo can instantiate.
 }

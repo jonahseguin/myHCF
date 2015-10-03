@@ -1,10 +1,10 @@
 package com.shawckz.myhcf.faction;
 
-import com.shawckz.myhcf.player.HCFPlayer;
-
 import java.util.Set;
 
 import org.bukkit.Location;
+
+import com.shawckz.myhcf.player.HCFPlayer;
 
 public interface Faction {
 
@@ -69,5 +69,4 @@ public interface Faction {
     boolean isRaidable();
 
     void sendMessage(String message);
-
 }

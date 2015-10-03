@@ -1,9 +1,9 @@
 package com.shawckz.myhcf.database.mongo.serial;
 
+import java.util.HashMap;
+
 import com.mongodb.util.JSON;
 import com.shawckz.myhcf.configuration.AbstractSerializer;
-
-import java.util.HashMap;
 
 public class MapSerializer extends AbstractSerializer<HashMap> {
 

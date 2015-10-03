@@ -29,7 +29,4 @@ public @interface Command {
     String[] flags() default {};
 
     int minArgs() default 0;
-
-
-
 }

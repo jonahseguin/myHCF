@@ -1,15 +1,15 @@
 package com.shawckz.myhcf.database;
 
+import java.util.Arrays;
+
+import org.bukkit.plugin.Plugin;
+
 import com.mongodb.MongoClient;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoDatabase;
 import com.shawckz.myhcf.configuration.Configuration;
 import com.shawckz.myhcf.configuration.annotations.ConfigData;
-
-import java.util.Arrays;
-
-import org.bukkit.plugin.Plugin;
 
 
 /**

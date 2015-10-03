@@ -1,9 +1,6 @@
 package com.shawckz.myhcf.configuration;
 
 
-import com.shawckz.myhcf.configuration.annotations.ConfigData;
-import com.shawckz.myhcf.configuration.annotations.ConfigSerializer;
-
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -11,6 +8,9 @@ import java.lang.reflect.Field;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
+
+import com.shawckz.myhcf.configuration.annotations.ConfigData;
+import com.shawckz.myhcf.configuration.annotations.ConfigSerializer;
 
 
 public class Configuration {

@@ -7,5 +7,4 @@ public enum FactionType {
     ROAD,
     KOTH,
     SPECIAL
-
 }
