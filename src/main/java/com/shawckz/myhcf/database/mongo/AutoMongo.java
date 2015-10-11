@@ -42,15 +42,19 @@ public abstract class AutoMongo {
             field.setAccessible(true);
             MongoColumn column = field.getAnnotation(MongoColumn.class);
             if (column != null) {
+                String columnName = column.name();
+                if (columnName.equals("")) {
+                    columnName = field.getName();
+                }
                 Class<?> type = field.getType();
                 if (type.isPrimitive()) {
                     type = ClassUtils.primitiveToWrapper(type);
                 }
                 if (column.identifier()) {
-                    identifier = column.name();
+                    identifier = columnName;
                     identifierValue = getValue(field);
                 } else {
-                    values.put(column.name(), getValue(field));
+                    values.put(columnName, getValue(field));
                 }
             }
         }
@@ -91,7 +95,11 @@ public abstract class AutoMongo {
                 for (Field field : type.getDeclaredFields()) {
                     MongoColumn mongoColumn = field.getAnnotation(MongoColumn.class);
                     if (mongoColumn != null) {
-                        Object value = doc.get(mongoColumn.name());
+                        String columnName = mongoColumn.name();
+                        if (columnName.equals("")) {
+                            columnName = field.getName();
+                        }
+                        Object value = doc.get(columnName);
                         if (value != null) {
                             mongo.setValue(value, field.getType(), field);
                         }
@@ -127,7 +135,11 @@ public abstract class AutoMongo {
                     type = ClassUtils.primitiveToWrapper(type);
                 }
                 if (column.identifier()) {
-                    identifier = column.name();
+                    String columnName = column.name();
+                    if (columnName.equals("")) {
+                        columnName = field.getName();
+                    }
+                    identifier = columnName;
                     identifierValue = getValue(field);
                 }
             }

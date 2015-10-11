@@ -2,11 +2,14 @@ package com.shawckz.myhcf.faction;
 
 import java.util.Set;
 
+import com.shawckz.myhcf.land.Claim;
 import org.bukkit.Location;
 
 import com.shawckz.myhcf.player.HCFPlayer;
 
 public interface Faction {
+
+    void save();
 
     String getId();
 
@@ -14,15 +17,13 @@ public interface Faction {
 
     void setName(String name);
 
-    FactionMember getLeader();
+    HCFPlayer getLeader();
 
-    void setLeader(FactionMember member);
+    void setLeader(HCFPlayer member);
 
-    Set<FactionMember> getMembers();//Includes moderators, leader, etc.
+    Set<HCFPlayer> getMembers();//Includes moderators, leader, etc.
 
-    FactionMember getMember(String name);
-
-    FactionMember getMember(HCFPlayer player);
+    Set<HCFPlayer> getOnlineMembers();
 
     Location getHome();
 
@@ -30,7 +31,7 @@ public interface Faction {
 
     double getDeathsUntilRaidable();
 
-    void setDeathsUntilRaidable(int dtr);
+    void setDeathsUntilRaidable(double dtr);
 
     double getBalance();
 
@@ -50,7 +51,7 @@ public interface Faction {
 
     Set<String> getInvitations();
 
-    void invitePlayer(String name);
+    void invitePlayer(HCFPlayer invitedBy, HCFPlayer player);
 
     boolean isNormal();
 
@@ -60,13 +61,14 @@ public interface Faction {
 
     boolean hasMember(HCFPlayer player);
 
-    boolean hasMember(String name);
+    void setRole(HCFPlayer member, FactionRole role);
 
-    void setRole(FactionMember member, FactionRole role);
-
-    FactionRole getRole(FactionMember member);
+    FactionRole getRole(HCFPlayer member);
 
     boolean isRaidable();
 
     void sendMessage(String message);
+
+    Set<Claim> getClaims();
+
 }

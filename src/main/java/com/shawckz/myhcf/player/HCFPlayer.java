@@ -1,10 +1,18 @@
 package com.shawckz.myhcf.player;
 
+import com.shawckz.myhcf.Factions;
 import com.shawckz.myhcf.database.mongo.annotations.CollectionName;
 import com.shawckz.myhcf.database.mongo.annotations.MongoColumn;
+import com.shawckz.myhcf.deathban.DeathbanRank;
 import com.shawckz.myhcf.faction.Faction;
+import com.shawckz.myhcf.faction.FactionRole;
 import com.shawckz.myhcf.player.cache.CachePlayer;
+import com.shawckz.myhcf.scoreboard.hcf.FLabel;
+import com.shawckz.myhcf.scoreboard.hcf.HCFScoreboard;
+import com.shawckz.myhcf.scoreboard.hcf.timer.HCFTimer;
 import lombok.*;
+import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
 
 @CollectionName(name = "myhcfplayers")
 @Getter
@@ -12,7 +20,9 @@ import lombok.*;
 @RequiredArgsConstructor
 public class HCFPlayer extends CachePlayer {
 
-    public HCFPlayer() { } //Leave empty constructor so that AutoMongo can instantiate
+    public HCFPlayer() {
+        //Leave empty constructor so that AutoMongo can instantiate
+    }
 
     @MongoColumn(name = "name")//Don't make name an identifier as it could change and mess up the database query.
     @NonNull private String name;
@@ -23,15 +33,29 @@ public class HCFPlayer extends CachePlayer {
     @MongoColumn(name = "factionId")
     private String factionId = null;
 
-    @MongoColumn(name = "pearlCooldown")
-    private long timeCanThrow = 0;
+    @MongoColumn
+    private FactionRole factionRole = FactionRole.MEMBER;
 
-    public void setTimeCanThrow(long time) {
-        timeCanThrow = time;
-    }
+    @MongoColumn
+    private int lives = 0;
 
-    public long getTimeCanThrow() {
-        return timeCanThrow;
+    @MongoColumn
+    private long deathban = 0L;
+
+    @MongoColumn
+    private String deathbanRank = "default";
+
+    private Player bukkitPlayer;
+    private HCFScoreboard scoreboard;
+
+    public DeathbanRank getDeathbanRank(){
+        DeathbanRank deathbanRank = Factions.getInstance().getDeathbanRankManager().getRank(this.deathbanRank);
+        if(deathbanRank != null){
+            return deathbanRank;
+        }
+        else{
+            return Factions.getInstance().getDeathbanRankManager().getRank("default");
+        }
     }
 
     public boolean inFaction(){
@@ -42,4 +66,13 @@ public class HCFPlayer extends CachePlayer {
         //TODO: Check if a faction with id this#factionId != null, return if not null, else return null
         return null;
     }
+
+    public float getCooldown(long finish){
+        return Float.parseFloat(HCFTimer.DECIMAL_FORMAT.format((finish - System.currentTimeMillis()) / 1000.0));
+    }
+
+    public double getEnderpearlCooldown(){
+        return getScoreboard().getTimer(FLabel.ENDER_PEARL).getTime();
+    }
+
 }

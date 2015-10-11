@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
 @Target( ElementType.FIELD )
 public @interface MongoColumn {
 
-    String name();
+    String name() default "";
 
     boolean identifier() default false;
 }

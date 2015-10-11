@@ -1,7 +1,5 @@
 package com.shawckz.myhcf.command;
 
-import com.shawckz.xfactions.player.FPlayer;
-import com.shawckz.xfactions.player.FPlayerManager;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -20,10 +18,6 @@ public class CmdArgs {
     @NonNull
     @Setter
     private String[] args;
-
-    public FPlayer getPlayer(){
-        return FPlayerManager.getPlayer(sender.getName());
-    }
 
     /**
      * Similar to a string builder, appends values of args separated by a space into a String.
@@ -58,7 +52,6 @@ public class CmdArgs {
      * @param a The String[] to filter
      * @return The filtered String[]
      */
-
     private String[] filterFlags(String[] a){//removes the flags
         int x = 0;
         int removed = 0;
@@ -146,16 +139,6 @@ public class CmdArgs {
      */
     public Player getPlayer(int arg){
         return Bukkit.getPlayer(getArg(arg));
-    }
-
-    public FPlayer getFPlayer(int arg){
-        Player p = getPlayer(arg);
-        if(p != null){
-            return FPlayerManager.getPlayer(p);
-        }
-        FPlayer fp = FPlayerManager.getPlayer(getArg(arg));
-        if(fp != null) return fp;
-        return null;
     }
 
     /**

@@ -30,6 +30,7 @@ import com.shawckz.myhcf.database.mongo.annotations.MongoColumn;
 public abstract class AbstractCache implements Listener {
 
     private final static ConcurrentMap<String, CachePlayer> players = new ConcurrentHashMap<>();
+    private final static ConcurrentMap<String, CachePlayer> playersUUID = new ConcurrentHashMap<>();
     private final Plugin plugin;
     private final Class<? extends CachePlayer> aClass;
 
@@ -69,6 +70,22 @@ public abstract class AbstractCache implements Listener {
         }
     }
 
+    public CachePlayer getBasePlayerByUUID(String uuid){
+        if(playersUUID.containsKey(uuid)){
+            return playersUUID.get(uuid);
+        }
+        else{
+            CachePlayer cp = loadCachePlayerByid(uuid);
+            if(cp != null){
+                put(cp);
+                return cp;
+            }
+            else{
+                return null;
+            }
+        }
+    }
+
     public CachePlayer loadCachePlayer(String name){
         String key = "username";
         for(Field f : aClass.getDeclaredFields()){
@@ -84,6 +101,30 @@ public abstract class AbstractCache implements Listener {
         }
 
         List<AutoMongo> autoMongos = CachePlayer.select(new BasicDBObject(key,name),aClass);
+        for(AutoMongo mongo : autoMongos){
+            if(mongo instanceof CachePlayer){
+                CachePlayer cachePlayer = (CachePlayer) mongo;
+                return cachePlayer;
+            }
+        }
+        return null;
+    }
+
+    public CachePlayer loadCachePlayerByid(String uuid){
+        String key = "uniqueId";
+        for(Field f : aClass.getDeclaredFields()){
+            MongoColumn row = f.getAnnotation(MongoColumn.class);
+            if(row != null){
+                if(row.identifier()){
+                    if(row.name().equalsIgnoreCase("uuid") || f.getName().equalsIgnoreCase("id") || f.getName().equalsIgnoreCase("uniqueId")){
+                        key = row.name();
+                        break;
+                    }
+                }
+            }
+        }
+
+        List<AutoMongo> autoMongos = CachePlayer.select(new BasicDBObject(key,uuid),aClass);
         for(AutoMongo mongo : autoMongos){
             if(mongo instanceof CachePlayer){
                 CachePlayer cachePlayer = (CachePlayer) mongo;
@@ -115,6 +156,7 @@ public abstract class AbstractCache implements Listener {
      */
     public void put(CachePlayer cachePlayer){
         players.put(cachePlayer.getName(),cachePlayer);
+        playersUUID.put(cachePlayer.getUniqueId(), cachePlayer);
     }
 
     /**

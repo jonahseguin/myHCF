@@ -3,6 +3,7 @@ package com.shawckz.myhcf.player;
 import com.shawckz.myhcf.player.cache.AbstractCache;
 import com.shawckz.myhcf.player.cache.CachePlayer;
 
+import com.shawckz.myhcf.scoreboard.hcf.HCFScoreboard;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
@@ -29,11 +30,21 @@ public class HCFCache extends AbstractCache {
         return null;
     }
 
+    public HCFPlayer getHCFPlayerByUUID(String uuid){
+        CachePlayer cachePlayer = getBasePlayerByUUID(uuid);
+        if(cachePlayer != null){
+            return (HCFPlayer) cachePlayer;
+        }
+        return null;
+    }
+
     @Override
     public void init(Player player, CachePlayer cachePlayer) {
         if(cachePlayer instanceof HCFPlayer){
             HCFPlayer hcfPlayer = (HCFPlayer) cachePlayer;
-            //TODO: Setup.
+            hcfPlayer.setBukkitPlayer(player);
+            hcfPlayer.setScoreboard(new HCFScoreboard(player));
+            hcfPlayer.getScoreboard().sendToPlayer(player);
         }
     }
 }
