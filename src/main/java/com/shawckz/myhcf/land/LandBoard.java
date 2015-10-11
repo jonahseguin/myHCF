@@ -23,7 +23,7 @@ public class LandBoard {
     public boolean isProtected(Location loc){
         Faction f = getFactionAt(loc);
         if(f != null){
-            if(!f.isRaidable()){
+            if(!f.isRaidable() && f.isNormal()){
                 return true;
             }
         }

@@ -10,6 +10,7 @@ import com.shawckz.myhcf.player.cache.CachePlayer;
 import com.shawckz.myhcf.scoreboard.hcf.FLabel;
 import com.shawckz.myhcf.scoreboard.hcf.HCFScoreboard;
 import com.shawckz.myhcf.scoreboard.hcf.timer.HCFTimer;
+import com.shawckz.myhcf.util.ChatMode;
 import lombok.*;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
@@ -47,6 +48,7 @@ public class HCFPlayer extends CachePlayer {
 
     private Player bukkitPlayer;
     private HCFScoreboard scoreboard;
+    private ChatMode chatMode = ChatMode.PUBLIC;
 
     public DeathbanRank getDeathbanRank(){
         DeathbanRank deathbanRank = Factions.getInstance().getDeathbanRankManager().getRank(this.deathbanRank);

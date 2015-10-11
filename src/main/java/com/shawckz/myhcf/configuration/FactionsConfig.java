@@ -75,6 +75,21 @@ public class FactionsConfig extends Configuration {
     @ConfigSerializer(serializer = MapSerializer.class)
     private Map<String, String> scoreboardKeys = new HashMap<>();
 
+    @ConfigData("spawn.disable-hunger")
+    private boolean disableHungerInSpawn = true;
+
+    @ConfigData("world.disable-fire-spread")
+    private boolean disableFireSpread = true;
+
+    @ConfigData("world.disable-block-burn")
+    private boolean disableBlockBurn = true;
+
+    @ConfigData("world.cancel-explosion-block-break")
+    private boolean cancelExplosionBlockBreak = true;
+
+    @ConfigData("world.border")
+    private int worldBorder = 3000;
+
     public String getScoreboardKey(FLabel label){
         if(!scoreboardKeys.containsKey(label.toString())){
             scoreboardKeys.put(label.toString(),label.getKey());
