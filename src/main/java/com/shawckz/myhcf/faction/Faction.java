@@ -1,8 +1,10 @@
 package com.shawckz.myhcf.faction;
 
+import java.util.List;
 import java.util.Set;
 
 import com.shawckz.myhcf.land.Claim;
+import com.shawckz.myhcf.util.Relation;
 import org.bukkit.Location;
 
 import com.shawckz.myhcf.player.HCFPlayer;
@@ -69,6 +71,8 @@ public interface Faction {
 
     void sendMessage(String message);
 
-    Set<Claim> getClaims();
+    List<Claim> getClaims();
+
+    Relation getRelationTo(Faction faction);
 
 }

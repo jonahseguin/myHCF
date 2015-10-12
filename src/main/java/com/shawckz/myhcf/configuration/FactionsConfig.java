@@ -90,6 +90,15 @@ public class FactionsConfig extends Configuration {
     @ConfigData("world.border")
     private int worldBorder = 3000;
 
+    @ConfigData("relation.neutral")
+    private String relationNeutral = "&f";
+
+    @ConfigData("relation.ally")
+    private String relationAlly = "&9";
+
+    @ConfigData("relation.faction")
+    private String relationFaction = "&a";
+
     public String getScoreboardKey(FLabel label){
         if(!scoreboardKeys.containsKey(label.toString())){
             scoreboardKeys.put(label.toString(),label.getKey());

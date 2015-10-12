@@ -16,6 +16,7 @@ import com.shawckz.myhcf.faction.serial.HCFPlayerIdSerializer;
 import com.shawckz.myhcf.land.Claim;
 import com.shawckz.myhcf.player.HCFPlayer;
 import com.shawckz.myhcf.scoreboard.hcf.FLabel;
+import com.shawckz.myhcf.util.Relation;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -62,7 +63,7 @@ public class MongoFaction extends AutoMongo implements Faction{
 
     @MongoColumn
     @DatabaseSerializer(serializer = ClaimsSerializer.class)
-    @Getter private List<Claim> claims = new ArrayList<>();
+    private List<Claim> claims = new ArrayList<>();
 
     public MongoFaction() { } //Leave empty constructor so that AutoMongo can instantiate.
 
@@ -204,5 +205,16 @@ public class MongoFaction extends AutoMongo implements Faction{
     @Override
     public void save() {
         update();
+    }
+
+    @Override
+    public Relation getRelationTo(Faction faction) {
+        if(faction.getId().equals(this.getId())){
+            return Relation.FACTION;
+        }
+        else if (faction.getAllies().contains(faction) && getAllies().contains(faction)){
+            return Relation.ALLY;
+        }
+        return Relation.NEUTRAL;
     }
 }

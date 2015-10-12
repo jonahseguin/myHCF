@@ -8,6 +8,7 @@ import com.shawckz.myhcf.faction.FactionManager;
 import com.shawckz.myhcf.land.LandBoard;
 import com.shawckz.myhcf.listener.FEventManager;
 import com.shawckz.myhcf.scoreboard.hcf.FLabel;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 

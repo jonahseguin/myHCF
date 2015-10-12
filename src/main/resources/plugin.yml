@@ -4,3 +4,9 @@ version: 1.0.0 (MC-1.7.10)
 authors: [Shawckz, Ozcr]
 website: http://shawckz.com
 description: Customizable Hardcore Factions all-in-one
+
+commands:
+  factions:
+    usage: /<command>
+    description: myHCF Factions command
+    aliases: [f, fac, myhcf]

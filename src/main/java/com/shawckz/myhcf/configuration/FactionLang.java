@@ -11,7 +11,9 @@ public enum FactionLang {
     BORDER_BLOCK_DENY("&cYou cannot modify blocks beyond the world border."),
     BORDER_PORTAL("&cThat portal's location is past the border. You have been moved inwards."),
     BORDER_TELEPORT("&cThat location is past the border."),
-    CHAT_FORMAT("&7[{0}&7] &a{1}&7: &f{2}")//[Faction] player: hi
+    CHAT_FORMAT("&7[{0}&7] &a{1}&7: &f{2}"),//[Faction] player: hi
+    CHAT_FORMAT_ALLY("&7(&9&lALLY&7) &8[&a{0}&8] &f{1}&7: &e{2}"),//(ALLY) [Faction] player: Hello
+    CHAT_FORMAT_FACTION("&7(&a&lFACTION&7) &f{0}&7: &e{1}")//(FACTION) player: hello
     ;
 
     private final String defaultValue;
