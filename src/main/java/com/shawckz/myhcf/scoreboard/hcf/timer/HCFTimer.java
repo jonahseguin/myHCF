@@ -3,6 +3,7 @@ package com.shawckz.myhcf.scoreboard.hcf.timer;
 import com.shawckz.myhcf.scoreboard.internal.XScoreboard;
 import com.shawckz.myhcf.scoreboard.internal.timer.TimerPool;
 import com.shawckz.myhcf.scoreboard.internal.timer.XScoreboardTimer;
+
 import org.bukkit.ChatColor;
 
 import java.text.DecimalFormat;
@@ -16,16 +17,15 @@ public class HCFTimer extends XScoreboardTimer {
     public static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("##.#");
 
     public HCFTimer(XScoreboard scoreboard, String key, int score, TimerPool timerPool, HCFTimerFormat format) {
-        super(scoreboard, key + ChatColor.GRAY+" - "+ ChatColor.GOLD+"0.0", score, timerPool);
+        super(scoreboard, key + ChatColor.GRAY + " - " + ChatColor.GOLD + "0.0", score, timerPool);
         this.key = key;
         this.format = format;
         getTimerPool().registerTimer(new HCFTimerTask(this, timerPool.getInterval()) {
             @Override
             public void run() {
-                if(time - 0.1D > 0){
+                if (time - 0.1D > 0) {
                     setTime(time - 0.1D);
-                }
-                else{
+                } else {
                     onComplete();
                 }
             }
@@ -33,33 +33,33 @@ public class HCFTimer extends XScoreboardTimer {
     }
 
     public HCFTimer(XScoreboard scoreboard, String key, int score, TimerPool timerPool) {
-        this(scoreboard, key + ChatColor.GRAY+" - "+ ChatColor.GOLD+"0.0", score, timerPool, HCFTimerFormat.TENTH_OF_SECOND);
+        this(scoreboard, key + ChatColor.GRAY + " - " + ChatColor.GOLD + "0.0", score, timerPool, HCFTimerFormat.TENTH_OF_SECOND);
     }
 
     public void setTime(double time) {
         this.time = time;
-        if(time > 0){
-            if(isFrozen()){
+        if (time > 0) {
+            if (isFrozen()) {
                 setFrozen(false);
             }
-            if(!isVisible()){
+            if (!isVisible()) {
                 setVisible(true);
             }
             updateTime();
         }
     }
 
-    public void pauseTimer(){
+    public void pauseTimer() {
         setFrozen(true);
         updateLabel();
     }
 
-    public void unpauseTimer(){
+    public void unpauseTimer() {
         setFrozen(false);
         updateLabel();
     }
 
-    public void stopTimer(){
+    public void stopTimer() {
         setFrozen(true);
         setVisible(false);
         setTime(0.0D);
@@ -74,11 +74,10 @@ public class HCFTimer extends XScoreboardTimer {
         return time;
     }
 
-    private void updateTime(){
-        if(format == HCFTimerFormat.TENTH_OF_SECOND){
-            setValue(key + ChatColor.GRAY+" - "+ ChatColor.GOLD + Float.parseFloat(DECIMAL_FORMAT.format(time)));
-        }
-        else if (format == HCFTimerFormat.HH_MM_SS){
+    private void updateTime() {
+        if (format == HCFTimerFormat.TENTH_OF_SECOND) {
+            setValue(key + ChatColor.GRAY + " - " + ChatColor.GOLD + Float.parseFloat(DECIMAL_FORMAT.format(time)));
+        } else if (format == HCFTimerFormat.HH_MM_SS) {
             int millis = (int) Math.round(time);
             setValue(key + ChatColor.GRAY + " - " +
                     ChatColor.GOLD +
@@ -88,10 +87,9 @@ public class HCFTimer extends XScoreboardTimer {
                                     TimeUnit.HOURS.toMinutes(TimeUnit.SECONDS.toHours(millis)),
                             TimeUnit.SECONDS.toSeconds(millis) -
                                     TimeUnit.MINUTES.toSeconds(TimeUnit.SECONDS.toMinutes(millis))));
-        }
-        else if (format == HCFTimerFormat.MM_SS){
+        } else if (format == HCFTimerFormat.MM_SS) {
             int millis = (int) Math.round(time);
-            setValue(key + ChatColor.GRAY + " - "+
+            setValue(key + ChatColor.GRAY + " - " +
                     ChatColor.GOLD +
                     String.format("%02d:%02d",
                             TimeUnit.SECONDS.toMinutes(millis) -

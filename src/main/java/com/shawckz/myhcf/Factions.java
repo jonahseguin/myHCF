@@ -2,14 +2,14 @@ package com.shawckz.myhcf;
 
 import com.shawckz.myhcf.configuration.FactionsConfig;
 import com.shawckz.myhcf.configuration.LanguageConfig;
-import com.shawckz.myhcf.deathban.DeathbanRank;
 import com.shawckz.myhcf.deathban.DeathbanRankManager;
 import com.shawckz.myhcf.faction.FactionManager;
 import com.shawckz.myhcf.land.LandBoard;
 import com.shawckz.myhcf.listener.FEventManager;
+import com.shawckz.myhcf.player.HCFPlayer;
 import com.shawckz.myhcf.scoreboard.hcf.FLabel;
-import lombok.Getter;
-import org.bukkit.Bukkit;
+import com.shawckz.myhcf.scoreboard.hcf.HCFScoreboard;
+
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.shawckz.myhcf.command.CommandManager;
@@ -18,7 +18,8 @@ import com.shawckz.myhcf.player.HCFCache;
 
 /**
  * myHCF
- * @author Shawckz & Ozcr
+ *
+ * @author Shawckz
  * @version 0.0.0
  */
 public class Factions extends JavaPlugin {
@@ -36,10 +37,10 @@ public class Factions extends JavaPlugin {
     private LandBoard landBoard;
 
     @Override
-    public void onEnable(){
+    public void onEnable() {
         instance = this;
-        lang = new LanguageConfig(this);
         factionsConfig = new FactionsConfig(this);
+        lang = new LanguageConfig(this);
         databaseManager = new DatabaseManager(this);
         cache = new HCFCache(this);
         commandManager = new CommandManager(this);
@@ -50,7 +51,7 @@ public class Factions extends JavaPlugin {
     }
 
     @Override
-    public void onDisable(){
+    public void onDisable() {
         databaseManager.shutdown();
         HCFCache.clear();
         fEventManager.unregister();
@@ -104,4 +105,14 @@ public class Factions extends JavaPlugin {
     public static Factions getInstance() {
         return instance;
     }
+
+    public static boolean isDebug(){
+        return getInstance().getFactionsConfig().isDebug();
+    }
+
+    public static void log(String msg){
+        getInstance().getLogger().info(msg);
+    }
+
+
 }

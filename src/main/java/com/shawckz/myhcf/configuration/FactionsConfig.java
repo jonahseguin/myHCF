@@ -9,6 +9,8 @@ import com.shawckz.myhcf.scoreboard.hcf.FLabel;
 import com.shawckz.myhcf.util.HCFException;
 import lombok.Getter;
 import lombok.Setter;
+
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.plugin.Plugin;
 
 import java.util.ArrayList;
@@ -26,32 +28,43 @@ public class FactionsConfig extends Configuration {
         load();
         save();
         defaultValues();
+        setupValues();
     }
 
-    private void defaultValues(){
-        for(FLabel label : FLabel.values()){
-            if(!scoreboardKeys.containsKey(label.toString())){
-                scoreboardKeys.put(label.toString(), label.getKey());
+    private void defaultValues() {
+        for (FLabel label : FLabel.values()) {
+            if (!scoreboardKeys.containsKey(label.toString())) {
+                scoreboardKeys.put(label.toString(), label.getKey().replaceAll("§","&"));
             }
         }
-        if(deathbanTime.isEmpty()){
+        if (deathbanTime.isEmpty()) {
             deathbanTime.add("default:10800");
             deathbanTime.add("2hour:7200");
             deathbanTime.add("1hour:3600");
         }
 
-        for(String dbt : deathbanTime){
-            if(!dbt.contains(":")){
-                throw new HCFException("Invalid DeathbanRank '"+dbt+"'");
+        for (String dbt : deathbanTime) {
+            if (!dbt.contains(":")) {
+                throw new HCFException("Invalid DeathbanRank '" + dbt + "'");
             }
             String[] split = dbt.split(":");
             String name = split[0];
             int seconds = Integer.parseInt(split[1]);
             Factions.getInstance().getDeathbanRankManager().registerRank(new DeathbanRank(name, seconds));
         }
+        save();
+    }
+
+    private void setupValues(){
+        for(String key : scoreboardKeys.keySet()){
+            scoreboardKeys.put(key, ChatColor.translateAlternateColorCodes('&', scoreboardKeys.get(key)));
+        }
     }
 
     //No final variables (if they are in the config)
+
+    @ConfigData("debug")
+    private boolean debug = false;
 
     @ConfigData("factions.max-claims")
     private int maxFactionClaims = 5;
@@ -99,9 +112,12 @@ public class FactionsConfig extends Configuration {
     @ConfigData("relation.faction")
     private String relationFaction = "&a";
 
-    public String getScoreboardKey(FLabel label){
-        if(!scoreboardKeys.containsKey(label.toString())){
-            scoreboardKeys.put(label.toString(),label.getKey());
+    @ConfigData("scoreboard.override")
+    private boolean scoreboardOverride = true;
+
+    public String getScoreboardKey(FLabel label) {
+        if (!scoreboardKeys.containsKey(label.toString())) {
+            scoreboardKeys.put(label.toString(), label.getKey());
         }
         return scoreboardKeys.get(label.toString());
     }

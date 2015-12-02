@@ -18,5 +18,4 @@ public class Coordinate {
     private int z;
 
 
-
 }

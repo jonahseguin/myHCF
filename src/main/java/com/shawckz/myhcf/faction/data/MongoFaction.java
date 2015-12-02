@@ -21,6 +21,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -32,15 +33,20 @@ import java.util.*;
 @Getter
 @Setter
 @RequiredArgsConstructor
-public class MongoFaction extends AutoMongo implements Faction{
+public class MongoFaction extends AutoMongo implements Faction {
 
-    @NonNull @MongoColumn(identifier = true) private String id;
-    @NonNull @MongoColumn private String name;
+    @NonNull
+    @MongoColumn(identifier = true)
+    private String id;
+    @NonNull
+    @MongoColumn
+    private String name;
 
     @MongoColumn
     @DatabaseSerializer(serializer = LocationSerializer.class)
     private Location home = null;
-    @MongoColumn private double deathsUntilRaidable = Factions.getInstance().getFactionsConfig().getBaseDtr();
+    @MongoColumn
+    private double deathsUntilRaidable = Factions.getInstance().getFactionsConfig().getBaseDtr();
 
     @MongoColumn
     @DatabaseSerializer(serializer = HCFPlayerIdSerializer.class)
@@ -65,7 +71,8 @@ public class MongoFaction extends AutoMongo implements Faction{
     @DatabaseSerializer(serializer = ClaimsSerializer.class)
     private List<Claim> claims = new ArrayList<>();
 
-    public MongoFaction() { } //Leave empty constructor so that AutoMongo can instantiate.
+    public MongoFaction() {
+    } //Leave empty constructor so that AutoMongo can instantiate.
 
     @Override
     public FactionType getFactionType() {
@@ -80,7 +87,7 @@ public class MongoFaction extends AutoMongo implements Faction{
     @Override
     public Set<Faction> getAllies() {
         Set<Faction> allies = new HashSet<>();
-        for(String id : alliesString){
+        for (String id : alliesString) {
             allies.add(Factions.getInstance().getFactionManager().getFaction(id));
         }
         return allies;
@@ -88,45 +95,44 @@ public class MongoFaction extends AutoMongo implements Faction{
 
     @Override
     public void setAllies(Faction target, boolean ally) {
-        if(ally){
-            if(!alliesString.contains(target.getId())){
+        if (ally) {
+            if (!alliesString.contains(target.getId())) {
                 alliesString.add(target.getId());
             }
-        }
-        else{
-            if(alliesString.contains(target.getId())){
+        } else {
+            if (alliesString.contains(target.getId())) {
                 alliesString.remove(target.getId());
             }
         }
     }
 
-    public void addPlayer(HCFPlayer player){
-        if(player == null){
+    public void addPlayer(HCFPlayer player) {
+        if (player == null) {
             throw new IllegalArgumentException("Cannot add null player to faction");
         }
-        if(invitations.contains(player.getUniqueId())){
+        if (invitations.contains(player.getUniqueId())) {
             invitations.remove(player.getUniqueId());
         }
         members.add(player.getUniqueId());
-        new BukkitRunnable(){
+        new BukkitRunnable() {
             @Override
             public void run() {
                 updateMemberCache();
             }
         }.runTaskAsynchronously(Factions.getInstance());
         sendMessage(FLang.getFormattedLang(FactionLang.FACTION_JOIN_LOCAL, player.getName()));
-        if(player.getBukkitPlayer() != null){
+        if (player.getBukkitPlayer() != null) {
             player.getBukkitPlayer().sendMessage(FLang.getFormattedLang(FactionLang.FACTION_JOIN_PLAYER, this.getName()));
         }
     }
 
     @Override
     public void invitePlayer(HCFPlayer invitedBy, HCFPlayer player) {
-        if(!invitations.contains(player.getUniqueId())){
+        if (!invitations.contains(player.getUniqueId())) {
             invitations.add(player.getUniqueId());
         }
         sendMessage(FLang.getFormattedLang(FactionLang.FACTION_INVITE_LOCAL, invitedBy.getName(), player.getName()));
-        if(player.getBukkitPlayer() != null){
+        if (player.getBukkitPlayer() != null) {
             player.getBukkitPlayer().sendMessage(FLang.getFormattedLang(FactionLang.FACTION_INVITE_PLAYER, invitedBy.getFaction().getName(), invitedBy.getName()));
         }
     }
@@ -154,7 +160,7 @@ public class MongoFaction extends AutoMongo implements Faction{
     @Override
     public Set<HCFPlayer> getMembers() {
         Set<HCFPlayer> members = new HashSet<>();
-        for(String memberUUID : this.members){
+        for (String memberUUID : this.members) {
             members.add(Factions.getInstance().getCache().getHCFPlayerByUUID(memberUUID));
         }
         return members;
@@ -163,9 +169,9 @@ public class MongoFaction extends AutoMongo implements Faction{
     @Override
     public Set<HCFPlayer> getOnlineMembers() {
         Set<HCFPlayer> onlineMembers = new HashSet<>();
-        for(String memberUUID : this.members){
+        for (String memberUUID : this.members) {
             Player p = Bukkit.getPlayer(UUID.fromString(memberUUID));
-            if(p != null){
+            if (p != null) {
                 onlineMembers.add(Factions.getInstance().getCache().getHCFPlayer(p));
             }
         }
@@ -189,15 +195,15 @@ public class MongoFaction extends AutoMongo implements Faction{
 
     @Override
     public void sendMessage(String message) {
-        for(HCFPlayer player : getOnlineMembers()){
-            if(player.getBukkitPlayer() != null){
+        for (HCFPlayer player : getOnlineMembers()) {
+            if (player.getBukkitPlayer() != null) {
                 player.getBukkitPlayer().sendMessage(message);
             }
         }
     }
 
-    public void updateMemberCache(){
-        for(String s : members){
+    public void updateMemberCache() {
+        for (String s : members) {
             Factions.getInstance().getCache().getHCFPlayerByUUID(s);
         }
     }
@@ -209,10 +215,9 @@ public class MongoFaction extends AutoMongo implements Faction{
 
     @Override
     public Relation getRelationTo(Faction faction) {
-        if(faction.getId().equals(this.getId())){
+        if (faction.getId().equals(this.getId())) {
             return Relation.FACTION;
-        }
-        else if (faction.getAllies().contains(faction) && getAllies().contains(faction)){
+        } else if (faction.getAllies().contains(faction) && getAllies().contains(faction)) {
             return Relation.ALLY;
         }
         return Relation.NEUTRAL;

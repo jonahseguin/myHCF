@@ -1,6 +1,7 @@
 package com.shawckz.myhcf.spawn;
 
 import com.shawckz.myhcf.util.HCFException;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -38,7 +39,7 @@ public class WallRadius {
 
     public WallRadius(Location pos1, Location pos2) {
         this.world = pos1.getWorld().getName();
-        if(!pos1.getWorld().getName().equals(pos2.getWorld().getName())){
+        if (!pos1.getWorld().getName().equals(pos2.getWorld().getName())) {
             throw new HCFException("WallRadius: pos1 & pos2 must be in some world");
         }
         this.maxX = Math.max(pos1.getBlockX(), pos2.getBlockX());
@@ -81,16 +82,16 @@ public class WallRadius {
         }
     }
 
-    public Set<Location> getCache(){
+    public Set<Location> getCache() {
         return cache;
     }
 
-    public void resetPlayerCache(){
-        for(String p : playerCache.keySet()){
+    public void resetPlayerCache() {
+        for (String p : playerCache.keySet()) {
             Player pl = Bukkit.getPlayer(p);
-            if(pl != null){
+            if (pl != null) {
                 Set<Location> locations = playerCache.get(p);
-                for(Location loc : locations){
+                for (Location loc : locations) {
                     resetBlock(pl, loc);
                 }
             }
@@ -98,7 +99,7 @@ public class WallRadius {
         playerCache.clear();
     }
 
-    public void resetBlock(Player p, Location loc){
+    public void resetBlock(Player p, Location loc) {
         p.sendBlockChange(loc, loc.getBlock().getType(), loc.getBlock().getData());
     }
 

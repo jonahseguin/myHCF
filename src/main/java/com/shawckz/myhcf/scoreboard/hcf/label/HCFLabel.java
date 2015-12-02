@@ -5,18 +5,34 @@ import com.shawckz.myhcf.scoreboard.internal.label.XScoreboardLabel;
 
 public class HCFLabel extends XScoreboardLabel {
 
+    private String endValue = "";
+
     public HCFLabel(XScoreboard scoreboard, String value, int score) {
         super(scoreboard, value, score);
     }
 
-    public void show(){
-        setVisible(true);
-        updateLabel();
+    public String getEndValue() {
+        return endValue;
     }
 
-    public void hide(){
+    public HCFLabel setEndValue(String endValue) {
+        if (!this.endValue.equals("")) {
+            setValue(getValue().getFullValue().replaceAll(this.endValue, endValue));
+        }
+        this.endValue = endValue;
+        return this;
+    }
+
+    public HCFLabel show() {
+        setVisible(true);
+        updateLabel();
+        return this;
+    }
+
+    public HCFLabel hide() {
         setVisible(false);
         updateLabel();
+        return this;
     }
 
 }

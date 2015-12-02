@@ -53,9 +53,9 @@ public class Configuration {
         }
     }
 
-    public void deleteFile(){
-        if(directory.exists()){
-            if(file.exists()){
+    public void deleteFile() {
+        if (directory.exists()) {
+            if (file.exists()) {
                 file.delete();
             }
         }
@@ -115,5 +115,9 @@ public class Configuration {
                 }
             }
         }
+    }
+
+    public YamlConfiguration getConfig() {
+        return config;
     }
 }

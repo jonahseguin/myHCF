@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import net.minecraft.util.io.netty.util.internal.ConcurrentSet;
+
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -23,21 +24,20 @@ public class TimerPool {
     private boolean frozen = false;
     private Set<XTimerTask> timers = new ConcurrentSet<>();
 
-    public final void startTimerPool(Plugin plugin){
+    public final void startTimerPool(Plugin plugin) {
         startTimerPool(plugin, false);
     }
 
-    public final void startTimerPool(Plugin plugin, boolean async){
-        if(!running) {
-            if(async){
+    public final void startTimerPool(Plugin plugin, boolean async) {
+        if (!running) {
+            if (async) {
                 bukkitTask = plugin.getServer().getScheduler().runTaskTimerAsynchronously(plugin, new Runnable() {
                     @Override
                     public void run() {
                         updateTimerPool();
                     }
                 }, 0L, interval);
-            }
-            else{
+            } else {
                 bukkitTask = plugin.getServer().getScheduler().runTaskTimer(plugin, new Runnable() {
                     @Override
                     public void run() {
@@ -46,49 +46,46 @@ public class TimerPool {
                 }, 0L, interval);
             }
             running = true;
-        }
-        else{
+        } else {
             throw new XScoreboardException("ScoreboardTimer is already running");
         }
     }
 
-    public final void stopTimerPool(){
-        if(running){
-            if(bukkitTask != null){
+    public final void stopTimerPool() {
+        if (running) {
+            if (bukkitTask != null) {
                 bukkitTask.cancel();
                 bukkitTask = null;
             }
             running = false;
-        }
-        else{
+        } else {
             throw new XScoreboardException("ScoreboardTimer is not running");
         }
     }
 
-    private void updateTimerPool(){
-        if(frozen){
+    private void updateTimerPool() {
+        if (frozen) {
             return;
         }
         Iterator<XTimerTask> it = timers.iterator();
-        while(it.hasNext()){
+        while (it.hasNext()) {
             XTimerTask timer = it.next();
-            if(!timer.isComplete()){
-                if(!timer.isFrozen()) {
+            if (!timer.isComplete()) {
+                if (!timer.isFrozen()) {
                     timer.run();
                 }
-            }
-            else{
+            } else {
                 unregisterTimer(timer);
                 timer.onComplete();
             }
         }
     }
 
-    public final void registerTimer(XTimerTask timer){
+    public final void registerTimer(XTimerTask timer) {
         timers.add(timer);
     }
 
-    public final void unregisterTimer(XTimerTask timer){
+    public final void unregisterTimer(XTimerTask timer) {
         timers.remove(timer);
     }
 

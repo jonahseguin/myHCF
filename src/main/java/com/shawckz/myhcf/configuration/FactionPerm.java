@@ -2,8 +2,7 @@ package com.shawckz.myhcf.configuration;
 
 public enum FactionPerm {
 
-    BYPASS_BORDER("myhcf.bypassborder")
-    ;
+    BYPASS_BORDER("myhcf.bypassborder");
 
     private final String perm;
 

@@ -1,6 +1,7 @@
 package com.shawckz.myhcf.listener;
 
 import com.shawckz.myhcf.Factions;
+
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 
@@ -16,16 +17,19 @@ public class FEventManager {
         this.instance = instance;
 
         listeners.add(new EnderpearlListener());
+        listeners.add(new BorderListener());
+        listeners.add(new ChatListener());
+        listeners.add(new PreventionListener());
     }
 
-    public void register(){
-        for(Listener listener : listeners){
+    public void register() {
+        for (Listener listener : listeners) {
             instance.getServer().getPluginManager().registerEvents(listener, instance);
         }
     }
 
-    public void unregister(){
-        for(Listener listener : listeners){
+    public void unregister() {
+        for (Listener listener : listeners) {
             HandlerList.unregisterAll(listener);
         }
         listeners.clear();

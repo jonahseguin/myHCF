@@ -5,6 +5,7 @@ import java.util.Set;
 
 import com.shawckz.myhcf.land.Claim;
 import com.shawckz.myhcf.util.Relation;
+
 import org.bukkit.Location;
 
 import com.shawckz.myhcf.player.HCFPlayer;

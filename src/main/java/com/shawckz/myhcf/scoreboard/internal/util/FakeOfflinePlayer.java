@@ -1,6 +1,7 @@
 package com.shawckz.myhcf.scoreboard.internal.util;
 
 import com.google.common.base.Charsets;
+
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -21,7 +22,7 @@ public class FakeOfflinePlayer implements OfflinePlayer {
         this.uuid = UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes(Charsets.UTF_8));
     }
 
-    public void setName(String name){
+    public void setName(String name) {
         this.name = name;
     }
 

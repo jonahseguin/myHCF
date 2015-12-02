@@ -18,7 +18,7 @@ public class ClaimsSerializer extends AbstractSerializer<List<Claim>> {
     @Override
     public String toString(List<Claim> data) {
         Set<String> s = new HashSet<>();
-        for(Claim c : data){
+        for (Claim c : data) {
             s.add(c.toString());
         }
         return JSON.serialize(s);
@@ -29,13 +29,13 @@ public class ClaimsSerializer extends AbstractSerializer<List<Claim>> {
         String d = (String) data;
         BasicDBList bdl = (BasicDBList) JSON.parse(d);
         List<String> s = new ArrayList<>();
-        for(Object o : bdl){
-            if(o instanceof String){
-                s.add(((String)o));
+        for (Object o : bdl) {
+            if (o instanceof String) {
+                s.add(((String) o));
             }
         }
         List<Claim> claims = new ArrayList<>();
-        for(String c : s){
+        for (String c : s) {
             claims.add(Claim.fromString(c));
         }
         return claims;

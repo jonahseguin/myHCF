@@ -34,13 +34,13 @@ public abstract class AbstractCache implements Listener {
     private final Plugin plugin;
     private final Class<? extends CachePlayer> aClass;
 
-    public AbstractCache(Plugin plugin, Class<? extends CachePlayer> aClass){
+    public AbstractCache(Plugin plugin, Class<? extends CachePlayer> aClass) {
         this.plugin = plugin;
         this.aClass = aClass;
-        Bukkit.getServer().getPluginManager().registerEvents(this,plugin);
+        Bukkit.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
-    public ConcurrentMap<String, CachePlayer> getPlayersMap(){
+    public ConcurrentMap<String, CachePlayer> getPlayersMap() {
         return players;
     }
 
@@ -49,50 +49,45 @@ public abstract class AbstractCache implements Listener {
      * If they are not in the database or the name is null, will return null.
      *
      * @param name The Player's name to get a CachePlayer instance of
-     *
      * @return The CachePlayer, null if not found in database && cache
-     *
+     * <p/>
      * Please note that the name is case sensitive.
      */
-    public CachePlayer getBasePlayer(String name){
-        if(players.containsKey(name)){
+    public CachePlayer getBasePlayer(String name) {
+        if (players.containsKey(name)) {
             return players.get(name);
-        }
-        else{
+        } else {
             CachePlayer cp = loadCachePlayer(name);
-            if(cp != null){
+            if (cp != null) {
                 put(cp);
                 return cp;
-            }
-            else{
+            } else {
                 return null;
             }
         }
     }
 
-    public CachePlayer getBasePlayerByUUID(String uuid){
-        if(playersUUID.containsKey(uuid)){
+    public CachePlayer getBasePlayerByUUID(String uuid) {
+        if (playersUUID.containsKey(uuid)) {
             return playersUUID.get(uuid);
-        }
-        else{
+        } else {
             CachePlayer cp = loadCachePlayerByid(uuid);
-            if(cp != null){
+            if (cp != null) {
                 put(cp);
                 return cp;
-            }
-            else{
+            } else {
                 return null;
             }
         }
     }
 
-    public CachePlayer loadCachePlayer(String name){
+    public CachePlayer loadCachePlayer(String name) {
         String key = "username";
-        for(Field f : aClass.getDeclaredFields()){
+        for (Field f : aClass.getDeclaredFields()) {
             MongoColumn row = f.getAnnotation(MongoColumn.class);
-            if(row != null){
-                if(row.identifier()){
-                    if(row.name().equalsIgnoreCase("name") || f.getName().equalsIgnoreCase("username")){
+            if (row != null) {
+                if (row.identifier()) {
+                    if (row.name().equalsIgnoreCase("name") || f.getName().equalsIgnoreCase("username")) {
                         key = row.name();
                         break;
                     }
@@ -100,9 +95,9 @@ public abstract class AbstractCache implements Listener {
             }
         }
 
-        List<AutoMongo> autoMongos = CachePlayer.select(new BasicDBObject(key,name),aClass);
-        for(AutoMongo mongo : autoMongos){
-            if(mongo instanceof CachePlayer){
+        List<AutoMongo> autoMongos = CachePlayer.select(new BasicDBObject(key, name), aClass);
+        for (AutoMongo mongo : autoMongos) {
+            if (mongo instanceof CachePlayer) {
                 CachePlayer cachePlayer = (CachePlayer) mongo;
                 return cachePlayer;
             }
@@ -110,13 +105,13 @@ public abstract class AbstractCache implements Listener {
         return null;
     }
 
-    public CachePlayer loadCachePlayerByid(String uuid){
+    public CachePlayer loadCachePlayerByid(String uuid) {
         String key = "uniqueId";
-        for(Field f : aClass.getDeclaredFields()){
+        for (Field f : aClass.getDeclaredFields()) {
             MongoColumn row = f.getAnnotation(MongoColumn.class);
-            if(row != null){
-                if(row.identifier()){
-                    if(row.name().equalsIgnoreCase("uuid") || f.getName().equalsIgnoreCase("id") || f.getName().equalsIgnoreCase("uniqueId")){
+            if (row != null) {
+                if (row.identifier()) {
+                    if (row.name().equalsIgnoreCase("uuid") || f.getName().equalsIgnoreCase("id") || f.getName().equalsIgnoreCase("uniqueId")) {
                         key = row.name();
                         break;
                     }
@@ -124,9 +119,9 @@ public abstract class AbstractCache implements Listener {
             }
         }
 
-        List<AutoMongo> autoMongos = CachePlayer.select(new BasicDBObject(key,uuid),aClass);
-        for(AutoMongo mongo : autoMongos){
-            if(mongo instanceof CachePlayer){
+        List<AutoMongo> autoMongos = CachePlayer.select(new BasicDBObject(key, uuid), aClass);
+        for (AutoMongo mongo : autoMongos) {
+            if (mongo instanceof CachePlayer) {
                 CachePlayer cachePlayer = (CachePlayer) mongo;
                 return cachePlayer;
             }
@@ -134,7 +129,7 @@ public abstract class AbstractCache implements Listener {
         return null;
     }
 
-    public CachePlayer getBasePlayer(Player p){
+    public CachePlayer getBasePlayer(Player p) {
         return getBasePlayer(p.getName());
     }
 
@@ -142,10 +137,9 @@ public abstract class AbstractCache implements Listener {
      * Gets if the player by name is in the local cache
      *
      * @param name The Player's name
-     *
      * @return true if in the cache, false if not
      */
-    public boolean contains(String name){
+    public boolean contains(String name) {
         return players.containsKey(name);
     }
 
@@ -154,8 +148,8 @@ public abstract class AbstractCache implements Listener {
      *
      * @param cachePlayer The CachePlayer to add to the local cache
      */
-    public void put(CachePlayer cachePlayer){
-        players.put(cachePlayer.getName(),cachePlayer);
+    public void put(CachePlayer cachePlayer) {
+        players.put(cachePlayer.getName(), cachePlayer);
         playersUUID.put(cachePlayer.getUniqueId(), cachePlayer);
     }
 
@@ -163,7 +157,7 @@ public abstract class AbstractCache implements Listener {
      * Clear the local cache.
      * Used in onDisable to prevent memory leaks (due to the cache being static)
      */
-    public static void clear(){
+    public static void clear() {
         players.clear();
     }
 
@@ -172,20 +166,19 @@ public abstract class AbstractCache implements Listener {
         final String name = e.getName();
         final String uuid = e.getUniqueId().toString();
         CachePlayer cp = loadCachePlayer(e.getName());
-        if(cp != null){
+        if (cp != null) {
             put(cp);
-        }
-        else{
-            cp = create(name,uuid);
+        } else {
+            cp = create(name, uuid);
             put(cp);
             cp.update();
         }
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
-    public void onJoin(final PlayerJoinEvent e){
+    public void onJoin(final PlayerJoinEvent e) {
         Player p = e.getPlayer();
-        if(contains(p.getName())){
+        if (contains(p.getName())) {
             CachePlayer cp = getBasePlayer(p);
             init(p, cp);
         }
@@ -193,18 +186,18 @@ public abstract class AbstractCache implements Listener {
 
     public abstract CachePlayer create(String name, String uuid);
 
-    public abstract void init(Player player,CachePlayer cachePlayer);
+    public abstract void init(Player player, CachePlayer cachePlayer);
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onQuit(final PlayerQuitEvent e){
+    public void onQuit(final PlayerQuitEvent e) {
         final Player p = e.getPlayer();
         save(p);
     }
 
-    public void save(Player p){
-        if(contains(p.getName())){
+    public void save(Player p) {
+        if (contains(p.getName())) {
             final CachePlayer cachePlayer = (aClass.cast(getBasePlayer(p)));
-            new BukkitRunnable(){
+            new BukkitRunnable() {
                 @Override
                 public void run() {
                     cachePlayer.update();

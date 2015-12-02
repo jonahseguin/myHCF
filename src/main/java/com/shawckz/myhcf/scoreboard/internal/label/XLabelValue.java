@@ -3,6 +3,7 @@ package com.shawckz.myhcf.scoreboard.internal.label;
 import com.shawckz.myhcf.scoreboard.internal.XScoreboard;
 import com.shawckz.myhcf.scoreboard.internal.util.FakeOfflinePlayer;
 import lombok.Getter;
+
 import org.bukkit.scoreboard.Team;
 
 import java.util.UUID;
@@ -91,7 +92,7 @@ public class XLabelValue {
         team.setPrefix("");
         team.setSuffix("");
         scoreboard.getScoreboard().resetScores(value);
-        if(initValue != null){
+        if (initValue != null) {
             scoreboard.getScoreboard().resetScores(initValue);
         }
     }

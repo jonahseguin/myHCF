@@ -7,15 +7,15 @@ public class DeathbanRankManager {
 
     private final Map<String, DeathbanRank> ranks = new HashMap<>();
 
-    public DeathbanRank getRank(String rankName){
+    public DeathbanRank getRank(String rankName) {
         return ranks.get(rankName);
     }
 
-    public void registerRank(DeathbanRank rank){
+    public void registerRank(DeathbanRank rank) {
         ranks.put(rank.getRank(), rank);
     }
 
-    public int getSeconds(String rankName){
+    public int getSeconds(String rankName) {
         return getRank(rankName).getSeconds();
     }
 

@@ -15,15 +15,15 @@ public abstract class XLabel {
         this.value = new XLabelValue(scoreboard, this, value);
     }
 
-    public final void setValue(String value){
+    public final void setValue(String value) {
         setValue(value, true);
     }
 
-    public final void setValue(String value, boolean update){
+    public final void setValue(String value, boolean update) {
         this.value.setValue(value, update);
     }
 
-    public final void updateLabel(){
+    public final void updateLabel() {
         value.update();
     }
 

@@ -11,16 +11,15 @@ public class FactionManager {
         return factions;
     }
 
-    public Faction getFaction(String id){
-        if(factions.containsKey(id)){
+    public Faction getFaction(String id) {
+        if (factions.containsKey(id)) {
             return factions.get(id);
-        }
-        else{
+        } else {
             return getFactionFromDatabase(id);
         }
     }
 
-    public Faction getFactionFromDatabase(String id){
+    public Faction getFactionFromDatabase(String id) {
         //TODO
         return null;
     }

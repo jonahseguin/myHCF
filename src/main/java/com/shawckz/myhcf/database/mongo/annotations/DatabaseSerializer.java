@@ -9,8 +9,8 @@ import java.lang.annotation.Target;
 import com.shawckz.myhcf.configuration.AbstractSerializer;
 
 
-@Retention( RetentionPolicy.RUNTIME )
-@Target( ElementType.FIELD )
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.FIELD)
 public @interface DatabaseSerializer {
 
     Class<? extends AbstractSerializer> serializer();

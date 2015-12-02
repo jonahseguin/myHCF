@@ -77,7 +77,7 @@ public class CommandManager implements CommandExecutor {
             if (c != null) {
                 handle(sender, c, args);
             } else {
-                sender.sendMessage(ChatColor.RED + "Unknown factions command '" + command + "'.  Type /factions help for a list of command.");
+                sender.sendMessage(ChatColor.RED + "Unknown factions command '" + command + "'.  Type /factions help for a list of commands.");
             }
 
         }

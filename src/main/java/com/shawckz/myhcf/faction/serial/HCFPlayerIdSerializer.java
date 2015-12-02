@@ -14,10 +14,9 @@ public class HCFPlayerIdSerializer extends AbstractSerializer<HCFPlayer> {
 
     @Override
     public HCFPlayer fromString(Object data) {
-        if(data instanceof String){
+        if (data instanceof String) {
             return Factions.getInstance().getCache().getHCFPlayerByUUID(((String) data));
-        }
-        else{
+        } else {
             throw new HCFException("HCFPlayerIdSerializer: data != String");
         }
     }

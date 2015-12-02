@@ -3,6 +3,7 @@ package com.shawckz.myhcf.land;
 import com.shawckz.myhcf.Factions;
 import com.shawckz.myhcf.util.HCFException;
 import lombok.*;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
@@ -49,8 +50,8 @@ public class Claim implements Iterable<Coordinate> {
     @Setter
     private ClaimType claimType = ClaimType.NORMAL;
 
-    public Claim(final Location p1, final Location p2){
-        if(!p1.getWorld().getName().equals(p2.getWorld().getName())){
+    public Claim(final Location p1, final Location p2) {
+        if (!p1.getWorld().getName().equals(p2.getWorld().getName())) {
             throw new HCFException("Claim location 1 must be in the same world as location 2");
         }
         this.world = p1.getWorld().getName();
@@ -62,19 +63,19 @@ public class Claim implements Iterable<Coordinate> {
         this.maxZ = Math.max(p1.getBlockZ(), p2.getBlockZ());
     }
 
-    public boolean within(final Location loc){
+    public boolean within(final Location loc) {
         final int x = loc.getBlockX();
         final int z = loc.getBlockZ();
 
         return (x <= maxX) && (x >= minX) && (z <= maxZ) && (z >= minZ);
     }
 
-    public Set<Claim> touchingClaims(){
+    public Set<Claim> touchingClaims() {
         Set<Claim> s = new HashSet<>();
-        for(Coordinate c : expand(CuboidDirection.Horizontal,1)){
-            Location loc = new Location(Bukkit.getWorld(world),c.getX(),0,c.getZ());
+        for (Coordinate c : expand(CuboidDirection.Horizontal, 1)) {
+            Location loc = new Location(Bukkit.getWorld(world), c.getX(), 0, c.getZ());
             final Claim cl = Factions.getInstance().getLandBoard().getClaim(loc);
-            if(cl != null){
+            if (cl != null) {
                 s.add(cl);
             }
         }
@@ -129,26 +130,26 @@ public class Claim implements Iterable<Coordinate> {
         return claim;
     }
 
-    public Location getMinimumPoint(){
-        return new Location(Bukkit.getWorld(world),minX,minY,minZ);
+    public Location getMinimumPoint() {
+        return new Location(Bukkit.getWorld(world), minX, minY, minZ);
     }
 
-    public Location getMaximumPoint(){
-        return new Location(Bukkit.getWorld(world),maxX,maxY,maxZ);
+    public Location getMaximumPoint() {
+        return new Location(Bukkit.getWorld(world), maxX, maxY, maxZ);
     }
 
     @Override
     public Iterator<Coordinate> iterator() {
-        return new BorderIterator(this,minX,minZ,maxX,maxZ);
+        return new BorderIterator(this, minX, minZ, maxX, maxZ);
     }
 
     @Override
-    public String toString(){
-        return world+","+minX+","+minY+","+minZ
-                        +","+maxX+","+maxY+","+maxZ+","+claimType.toString();
+    public String toString() {
+        return world + "," + minX + "," + minY + "," + minZ
+                + "," + maxX + "," + maxY + "," + maxZ + "," + claimType.toString();
     }
 
-    public static Claim fromString(String s){
+    public static Claim fromString(String s) {
         String[] args = s.split(",");
         String world = args[0];
         int minX = Integer.parseInt(args[1]);
@@ -158,12 +159,11 @@ public class Claim implements Iterable<Coordinate> {
         int maxY = Integer.parseInt(args[5]);
         int maxZ = Integer.parseInt(args[6]);
         ClaimType claimType = ClaimType.valueOf(args[7].toUpperCase());
-        return new Claim(world,minX,minY,minZ,maxX,maxY,maxZ,claimType);
+        return new Claim(world, minX, minY, minZ, maxX, maxY, maxZ, claimType);
     }
 
 
-    public enum CuboidDirection
-    {
+    public enum CuboidDirection {
         North,
         East,
         South,

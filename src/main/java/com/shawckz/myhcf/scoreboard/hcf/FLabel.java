@@ -4,14 +4,14 @@ import org.bukkit.ChatColor;
 
 public enum FLabel {
 
-    ENDER_PEARL("&cEnderPearl&7: &6", FLabelType.TIMER)
-
-    ;
+    ENDER_PEARL("&cEnderPearl&7: &6", FLabelType.TIMER),
+    SPAWN_TAG("&aSpawn Tag&7: &6", FLabelType.TIMER),
+    ARMOR_CLASS("&9Armor Class&7: &6", FLabelType.LABEL);
 
     private final String key;
     private final FLabelType labelType;
 
-    FLabel(String key, FLabelType labelType){
+    FLabel(String key, FLabelType labelType) {
         this.key = key;
         this.labelType = labelType;
     }

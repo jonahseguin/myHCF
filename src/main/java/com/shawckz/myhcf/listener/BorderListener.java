@@ -3,6 +3,7 @@ package com.shawckz.myhcf.listener;
 import com.shawckz.myhcf.Factions;
 import com.shawckz.myhcf.configuration.FLang;
 import com.shawckz.myhcf.configuration.FactionLang;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;

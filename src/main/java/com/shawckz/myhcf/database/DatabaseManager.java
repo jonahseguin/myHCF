@@ -51,7 +51,7 @@ public class DatabaseManager extends Configuration {
 
     private void setup() {
 
-        if (useAuth) {
+        if (!useAuth) {
             mongoClient = new MongoClient(new ServerAddress(host, port));
         } else {
             MongoCredential credential = MongoCredential.createCredential(username, authDatabaseName, password.toCharArray());

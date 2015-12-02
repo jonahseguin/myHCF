@@ -16,7 +16,7 @@ public class ClaimSerializer extends AbstractSerializer<Claim> {
 
     @Override
     public Claim fromString(Object data) {
-        if(data instanceof String){
+        if (data instanceof String) {
             String s = (String) data;
             return Claim.fromString(s);
         }

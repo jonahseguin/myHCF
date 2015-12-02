@@ -1,6 +1,8 @@
 package com.shawckz.myhcf.scoreboard.internal;
 
+import com.shawckz.myhcf.Factions;
 import com.shawckz.myhcf.scoreboard.internal.label.XLabel;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
@@ -21,10 +23,9 @@ public abstract class XScoreboard {
     protected final ConcurrentMap<Integer, XLabel> scores = new ConcurrentHashMap<>();
 
     public XScoreboard(String scoreboardTitle, Player player) {
-        if(player.getScoreboard() != null){
+        if (player.getScoreboard() != null && !Factions.getInstance().getFactionsConfig().isScoreboardOverride()) {
             this.scoreboard = player.getScoreboard();
-        }
-        else{
+        } else {
             this.scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
         }
         this.objective = this.scoreboard.registerNewObjective(getFilteredTitle(scoreboardTitle), OBJECTIVE_TYPE);
@@ -37,8 +38,8 @@ public abstract class XScoreboard {
     }
 
     public final boolean hasLabel(XLabel label) {
-        for(XLabel l : scores.values()){
-            if(l.equals(label)){
+        for (XLabel l : scores.values()) {
+            if (l.equals(label)) {
                 return true;
             }
         }
@@ -48,17 +49,17 @@ public abstract class XScoreboard {
     public final void removeLabel(XLabel label) {
         label.getValue().removeValue();
         Iterator<Integer> it = scores.keySet().iterator();
-        while(it.hasNext()){
+        while (it.hasNext()) {
             int key = it.next();
-            if(scores.get(key).getValue().equals(label.getValue())){
+            if (scores.get(key).getValue().equals(label.getValue())) {
                 scores.remove(key);
             }
         }
     }
 
     public final XLabel getLabel(String value) {
-        for(XLabel label : scores.values()){
-            if(label.getValue().getFullValue().equals(value)){
+        for (XLabel label : scores.values()) {
+            if (label.getValue().getFullValue().equals(value)) {
                 return label;
             }
         }
@@ -66,7 +67,7 @@ public abstract class XScoreboard {
     }
 
     public final XLabel getLabel(int score) {
-        if(scores.containsKey(score)){
+        if (scores.containsKey(score)) {
             return scores.get(score);
         }
         return null;
@@ -76,11 +77,11 @@ public abstract class XScoreboard {
         return scoreboard;
     }
 
-    public final Objective getObjective(){
+    public final Objective getObjective() {
         return objective;
     }
 
-    private String getFilteredTitle(String title){
+    private String getFilteredTitle(String title) {
         return (title.length() > 24 ? title.substring(0, 24) : title);
     }
 
@@ -88,7 +89,7 @@ public abstract class XScoreboard {
         return scores;
     }
 
-    public final void sendToPlayer(Player player){
+    public final void sendToPlayer(Player player) {
         player.setScoreboard(scoreboard);
     }
 
