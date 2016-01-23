@@ -120,6 +120,22 @@ public class FactionsConfig extends Configuration {
     @ConfigData("scoreboard.override")
     private boolean scoreboardOverride = true;
 
+    @ConfigData("pvptimer.time.firstjoin")
+    private int pvpTimerFirstJoin = 7200; //2 hours
+
+    @ConfigData("pvptimer.time.respawn")
+    private int pvpTimerRespawn = 3600; //1 hour
+
+    @ConfigData("spawntag.tag-on-damaged")
+    private boolean spawnTagOnDamaged = true;
+
+    @ConfigData("spawntag.time.damaged")
+    private int spawnTagTimeDamaged = 7;
+
+    @ConfigData("spawntag.time.damager")
+    private int spawnTagTimeDamager = 60;
+
+
     public String getScoreboardKey(FLabel label) {
         if (!scoreboardKeys.containsKey(label.toString())) {
             scoreboardKeys.put(label.toString(), label.getKey());

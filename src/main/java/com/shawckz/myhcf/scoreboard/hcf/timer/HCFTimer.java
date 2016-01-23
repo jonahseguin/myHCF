@@ -62,6 +62,10 @@ public class HCFTimer extends XScoreboardTimer {
         return this;
     }
 
+    public boolean isPaused() {
+        return isFrozen();
+    }
+
     public HCFTimer stopTimer() {
         setFrozen(true);
         setVisible(false);

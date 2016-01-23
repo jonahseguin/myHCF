@@ -16,7 +16,11 @@ public enum FactionLang {
     CHAT_FORMAT("&7[{0}&7] &a{1}&7: &f{2}"),//[Faction] player: hi
     CHAT_FORMAT_ALLY("&7(&9&lALLY&7) &8[&a{0}&8] &f{1}&7: &e{2}"),//(ALLY) [Faction] player: Hello
     CHAT_FORMAT_FACTION("&7(&a&lFACTION&7) &f{0}&7: &e{1}"),//(FACTION) player: hello
-    ENDERPEARL_COOLDOWN("&cEnderPearl Cooldown: &c&l{0}s")
+    ENDERPEARL_COOLDOWN("&cEnderPearl Cooldown: &c&l{0}s"),
+    PVP_TIMER_START("&eYou are protected from pvp for {0}.  Type /pvp enable to remove your protection."),
+    PVP_TIMER_NO_DAMAGE("&9{0} is protected from pvp."),
+    PVP_TIMER_NO_ATTACK("&9You cannot attack while protected from pvp.  Type &e/pvp enable&9 to remove your protection."),
+    FOUND_DIAMONDS_BROADCAST("[FD] &b{0} found {1}")
     ;
 
     private final String defaultValue;

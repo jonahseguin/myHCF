@@ -1,7 +1,6 @@
 package com.shawckz.myhcf.listener;
 
 import com.shawckz.myhcf.Factions;
-
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 
@@ -20,6 +19,8 @@ public class FEventManager {
         listeners.add(new BorderListener());
         listeners.add(new ChatListener());
         listeners.add(new PreventionListener());
+        listeners.add(new PvPTimerListener());
+        listeners.add(new FoundDiamondsListener());
     }
 
     public void register() {
