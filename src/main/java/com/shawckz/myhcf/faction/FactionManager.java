@@ -6,14 +6,15 @@ import com.shawckz.myhcf.database.mongo.AutoMongo;
 import com.shawckz.myhcf.faction.data.MongoFaction;
 import com.shawckz.myhcf.util.HCFException;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class FactionManager {
 
     private final Map<String, Faction> factions = new HashMap<>();
+
+    public Collection<Faction> getFactions() {
+        return factions.values();
+    }
 
     public void addToCache(Faction faction) {
         factions.put(faction.getName().toLowerCase(), faction);

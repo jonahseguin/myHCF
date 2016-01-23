@@ -3,10 +3,12 @@ package com.shawckz.myhcf.land;
 import com.shawckz.myhcf.Factions;
 import com.shawckz.myhcf.faction.Faction;
 import com.shawckz.myhcf.util.HCFException;
-
 import org.bukkit.Location;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by 360 on 14/07/2015.
@@ -45,7 +47,7 @@ public class LandBoard {
     public Faction getFactionAt(Location loc) {
         for (Claim claim : land.keySet()) {
             if (claim.within(loc)) {
-                for (Faction fac : Factions.getInstance().getFactionManager().getFactionsMap().values()) {
+                for (Faction fac : Factions.getInstance().getFactionManager().getFactions()) {
                     if (fac.getClaims().contains(claim)) {
                         return fac;
                     }
