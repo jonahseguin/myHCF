@@ -5,5 +5,5 @@ package com.shawckz.myhcf.command;
  */
 public interface HCFCommand {
 
-    public void onCommand(CmdArgs cmdArgs);
+    void onCommand(CmdArgs cmdArgs);
 }

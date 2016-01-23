@@ -1,20 +1,16 @@
 package com.shawckz.myhcf;
 
+import com.shawckz.myhcf.command.CommandManager;
 import com.shawckz.myhcf.configuration.FactionsConfig;
 import com.shawckz.myhcf.configuration.LanguageConfig;
+import com.shawckz.myhcf.database.DatabaseManager;
 import com.shawckz.myhcf.deathban.DeathbanRankManager;
+import com.shawckz.myhcf.faction.FDataMode;
 import com.shawckz.myhcf.faction.FactionManager;
 import com.shawckz.myhcf.land.LandBoard;
 import com.shawckz.myhcf.listener.FEventManager;
-import com.shawckz.myhcf.player.HCFPlayer;
-import com.shawckz.myhcf.scoreboard.hcf.FLabel;
-import com.shawckz.myhcf.scoreboard.hcf.HCFScoreboard;
-
-import org.bukkit.plugin.java.JavaPlugin;
-
-import com.shawckz.myhcf.command.CommandManager;
-import com.shawckz.myhcf.database.DatabaseManager;
 import com.shawckz.myhcf.player.HCFCache;
+import org.bukkit.plugin.java.JavaPlugin;
 
 /**
  * myHCF
@@ -23,6 +19,8 @@ import com.shawckz.myhcf.player.HCFCache;
  * @version 0.0.0
  */
 public class Factions extends JavaPlugin {
+
+    public static final FDataMode DATA_MODE = FDataMode.MONGO;// TODO: Change to a getter and make configurable
 
     private static Factions instance;
 

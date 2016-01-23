@@ -3,7 +3,6 @@ package com.shawckz.myhcf.listener;
 import com.shawckz.myhcf.Factions;
 import com.shawckz.myhcf.configuration.FLang;
 import com.shawckz.myhcf.configuration.FactionLang;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
@@ -13,9 +12,6 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class BorderListener implements Listener {
 
@@ -30,7 +26,7 @@ public class BorderListener implements Listener {
         int border = getBorder();
         if (x > border || z > border) {
             e.setCancelled(true);
-            e.getPlayer().sendMessage(FLang.getFormattedLang(FactionLang.BORDER_BLOCK_DENY));
+            e.getPlayer().sendMessage(FLang.format(FactionLang.BORDER_BLOCK_DENY));
         }
     }
 
@@ -41,7 +37,7 @@ public class BorderListener implements Listener {
         int border = getBorder();
         if (x > border || z > border) {
             e.setCancelled(true);
-            e.getPlayer().sendMessage(FLang.getFormattedLang(FactionLang.BORDER_BLOCK_DENY));
+            e.getPlayer().sendMessage(FLang.format(FactionLang.BORDER_BLOCK_DENY));
         }
     }
 
@@ -58,7 +54,7 @@ public class BorderListener implements Listener {
                 newLocation.setZ(newLocation.getZ() - ((newLocation.getZ() > 0.0) ? 1 : -1));
             }
             event.setTo(newLocation);
-            event.getPlayer().sendMessage(FLang.getFormattedLang(FactionLang.BORDER_PORTAL));
+            event.getPlayer().sendMessage(FLang.format(FactionLang.BORDER_PORTAL));
         }
     }
 
@@ -82,7 +78,7 @@ public class BorderListener implements Listener {
                 newLocation.setZ(newLocation.getZ() - ((newLocation.getZ() > 0.0) ? 1 : -1));
             }
             event.setTo(newLocation);
-            event.getPlayer().sendMessage(FLang.getFormattedLang(FactionLang.BORDER_TELEPORT));
+            event.getPlayer().sendMessage(FLang.format(FactionLang.BORDER_TELEPORT));
         }
     }
 

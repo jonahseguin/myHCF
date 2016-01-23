@@ -6,7 +6,6 @@ import com.shawckz.myhcf.configuration.FactionLang;
 import com.shawckz.myhcf.player.HCFPlayer;
 import com.shawckz.myhcf.util.ChatMode;
 import com.shawckz.myhcf.util.Relation;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -18,7 +17,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 public class ChatListener implements Listener {
 
     private String getFormat(String... args) {
-        return FLang.getFormattedLang(FactionLang.CHAT_FORMAT, args);
+        return FLang.format(FactionLang.CHAT_FORMAT, args);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -60,7 +59,7 @@ public class ChatListener implements Listener {
                     if (thcfPlayer.getFaction().getRelationTo(hcfPlayer.getFaction()) == Relation.ALLY ||
                             thcfPlayer.getFaction().getRelationTo(hcfPlayer.getFaction()) == Relation.FACTION) {
                         //They are allies or in the same faction
-                        pl.sendMessage(FLang.getFormattedLang(FactionLang.CHAT_FORMAT_ALLY, hcfPlayer.getFaction().getName(), hcfPlayer.getName(), e.getMessage()));
+                        pl.sendMessage(FLang.format(FactionLang.CHAT_FORMAT_ALLY, hcfPlayer.getFaction().getName(), hcfPlayer.getName(), e.getMessage()));
                     }
                 }
             }
@@ -71,7 +70,7 @@ public class ChatListener implements Listener {
                 return;
             }
             for (HCFPlayer pl : hcfPlayer.getFaction().getOnlineMembers()) {
-                pl.getBukkitPlayer().sendMessage(FLang.getFormattedLang(FactionLang.CHAT_FORMAT_FACTION, hcfPlayer.getName(), e.getMessage()));
+                pl.getBukkitPlayer().sendMessage(FLang.format(FactionLang.CHAT_FORMAT_FACTION, hcfPlayer.getName(), e.getMessage()));
             }
         }
     }

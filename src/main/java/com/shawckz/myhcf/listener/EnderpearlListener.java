@@ -5,7 +5,6 @@ import com.shawckz.myhcf.configuration.FLang;
 import com.shawckz.myhcf.configuration.FactionLang;
 import com.shawckz.myhcf.player.HCFPlayer;
 import com.shawckz.myhcf.scoreboard.hcf.FLabel;
-
 import com.shawckz.myhcf.scoreboard.hcf.timer.HCFTimer;
 import org.bukkit.Material;
 import org.bukkit.entity.EnderPearl;
@@ -58,7 +57,7 @@ public class EnderpearlListener implements Listener {
             return true;
         }
         else{
-            player.sendMessage(FLang.getFormattedLang(FactionLang.ENDERPEARL_COOLDOWN, getFormattedEnderpearlCooldown(hcfPlayer)));
+            player.sendMessage(FLang.format(FactionLang.ENDERPEARL_COOLDOWN, getFormattedEnderpearlCooldown(hcfPlayer)));
             player.updateInventory();
             return false;
         }

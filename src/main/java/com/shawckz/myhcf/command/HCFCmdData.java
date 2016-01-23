@@ -27,4 +27,5 @@ public class HCFCmdData {
     private final int minArgs;
 
     private final String description;
+
 }

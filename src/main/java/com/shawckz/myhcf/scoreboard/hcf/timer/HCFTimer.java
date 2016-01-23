@@ -3,7 +3,6 @@ package com.shawckz.myhcf.scoreboard.hcf.timer;
 import com.shawckz.myhcf.scoreboard.internal.XScoreboard;
 import com.shawckz.myhcf.scoreboard.internal.timer.TimerPool;
 import com.shawckz.myhcf.scoreboard.internal.timer.XScoreboardTimer;
-
 import org.bukkit.ChatColor;
 
 import java.text.DecimalFormat;
@@ -25,7 +24,8 @@ public class HCFTimer extends XScoreboardTimer {
             public void run() {
                 if (time - 0.1D > 0) {
                     setTime(time - 0.1D);
-                } else {
+                }
+                else {
                     onComplete();
                 }
             }
@@ -36,7 +36,7 @@ public class HCFTimer extends XScoreboardTimer {
         this(scoreboard, key + ChatColor.GRAY + " - " + ChatColor.GOLD + "0.0", score, timerPool, HCFTimerFormat.TENTH_OF_SECOND);
     }
 
-    public void setTime(double time) {
+    public HCFTimer setTime(double time) {
         this.time = time;
         if (time > 0) {
             if (isFrozen()) {
@@ -47,23 +47,27 @@ public class HCFTimer extends XScoreboardTimer {
             }
             updateTime();
         }
+        return this;
     }
 
-    public void pauseTimer() {
+    public HCFTimer pauseTimer() {
         setFrozen(true);
         updateLabel();
+        return this;
     }
 
-    public void unpauseTimer() {
+    public HCFTimer unpauseTimer() {
         setFrozen(false);
         updateLabel();
+        return this;
     }
 
-    public void stopTimer() {
+    public HCFTimer stopTimer() {
         setFrozen(true);
         setVisible(false);
         setTime(0.0D);
         updateLabel();
+        return this;
     }
 
     public String getKey() {
@@ -77,7 +81,8 @@ public class HCFTimer extends XScoreboardTimer {
     private void updateTime() {
         if (format == HCFTimerFormat.TENTH_OF_SECOND) {
             setValue(key + ChatColor.GRAY + " - " + ChatColor.GOLD + Float.parseFloat(DECIMAL_FORMAT.format(time)));
-        } else if (format == HCFTimerFormat.HH_MM_SS) {
+        }
+        else if (format == HCFTimerFormat.HH_MM_SS) {
             int millis = (int) Math.round(time);
             setValue(key + ChatColor.GRAY + " - " +
                     ChatColor.GOLD +
@@ -87,7 +92,8 @@ public class HCFTimer extends XScoreboardTimer {
                                     TimeUnit.HOURS.toMinutes(TimeUnit.SECONDS.toHours(millis)),
                             TimeUnit.SECONDS.toSeconds(millis) -
                                     TimeUnit.MINUTES.toSeconds(TimeUnit.SECONDS.toMinutes(millis))));
-        } else if (format == HCFTimerFormat.MM_SS) {
+        }
+        else if (format == HCFTimerFormat.MM_SS) {
             int millis = (int) Math.round(time);
             setValue(key + ChatColor.GRAY + " - " +
                     ChatColor.GOLD +
@@ -99,9 +105,26 @@ public class HCFTimer extends XScoreboardTimer {
         }
     }
 
-    public void hide() {
+    public HCFTimer hide() {
         setVisible(false);
         setFrozen(true);
         updateLabel();
+        return this;
+    }
+
+    public HCFTimer show() {
+        boolean update = false;
+        if (!isVisible()) {
+            update = true;
+            setVisible(true);
+        }
+        if (isFrozen()) {
+            update = true;
+            setFrozen(false);
+        }
+        if (update) {
+            updateLabel();
+        }
+        return this;
     }
 }

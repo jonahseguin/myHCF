@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -18,6 +17,7 @@ public class CmdArgs {
     @NonNull
     @Setter
     private String[] args;
+    private String[] filteredArgs = null;
 
     /**
      * Similar to a string builder, appends values of args separated by a space into a String.
@@ -46,7 +46,10 @@ public class CmdArgs {
      */
 
     public String[] getArgs() {
-        return filterFlags(args);
+        if (filteredArgs == null) {
+            filteredArgs = filterFlags(args);
+        }
+        return filteredArgs;
     }
 
     /**
@@ -198,7 +201,7 @@ public class CmdArgs {
      * @return The arg
      */
     public String getArg(int index) {
-        return args[index];
+        return getArgs()[index];
     }
 
     /**

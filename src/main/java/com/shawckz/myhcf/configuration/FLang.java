@@ -4,7 +4,7 @@ import com.shawckz.myhcf.Factions;
 
 public class FLang {
 
-    public static String getFormattedLang(FactionLang factionLang, String... args) {
+    public static String format(FactionLang factionLang, String... args) {
         return Factions.getInstance().getLang().getFormattedLang(factionLang, args);
     }
 

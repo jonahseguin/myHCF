@@ -1,17 +1,16 @@
 package com.shawckz.myhcf.command;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import com.shawckz.myhcf.Factions;
+import com.shawckz.myhcf.command.commands.faction.CmdFactionCreate;
+import lombok.Getter;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.shawckz.myhcf.Factions;
-
-import lombok.Getter;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by 360 on 21/07/2015.
@@ -29,16 +28,17 @@ public class CommandManager implements CommandExecutor {
         plugin.getCommand("factions").setExecutor(this);
 
         //Register commands
+        registerCommand(new CmdFactionCreate());
     }
 
     public void registerCommand(HCFCommand cmd) {
-        if (cmd.getClass().isAnnotationPresent(com.shawckz.myhcf.command.Command.class)) {
-            com.shawckz.myhcf.command.Command command = cmd.getClass().getAnnotation(com.shawckz.myhcf.command.Command.class);
+        if (cmd.getClass().isAnnotationPresent(FCommand.class)) {
+            FCommand command = cmd.getClass().getAnnotation(FCommand.class);
             HCFCmdData data = new HCFCmdData(cmd, command.name(), command.aliases(), command.playerOnly(), command.perm(),
                     command.usage(), command.flags(), command.allowFlags(), command.minArgs(), command.desc());
             cmds.put(data.getName().toLowerCase(), data);
         } else {
-            throw new IllegalStateException("Class must have a @Command annotation");
+            throw new IllegalStateException("Class must have a @FCommand annotation");
         }
     }
 

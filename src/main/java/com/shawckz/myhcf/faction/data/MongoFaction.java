@@ -12,16 +12,15 @@ import com.shawckz.myhcf.faction.Faction;
 import com.shawckz.myhcf.faction.FactionRole;
 import com.shawckz.myhcf.faction.FactionType;
 import com.shawckz.myhcf.faction.serial.ClaimsSerializer;
+import com.shawckz.myhcf.faction.serial.FactionTypeSerializer;
 import com.shawckz.myhcf.faction.serial.HCFPlayerIdSerializer;
 import com.shawckz.myhcf.land.Claim;
 import com.shawckz.myhcf.player.HCFPlayer;
-import com.shawckz.myhcf.scoreboard.hcf.FLabel;
 import com.shawckz.myhcf.util.Relation;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -36,11 +35,21 @@ import java.util.*;
 public class MongoFaction extends AutoMongo implements Faction {
 
     @NonNull
-    @MongoColumn(identifier = true)
+    @MongoColumn(name = "_id", identifier = true)
     private String id;
+
     @NonNull
     @MongoColumn
     private String name;
+
+    @NonNull
+    @MongoColumn
+    private String displayName;
+
+    @NonNull
+    @MongoColumn
+    @DatabaseSerializer(serializer = FactionTypeSerializer.class)
+    private FactionType factionType;
 
     @MongoColumn
     @DatabaseSerializer(serializer = LocationSerializer.class)
@@ -59,7 +68,7 @@ public class MongoFaction extends AutoMongo implements Faction {
     private long dtrFreezeFinish = 0L;
 
     @MongoColumn
-    private Set<String> alliesString = new HashSet<>();//(Set<Faction ID>)
+    private Set<String> allies = new HashSet<>();//(Set<Faction ID>)
 
     @MongoColumn
     private Set<String> members = new HashSet<>();//(Set<Player UUID>)
@@ -75,33 +84,14 @@ public class MongoFaction extends AutoMongo implements Faction {
     } //Leave empty constructor so that AutoMongo can instantiate.
 
     @Override
-    public FactionType getFactionType() {
-        return null;//TODO
-    }
-
-    @Override
-    public void setFactionType(FactionType type) {
-        //TODO
-    }
-
-    @Override
-    public Set<Faction> getAllies() {
-        Set<Faction> allies = new HashSet<>();
-        for (String id : alliesString) {
-            allies.add(Factions.getInstance().getFactionManager().getFaction(id));
-        }
-        return allies;
-    }
-
-    @Override
     public void setAllies(Faction target, boolean ally) {
         if (ally) {
-            if (!alliesString.contains(target.getId())) {
-                alliesString.add(target.getId());
+            if (!allies.contains(target.getId())) {
+                allies.add(target.getId());
             }
         } else {
-            if (alliesString.contains(target.getId())) {
-                alliesString.remove(target.getId());
+            if (allies.contains(target.getId())) {
+                allies.remove(target.getId());
             }
         }
     }
@@ -120,9 +110,9 @@ public class MongoFaction extends AutoMongo implements Faction {
                 updateMemberCache();
             }
         }.runTaskAsynchronously(Factions.getInstance());
-        sendMessage(FLang.getFormattedLang(FactionLang.FACTION_JOIN_LOCAL, player.getName()));
+        sendMessage(FLang.format(FactionLang.FACTION_JOIN_LOCAL, player.getName()));
         if (player.getBukkitPlayer() != null) {
-            player.getBukkitPlayer().sendMessage(FLang.getFormattedLang(FactionLang.FACTION_JOIN_PLAYER, this.getName()));
+            player.getBukkitPlayer().sendMessage(FLang.format(FactionLang.FACTION_JOIN_PLAYER, this.getName()));
         }
     }
 
@@ -131,9 +121,9 @@ public class MongoFaction extends AutoMongo implements Faction {
         if (!invitations.contains(player.getUniqueId())) {
             invitations.add(player.getUniqueId());
         }
-        sendMessage(FLang.getFormattedLang(FactionLang.FACTION_INVITE_LOCAL, invitedBy.getName(), player.getName()));
+        sendMessage(FLang.format(FactionLang.FACTION_INVITE_LOCAL, invitedBy.getName(), player.getName()));
         if (player.getBukkitPlayer() != null) {
-            player.getBukkitPlayer().sendMessage(FLang.getFormattedLang(FactionLang.FACTION_INVITE_PLAYER, invitedBy.getFaction().getName(), invitedBy.getName()));
+            player.getBukkitPlayer().sendMessage(FLang.format(FactionLang.FACTION_INVITE_PLAYER, invitedBy.getFaction().getName(), invitedBy.getName()));
         }
     }
 
@@ -217,9 +207,17 @@ public class MongoFaction extends AutoMongo implements Faction {
     public Relation getRelationTo(Faction faction) {
         if (faction.getId().equals(this.getId())) {
             return Relation.FACTION;
-        } else if (faction.getAllies().contains(faction) && getAllies().contains(faction)) {
+        }
+        else if (faction.getAllies().contains(this.getId()) && getAllies().contains(faction.getId())) {
             return Relation.ALLY;
         }
         return Relation.NEUTRAL;
     }
+
+    @Override
+    public void setLeader(HCFPlayer player) {
+        this.leader = player;
+        player.setFactionRole(FactionRole.LEADER);
+    }
+
 }

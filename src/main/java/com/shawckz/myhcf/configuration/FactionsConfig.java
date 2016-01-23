@@ -9,7 +9,6 @@ import com.shawckz.myhcf.scoreboard.hcf.FLabel;
 import com.shawckz.myhcf.util.HCFException;
 import lombok.Getter;
 import lombok.Setter;
-
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.plugin.Plugin;
 
@@ -65,6 +64,12 @@ public class FactionsConfig extends Configuration {
 
     @ConfigData("debug")
     private boolean debug = false;
+
+    @ConfigData("factions.name.max-length")
+    private int maxFactionNameLength = 14;
+
+    @ConfigData("factions.name.alphanumeric")
+    private boolean factionNameAlphanumeric = true;
 
     @ConfigData("factions.max-claims")
     private int maxFactionClaims = 5;

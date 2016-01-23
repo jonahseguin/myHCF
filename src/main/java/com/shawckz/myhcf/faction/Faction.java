@@ -1,14 +1,12 @@
 package com.shawckz.myhcf.faction;
 
-import java.util.List;
-import java.util.Set;
-
 import com.shawckz.myhcf.land.Claim;
+import com.shawckz.myhcf.player.HCFPlayer;
 import com.shawckz.myhcf.util.Relation;
-
 import org.bukkit.Location;
 
-import com.shawckz.myhcf.player.HCFPlayer;
+import java.util.List;
+import java.util.Set;
 
 public interface Faction {
 
@@ -19,6 +17,10 @@ public interface Faction {
     String getName();
 
     void setName(String name);
+
+    String getDisplayName();
+
+    void setDisplayName(String displayName);
 
     HCFPlayer getLeader();
 
@@ -48,8 +50,6 @@ public interface Faction {
 
     void setDtrFreezeFinish(long dtrFreezeFinish);
 
-    Set<Faction> getAllies();
-
     void setAllies(Faction target, boolean ally);
 
     Set<String> getInvitations();
@@ -75,5 +75,7 @@ public interface Faction {
     List<Claim> getClaims();
 
     Relation getRelationTo(Faction faction);
+
+    Set<String> getAllies();
 
 }

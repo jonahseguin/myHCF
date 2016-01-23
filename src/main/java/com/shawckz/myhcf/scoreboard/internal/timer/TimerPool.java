@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import net.minecraft.util.io.netty.util.internal.ConcurrentSet;
-
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -31,19 +30,9 @@ public class TimerPool {
     public final void startTimerPool(Plugin plugin, boolean async) {
         if (!running) {
             if (async) {
-                bukkitTask = plugin.getServer().getScheduler().runTaskTimerAsynchronously(plugin, new Runnable() {
-                    @Override
-                    public void run() {
-                        updateTimerPool();
-                    }
-                }, 0L, interval);
+                bukkitTask = plugin.getServer().getScheduler().runTaskTimerAsynchronously(plugin, this::updateTimerPool, 0L, interval);
             } else {
-                bukkitTask = plugin.getServer().getScheduler().runTaskTimer(plugin, new Runnable() {
-                    @Override
-                    public void run() {
-                        updateTimerPool();
-                    }
-                }, 0L, interval);
+                bukkitTask = plugin.getServer().getScheduler().runTaskTimer(plugin, this::updateTimerPool, 0L, interval);
             }
             running = true;
         } else {
