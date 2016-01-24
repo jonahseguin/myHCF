@@ -3,12 +3,12 @@
  * Thank you.
  */
 
-package com.shawckz.myhcf.command.commands.faction;
+package com.shawckz.myhcf.command.factions.commands;
 
 import com.shawckz.myhcf.Factions;
-import com.shawckz.myhcf.command.CmdArgs;
-import com.shawckz.myhcf.command.FCommand;
-import com.shawckz.myhcf.command.HCFCommand;
+import com.shawckz.myhcf.command.factions.FCmdArgs;
+import com.shawckz.myhcf.command.factions.FCommand;
+import com.shawckz.myhcf.command.factions.HCFCommand;
 import com.shawckz.myhcf.configuration.FLang;
 import com.shawckz.myhcf.configuration.FactionLang;
 import com.shawckz.myhcf.configuration.FactionsConfig;
@@ -42,7 +42,7 @@ public class CmdFactionCreate implements HCFCommand {
     private final FactionTypeSerializer factionTypeSerializer = new FactionTypeSerializer();
 
     @Override
-    public void onCommand(CmdArgs args) {
+    public void onCommand(FCmdArgs args) {
         CommandSender sender = args.getSender();
         String name = args.getArg(0);
 

@@ -1,4 +1,9 @@
-package com.shawckz.myhcf.command;
+/*
+ * Copyright (c) Jonah Seguin (Shawckz) 2016.  You may not copy, re-sell, distribute, modify, or use any code contained in this document or file, collection of documents or files, or project.
+ * Thank you.
+ */
+
+package com.shawckz.myhcf.command.factions;
 
 import lombok.Getter;
 import lombok.NonNull;
@@ -9,7 +14,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 @RequiredArgsConstructor
-public class CmdArgs {
+public class FCmdArgs {
 
     @NonNull
     @Getter

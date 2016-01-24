@@ -20,7 +20,13 @@ public enum FactionLang {
     PVP_TIMER_START("&eYou are protected from pvp for {0}.  Type /pvp enable to remove your protection."),
     PVP_TIMER_NO_DAMAGE("&9{0} is protected from pvp."),
     PVP_TIMER_NO_ATTACK("&9You cannot attack while protected from pvp.  Type &e/pvp enable&9 to remove your protection."),
-    FOUND_DIAMONDS_BROADCAST("[FD] &b{0} found {1}")
+    PVP_TIMER_NOT_ACTIVE("&cYou do not have an active PvPTimer."),
+    PVP_TIMER_NOT_ACTIVE_OTHER("&cPlayer '{0}' does not have an active PvPTimer."),
+    PVP_TIMER_TIME_REMAINING("&eYour PvPTimer has &9{0}&e time remaining."),
+    PVP_TIMER_REMOVE("&eYou are no longer protected from PvP."),
+    PVP_TIMER_FORCE_ENABLE("&cYou forcefully enabled {0}'s PvPTimer."),
+    FOUND_DIAMONDS_BROADCAST("[FD] &b{0} found {1}"),
+    PLAYER_NOT_FOUND("&cPlayer '{0}' not found.")
     ;
 
     private final String defaultValue;

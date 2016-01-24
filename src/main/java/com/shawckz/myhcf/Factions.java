@@ -1,6 +1,8 @@
 package com.shawckz.myhcf;
 
-import com.shawckz.myhcf.command.CommandManager;
+import com.shawckz.myhcf.command.factions.FCommandManager;
+import com.shawckz.myhcf.command.normal.GCommandHandler;
+import com.shawckz.myhcf.command.normal.commands.CmdPvPTimer;
 import com.shawckz.myhcf.configuration.FactionsConfig;
 import com.shawckz.myhcf.configuration.LanguageConfig;
 import com.shawckz.myhcf.database.DatabaseManager;
@@ -26,13 +28,14 @@ public class Factions extends JavaPlugin {
 
     private DatabaseManager databaseManager;
     private HCFCache cache;
-    private CommandManager commandManager;
+    private FCommandManager commandManager;
     private FEventManager fEventManager;
     private FactionsConfig factionsConfig;
     private LanguageConfig lang;
     private FactionManager factionManager;
     private DeathbanRankManager deathbanRankManager = new DeathbanRankManager();
     private LandBoard landBoard;
+    private GCommandHandler gCommandHandler;
 
     @Override
     public void onEnable() {
@@ -41,11 +44,14 @@ public class Factions extends JavaPlugin {
         lang = new LanguageConfig(this);
         databaseManager = new DatabaseManager(this);
         cache = new HCFCache(this);
-        commandManager = new CommandManager(this);
+        commandManager = new FCommandManager(this);
         factionManager = new FactionManager();
         landBoard = new LandBoard();
         fEventManager = new FEventManager(this);
         fEventManager.register();
+        gCommandHandler = new GCommandHandler(this);
+
+        gCommandHandler.registerCommands(new CmdPvPTimer());
     }
 
     @Override
@@ -62,6 +68,10 @@ public class Factions extends JavaPlugin {
         factionsConfig = null;
         lang = null;
         instance = null;
+    }
+
+    public GCommandHandler getGCommandHandler() {
+        return gCommandHandler;
     }
 
     public LandBoard getLandBoard() {
@@ -92,7 +102,7 @@ public class Factions extends JavaPlugin {
         return databaseManager;
     }
 
-    public CommandManager getCommandManager() {
+    public FCommandManager getCommandManager() {
         return commandManager;
     }
 

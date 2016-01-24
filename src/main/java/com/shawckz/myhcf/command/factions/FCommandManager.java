@@ -1,7 +1,12 @@
-package com.shawckz.myhcf.command;
+/*
+ * Copyright (c) Jonah Seguin (Shawckz) 2016.  You may not copy, re-sell, distribute, modify, or use any code contained in this document or file, collection of documents or files, or project.
+ * Thank you.
+ */
+
+package com.shawckz.myhcf.command.factions;
 
 import com.shawckz.myhcf.Factions;
-import com.shawckz.myhcf.command.commands.faction.CmdFactionCreate;
+import com.shawckz.myhcf.command.factions.commands.CmdFactionCreate;
 import lombok.Getter;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -15,14 +20,14 @@ import java.util.Map;
 /**
  * Created by 360 on 21/07/2015.
  */
-public class CommandManager implements CommandExecutor {
+public class FCommandManager implements CommandExecutor {
 
     @Getter
-    private static CommandManager instance;
+    private static FCommandManager instance;
     @Getter
     private Map<String, HCFCmdData> cmds = new HashMap<>();
 
-    public CommandManager(Factions plugin) {
+    public FCommandManager(Factions plugin) {
         instance = this;
 
         plugin.getCommand("factions").setExecutor(this);
@@ -110,7 +115,7 @@ public class CommandManager implements CommandExecutor {
             return;
         }
 
-        CmdArgs cmdArgs = new CmdArgs(sender, args);
+        FCmdArgs cmdArgs = new FCmdArgs(sender, args);
         cmd.getCommand().onCommand(cmdArgs);
     }
 }
