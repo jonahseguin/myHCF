@@ -20,7 +20,7 @@ import java.util.Set;
  */
 public class FactionFetch extends BukkitRunnable {
 
-    enum Type {
+    public enum Type {
         NAME, ID
     }
 

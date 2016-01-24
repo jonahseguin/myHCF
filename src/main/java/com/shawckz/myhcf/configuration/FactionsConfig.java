@@ -80,6 +80,9 @@ public class FactionsConfig extends Configuration {
     @ConfigData("factions.dtr.per-player-dtr")
     private double dtrPerPlayer = 0.51;
 
+    @ConfigData("factions.dtr.max-dtr")
+    private double maxDtr = 5.51;
+
     @ConfigData("enderpearl-cooldown")
     private int enderpearlCooldown = 15;
 

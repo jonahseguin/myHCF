@@ -2,13 +2,10 @@ package com.shawckz.myhcf.land;
 
 import com.shawckz.myhcf.Factions;
 import com.shawckz.myhcf.faction.Faction;
-import com.shawckz.myhcf.util.HCFException;
 import org.bukkit.Location;
+import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by 360 on 14/07/2015.
@@ -17,16 +14,13 @@ public class LandBoard {
 
     private final Map<Claim, String> land = new HashMap<>();
 
-    public void loadFromFaction(Faction f) {
-        for (Claim c : f.getClaims()) {
-            land.put(c, f.getId());
-        }
-    }
-
     public boolean isProtected(Location loc) {
         Faction f = getFactionAt(loc);
         if (f != null) {
             if (!f.isRaidable() && f.isNormal()) {
+                return true;
+            }
+            else if (!f.isNormal()) {
                 return true;
             }
         }
@@ -44,13 +38,18 @@ public class LandBoard {
         return null;
     }
 
+    /**
+     * Warning: Non-async database query
+     *
+     * @param loc
+     * @return
+     */
     public Faction getFactionAt(Location loc) {
         for (Claim claim : land.keySet()) {
             if (claim.within(loc)) {
-                for (Faction fac : Factions.getInstance().getFactionManager().getFactions()) {
-                    if (fac.getClaims().contains(claim)) {
-                        return fac;
-                    }
+                Faction faction = Factions.getInstance().getFactionManager().getFactionById(claim.getFactionID());
+                if (faction != null) {
+                    return faction;
                 }
             }
         }
@@ -58,11 +57,7 @@ public class LandBoard {
     }
 
     public void claim(Claim claim, Faction fac) {
-        if (fac.getClaims().toArray().length >= Factions.getInstance().getFactionsConfig().getMaxFactionClaims()) {
-            throw new HCFException("Faction cannot have more than " + Factions.getInstance().getFactionsConfig().getMaxFactionClaims() + " claims");
-        }
         land.put(claim, fac.getId());
-        fac.getClaims().add(claim);
     }
 
     public boolean isClaimed(Location loc) {
@@ -76,13 +71,26 @@ public class LandBoard {
 
     public void unclaimAll(Faction fac) {
         Iterator<Claim> it = land.keySet().iterator();
+        final Set<Claim> delete = new HashSet<>();
         while (it.hasNext()) {
             Claim claim = it.next();
-            if (fac.getClaims().contains(claim)) {
-                land.remove(claim);
+            if (claim.getFactionID().equalsIgnoreCase(fac.getId())) {
+                delete.add(claim);
             }
         }
-        fac.getClaims().clear();
+        for (Claim claim : delete) {
+            land.remove(claim);
+        }
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                for (Claim claim : delete) {
+                    claim.delete();
+                }
+            }
+        }.runTaskAsynchronously(Factions.getInstance());
+
     }
 
 }

@@ -1,9 +1,11 @@
 package com.shawckz.myhcf.land;
 
 import com.shawckz.myhcf.Factions;
+import com.shawckz.myhcf.database.mongo.AutoMongo;
+import com.shawckz.myhcf.database.mongo.annotations.CollectionName;
+import com.shawckz.myhcf.database.mongo.annotations.MongoColumn;
 import com.shawckz.myhcf.util.HCFException;
 import lombok.*;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
@@ -16,38 +18,37 @@ import java.util.Set;
  */
 @AllArgsConstructor
 @RequiredArgsConstructor
-public class Claim implements Iterable<Coordinate> {
+@Getter
+@Setter
+@CollectionName(name = "myhcfclaims")
+public class Claim extends AutoMongo implements Iterable<Coordinate> {
 
     @NonNull
-    @Getter
-    @Setter
+    @MongoColumn
+    private String factionID;
+
+    @NonNull
+    @MongoColumn
     private String world;
     @NonNull
-    @Getter
-    @Setter
+    @MongoColumn
     private int minX;
     @NonNull
-    @Getter
-    @Setter
+    @MongoColumn
     private int minY;
     @NonNull
-    @Getter
-    @Setter
+    @MongoColumn
     private int minZ;
     @NonNull
-    @Getter
-    @Setter
+    @MongoColumn
     private int maxX;
     @NonNull
-    @Getter
-    @Setter
+    @MongoColumn
     private int maxY;
     @NonNull
-    @Getter
-    @Setter
+    @MongoColumn
     private int maxZ;
-    @Getter
-    @Setter
+
     private ClaimType claimType = ClaimType.NORMAL;
 
     public Claim(final Location p1, final Location p2) {
@@ -85,22 +86,22 @@ public class Claim implements Iterable<Coordinate> {
     public Claim expand(final CuboidDirection dir, final int amount) {
         switch (dir) {
             case North: {
-                return new Claim(world, minX - amount, minY, minZ, maxX, maxY, maxZ);
+                return new Claim(factionID, world, minX - amount, minY, minZ, maxX, maxY, maxZ);
             }
             case South: {
-                return new Claim(world, minX, minY, minZ, maxX + amount, maxY, maxZ);
+                return new Claim(factionID, world, minX, minY, minZ, maxX + amount, maxY, maxZ);
             }
             case East: {
-                return new Claim(world, minX, minY, minZ - amount, maxX, maxY, maxZ);
+                return new Claim(factionID, world, minX, minY, minZ - amount, maxX, maxY, maxZ);
             }
             case West: {
-                return new Claim(world, minX, minY, minZ, maxX, maxY, maxZ + amount);
+                return new Claim(factionID, world, minX, minY, minZ, maxX, maxY, maxZ + amount);
             }
             case Down: {
-                return new Claim(world, minX, minY - amount, minZ, maxX, maxY, maxZ);
+                return new Claim(factionID, world, minX, minY - amount, minZ, maxX, maxY, maxZ);
             }
             case Up: {
-                return new Claim(world, minX, minY, minZ, maxX, maxY + amount, maxZ);
+                return new Claim(factionID, world, minX, minY, minZ, maxX, maxY + amount, maxZ);
             }
             default: {
                 throw new IllegalArgumentException("Invalid direction " + dir);
@@ -146,7 +147,7 @@ public class Claim implements Iterable<Coordinate> {
     @Override
     public String toString() {
         return world + "," + minX + "," + minY + "," + minZ
-                + "," + maxX + "," + maxY + "," + maxZ + "," + claimType.toString();
+                + "," + maxX + "," + maxY + "," + maxZ + "," + claimType.toString() + "," + factionID;
     }
 
     public static Claim fromString(String s) {
@@ -159,7 +160,8 @@ public class Claim implements Iterable<Coordinate> {
         int maxY = Integer.parseInt(args[5]);
         int maxZ = Integer.parseInt(args[6]);
         ClaimType claimType = ClaimType.valueOf(args[7].toUpperCase());
-        return new Claim(world, minX, minY, minZ, maxX, maxY, maxZ, claimType);
+        String factionID = args[8];
+        return new Claim(factionID, world, minX, minY, minZ, maxX, maxY, maxZ, claimType);
     }
 
 

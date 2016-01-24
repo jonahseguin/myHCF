@@ -3,8 +3,11 @@ package com.shawckz.myhcf.faction;
 import com.mongodb.BasicDBObject;
 import com.shawckz.myhcf.Factions;
 import com.shawckz.myhcf.database.mongo.AutoMongo;
+import com.shawckz.myhcf.event.FactionLoadEvent;
+import com.shawckz.myhcf.event.FactionUnloadEvent;
 import com.shawckz.myhcf.faction.data.MongoFaction;
 import com.shawckz.myhcf.util.HCFException;
+import org.bukkit.Bukkit;
 
 import java.util.*;
 
@@ -17,7 +20,18 @@ public class FactionManager {
     }
 
     public void addToCache(Faction faction) {
+        FactionLoadEvent event = new FactionLoadEvent(faction);
+        Bukkit.getServer().getPluginManager().callEvent(event);
+        faction = event.getFaction();
         factions.put(faction.getName().toLowerCase(), faction);
+    }
+
+    public void removeFromCache(Faction faction) {
+        if (factions.containsKey(faction.getName().toLowerCase())) {
+            FactionUnloadEvent event = new FactionUnloadEvent(faction);
+            Bukkit.getServer().getPluginManager().callEvent(event);
+            factions.remove(faction.getName().toLowerCase());
+        }
     }
 
     public boolean isInCacheById(String id) {
@@ -87,6 +101,24 @@ public class FactionManager {
         }
         else {
             new FactionFetch(name, getter);
+        }
+    }
+
+    public Faction getFaction(String name) {
+        if (isInCache(name)) {
+            return getLocalFaction(name);
+        }
+        else {
+            return getFactionFromDatabase(name);
+        }
+    }
+
+    public Faction getFactionById(String id) {
+        if (isInCacheById(id)) {
+            return getLocalFactionById(id);
+        }
+        else {
+            return getFactionFromDatabaseById(id);
         }
     }
 

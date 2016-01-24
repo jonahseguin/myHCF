@@ -7,6 +7,8 @@ package com.shawckz.myhcf.command.factions;
 
 import com.shawckz.myhcf.Factions;
 import com.shawckz.myhcf.command.factions.commands.CmdFactionCreate;
+import com.shawckz.myhcf.command.factions.commands.CmdFactionDisband;
+import com.shawckz.myhcf.command.factions.commands.CmdFactionInfo;
 import lombok.Getter;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -34,6 +36,8 @@ public class FCommandManager implements CommandExecutor {
 
         //Register commands
         registerCommand(new CmdFactionCreate());
+        registerCommand(new CmdFactionDisband());
+        registerCommand(new CmdFactionInfo());
     }
 
     public void registerCommand(HCFCommand cmd) {

@@ -11,10 +11,11 @@ import com.shawckz.myhcf.scoreboard.hcf.FLabel;
 import com.shawckz.myhcf.scoreboard.hcf.HCFScoreboard;
 import com.shawckz.myhcf.scoreboard.hcf.timer.HCFTimer;
 import com.shawckz.myhcf.util.ChatMode;
-import lombok.*;
-
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.bukkit.entity.Player;
-import org.bukkit.util.Vector;
 
 @CollectionName(name = "myhcfplayers")
 @Getter
@@ -67,7 +68,9 @@ public class HCFPlayer extends CachePlayer {
     }
 
     public Faction getFaction() {
-        //TODO: Check if a faction with id this#factionId != null, return if not null, else return null
+        if (Factions.getInstance().getFactionManager().isInCacheById(factionId)) {
+            return Factions.getInstance().getFactionManager().getLocalFactionById(factionId);
+        }
         return null;
     }
 

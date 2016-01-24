@@ -11,10 +11,8 @@ import com.shawckz.myhcf.database.mongo.serial.LocationSerializer;
 import com.shawckz.myhcf.faction.Faction;
 import com.shawckz.myhcf.faction.FactionRole;
 import com.shawckz.myhcf.faction.FactionType;
-import com.shawckz.myhcf.faction.serial.ClaimsSerializer;
 import com.shawckz.myhcf.faction.serial.FactionTypeSerializer;
 import com.shawckz.myhcf.faction.serial.HCFPlayerIdSerializer;
-import com.shawckz.myhcf.land.Claim;
 import com.shawckz.myhcf.player.HCFPlayer;
 import com.shawckz.myhcf.util.Relation;
 import lombok.Getter;
@@ -26,7 +24,9 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
 @CollectionName(name = "myhcffactions")
 @Getter
@@ -50,6 +50,9 @@ public class MongoFaction extends AutoMongo implements Faction {
     @MongoColumn
     @DatabaseSerializer(serializer = FactionTypeSerializer.class)
     private FactionType factionType;
+
+    @MongoColumn
+    private String description = "Default faction description";
 
     @MongoColumn
     @DatabaseSerializer(serializer = LocationSerializer.class)
@@ -76,12 +79,18 @@ public class MongoFaction extends AutoMongo implements Faction {
     @MongoColumn
     private Set<String> invitations = new HashSet<>();//(Set<Player UUID>)
 
-    @MongoColumn
-    @DatabaseSerializer(serializer = ClaimsSerializer.class)
-    private List<Claim> claims = new ArrayList<>();
-
     public MongoFaction() {
     } //Leave empty constructor so that AutoMongo can instantiate.
+
+    @Override
+    public Set<HCFPlayer> getMembers() {
+        Set<HCFPlayer> m = new HashSet<>();
+        for (String s : members) {
+            m.add(Factions.getInstance().getCache().getHCFPlayerByUUID(s));
+        }
+        m.add(leader);
+        return m;
+    }
 
     @Override
     public void setAllies(Faction target, boolean ally) {
@@ -148,15 +157,6 @@ public class MongoFaction extends AutoMongo implements Faction {
     }
 
     @Override
-    public Set<HCFPlayer> getMembers() {
-        Set<HCFPlayer> members = new HashSet<>();
-        for (String memberUUID : this.members) {
-            members.add(Factions.getInstance().getCache().getHCFPlayerByUUID(memberUUID));
-        }
-        return members;
-    }
-
-    @Override
     public Set<HCFPlayer> getOnlineMembers() {
         Set<HCFPlayer> onlineMembers = new HashSet<>();
         for (String memberUUID : this.members) {
@@ -218,6 +218,17 @@ public class MongoFaction extends AutoMongo implements Faction {
     public void setLeader(HCFPlayer player) {
         this.leader = player;
         player.setFactionRole(FactionRole.LEADER);
+    }
+
+    @Override
+    public double getMaxDTR() {
+        double dtrPerPlayer = Factions.getInstance().getFactionsConfig().getDtrPerPlayer();
+        double max = Factions.getInstance().getFactionsConfig().getMaxDtr();
+        double maxDTR = dtrPerPlayer * getMembers().size();
+        if (maxDTR > max) {
+            maxDTR = max;
+        }
+        return maxDTR;
     }
 
 }

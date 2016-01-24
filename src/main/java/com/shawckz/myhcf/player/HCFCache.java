@@ -1,10 +1,10 @@
 package com.shawckz.myhcf.player;
 
+import com.shawckz.myhcf.Factions;
 import com.shawckz.myhcf.player.cache.AbstractCache;
 import com.shawckz.myhcf.player.cache.CachePlayer;
-
 import com.shawckz.myhcf.scoreboard.hcf.HCFScoreboard;
-
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
@@ -46,6 +46,24 @@ public class HCFCache extends AbstractCache {
             hcfPlayer.setBukkitPlayer(player);
             hcfPlayer.setScoreboard(new HCFScoreboard(player));
             hcfPlayer.getScoreboard().sendToPlayer(player);
+
+            if (hcfPlayer.getFactionId() != null) {
+                if (!Factions.getInstance().getFactionManager().isInCacheById(hcfPlayer.getFactionId())) {
+                    //Load from database
+                    player.sendMessage(ChatColor.GRAY + "Loading your faction from the database...");
+                    Factions.getInstance().getFactionManager().getFactionById(hcfPlayer.getFactionId(), faction -> {
+                        if (faction != null) {
+                            Factions.getInstance().getFactionManager().addToCache(faction);
+                        }
+                        else {
+                            //Their faction no longer exists
+                            hcfPlayer.setFactionId(null);
+                        }
+                        player.sendMessage(ChatColor.GREEN + "Done.");
+                    });
+                }
+            }
+
         }
     }
 }
