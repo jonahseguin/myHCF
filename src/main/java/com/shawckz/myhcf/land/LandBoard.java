@@ -38,6 +38,16 @@ public class LandBoard {
         return null;
     }
 
+    public Set<Claim> getClaims(Faction faction) {
+        Set<Claim> c = new HashSet<>();
+        for (Claim claim : land.keySet()) {
+            if (claim.getFactionID().equalsIgnoreCase(faction.getId())) {
+                c.add(claim);
+            }
+        }
+        return c;
+    }
+
     /**
      * Warning: Non-async database query
      *
