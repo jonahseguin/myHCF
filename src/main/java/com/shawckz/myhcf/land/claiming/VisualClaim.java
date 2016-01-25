@@ -9,6 +9,8 @@ import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import java.util.UUID;
+
 /**
  * Created by Jonah Seguin on 1/24/2016.
  *
@@ -18,6 +20,7 @@ import org.bukkit.entity.Player;
 @Getter
 public class VisualClaim {
 
+    private final String id;
     private final Location pos1;
     private final Location pos2;
 
@@ -25,6 +28,7 @@ public class VisualClaim {
     private final VisualPillar pillar2;
 
     public VisualClaim(Location pos1, Location pos2) {
+        this.id = UUID.randomUUID().toString();
         this.pos1 = pos1;
         this.pos2 = pos2;
 

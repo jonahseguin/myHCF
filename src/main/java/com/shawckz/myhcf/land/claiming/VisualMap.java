@@ -30,6 +30,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class VisualMap implements Listener {
 
     private final Map<Claim, VisualClaim> visualClaims = new HashMap<>();
+    private final Map<String, Set<String>> playerClaims = new HashMap<>();
     private final Set<String> players = new HashSet<>();
 
     private final ConcurrentLinkedQueue<ClaimQueue> queue = new ConcurrentLinkedQueue<>();
@@ -73,6 +74,14 @@ public class VisualMap implements Listener {
     public void disableMap(Player player) {
         if (players.contains(player.getName())) {
             players.remove(player.getName());
+        }
+
+        if (playerClaims.containsKey(player.getName())) {
+            playerClaims.get(player.getName()).stream().forEach(id -> {
+                visualClaims.values().stream()
+                        .filter(visualClaim -> id.equalsIgnoreCase(visualClaim.getId()))
+                        .forEach(visualClaim -> visualClaim.hide(player));
+            });
         }
     }
 
@@ -137,6 +146,10 @@ public class VisualMap implements Listener {
     public void drawClaim(Player player, Claim claim) {
         VisualClaim visualClaim = getOrConvertVisualClaim(claim);
         visualClaim.show(player);
+        if (!playerClaims.containsKey(player.getName())) {
+            playerClaims.put(player.getName(), new HashSet<>());
+        }
+        playerClaims.get(player.getName()).add(visualClaim.getId());
     }
 
     public VisualClaim getOrConvertVisualClaim(Claim claim) {
