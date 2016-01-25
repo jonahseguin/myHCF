@@ -1,5 +1,6 @@
 package com.shawckz.myhcf;
 
+import com.shawckz.myhcf.armorclass.ArmorClassManager;
 import com.shawckz.myhcf.command.factions.FCommandManager;
 import com.shawckz.myhcf.command.normal.GCommandHandler;
 import com.shawckz.myhcf.command.normal.commands.CmdPvPTimer;
@@ -36,6 +37,7 @@ public class Factions extends JavaPlugin {
     private DeathbanRankManager deathbanRankManager = new DeathbanRankManager();
     private LandBoard landBoard;
     private GCommandHandler gCommandHandler;
+    private ArmorClassManager armorClassManager;
 
     @Override
     public void onEnable() {
@@ -52,6 +54,8 @@ public class Factions extends JavaPlugin {
         gCommandHandler = new GCommandHandler(this);
 
         gCommandHandler.registerCommands(new CmdPvPTimer());
+
+        armorClassManager = new ArmorClassManager(this);
     }
 
     @Override
@@ -122,5 +126,7 @@ public class Factions extends JavaPlugin {
         getInstance().getLogger().info(msg);
     }
 
-
+    public ArmorClassManager getArmorClassManager() {
+        return armorClassManager;
+    }
 }

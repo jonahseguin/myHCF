@@ -20,6 +20,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -82,97 +83,102 @@ public class CmdFactionInfo implements HCFCommand {
     -----------------------
      */
 
-    public void sendInfo(CommandSender p, Faction f) {
+    public void sendInfo(final CommandSender p, final Faction f) {
         FLang.send(p, FactionLang.FACTION_INFO_HEADER_FOOTER);
-        if (f.isNormal()) {
-            FLang.send(p, FactionLang.FACTION_INFO_DESCRIPTION, f.getDisplayName(), f.getBalance() + "", f.getDescription());
-            String dtr = (f.getDeathsUntilRaidable() >= 0 ? ChatColor.YELLOW : ChatColor.RED) + "" + f.getDeathsUntilRaidable();
-            String dtrStatus = "";
-            boolean hasOne = false;
-            {
-                if (f.isRaidable()) {
-                    dtrStatus += ChatColor.RED + "Raidable";
-                    hasOne = true;
-                }
-                if (f.isDtrFrozen()) {
-                    if (hasOne) {
-                        dtrStatus += ChatColor.GRAY + " & ";
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (f.isNormal()) {
+                    FLang.send(p, FactionLang.FACTION_INFO_DESCRIPTION, f.getDisplayName(), f.getBalance() + "", f.getDescription());
+                    String dtr = (f.getDeathsUntilRaidable() >= 0 ? ChatColor.YELLOW : ChatColor.RED) + "" + f.getDeathsUntilRaidable();
+                    String dtrStatus = "";
+                    boolean hasOne = false;
+                    {
+                        if (f.isRaidable()) {
+                            dtrStatus += ChatColor.RED + "Raidable";
+                            hasOne = true;
+                        }
+                        if (f.isDtrFrozen()) {
+                            if (hasOne) {
+                                dtrStatus += ChatColor.GRAY + " & ";
+                            }
+                            dtrStatus += ChatColor.AQUA + "Frozen";
+                            hasOne = true;
+                        }
+                        if (!f.isDtrFrozen() && !f.isRaidable()) {
+                            if (hasOne) {
+                                dtrStatus += ChatColor.GRAY + " & ";
+                            }
+                            dtrStatus += ChatColor.GREEN + "Normal";
+                            hasOne = true;
+                        }
+                        if (!f.isDtrFrozen() && f.getDeathsUntilRaidable() < f.getMaxDTR()) {
+                            if (hasOne) {
+                                dtrStatus += ChatColor.GRAY + " & ";
+                            }
+                            dtrStatus += ChatColor.LIGHT_PURPLE + "Regenerating";
+                            hasOne = true;
+                        }
                     }
-                    dtrStatus += ChatColor.AQUA + "Frozen";
-                    hasOne = true;
-                }
-                if (!f.isDtrFrozen() && !f.isRaidable()) {
-                    if (hasOne) {
-                        dtrStatus += ChatColor.GRAY + " & ";
+
+                    String dtrFreeze = "";
+
+                    if (f.getDtrFreezeFinish() > System.currentTimeMillis()) {
+                        long millis = f.getDtrFreezeFinish() - System.currentTimeMillis();
+                        dtrFreeze = String.format("%02d:%02d:%02d",
+                                TimeUnit.SECONDS.toHours(millis),
+                                TimeUnit.SECONDS.toMinutes(millis) -
+                                        TimeUnit.HOURS.toMinutes(TimeUnit.SECONDS.toHours(millis)),
+                                TimeUnit.SECONDS.toSeconds(millis) -
+                                        TimeUnit.MINUTES.toSeconds(TimeUnit.SECONDS.toMinutes(millis)));
                     }
-                    dtrStatus += ChatColor.GREEN + "Normal";
-                    hasOne = true;
-                }
-                if (!f.isDtrFrozen() && f.getDeathsUntilRaidable() < f.getMaxDTR()) {
-                    if (hasOne) {
-                        dtrStatus += ChatColor.GRAY + " & ";
+
+                    FLang.send(p, FactionLang.FACTION_INFO_DTR, dtr, dtrStatus, dtrFreeze);
+                    if (f.getHome() != null) {
+                        FLang.send(p, FactionLang.FACTION_INFO_HOME, convertLocation(f.getHome()));
                     }
-                    dtrStatus += ChatColor.LIGHT_PURPLE + "Regenerating";
-                    hasOne = true;
-                }
-            }
+                    else {
+                        FLang.send(p, FactionLang.FACTION_INFO_HOME, "Not set");
+                    }
 
-            String dtrFreeze = "";
-
-            if (f.getDtrFreezeFinish() > System.currentTimeMillis()) {
-                long millis = f.getDtrFreezeFinish() - System.currentTimeMillis();
-                dtrFreeze = String.format("%02d:%02d:%02d",
-                        TimeUnit.SECONDS.toHours(millis),
-                        TimeUnit.SECONDS.toMinutes(millis) -
-                                TimeUnit.HOURS.toMinutes(TimeUnit.SECONDS.toHours(millis)),
-                        TimeUnit.SECONDS.toSeconds(millis) -
-                                TimeUnit.MINUTES.toSeconds(TimeUnit.SECONDS.toMinutes(millis)));
-            }
-
-            FLang.send(p, FactionLang.FACTION_INFO_DTR, dtr, dtrStatus, dtrFreeze);
-            if (f.getHome() != null) {
-                FLang.send(p, FactionLang.FACTION_INFO_HOME, convertLocation(f.getHome()));
-            }
-            else {
-                FLang.send(p, FactionLang.FACTION_INFO_HOME, "Not set");
-            }
-
-            FLang.send(p, FactionLang.FACTION_INFO_MEMBERS, convertMembers(f));
-            FLang.send(p, FactionLang.FACTION_INFO_ALLIES, convertAllies(f));
-        }
-        else {
-            if (f.getFactionType() == FactionType.KOTH) {
-                FLang.send(p, FactionLang.FACTION_INFO_KOTH_NAME, f.getDisplayName());
-                if (f.getHome() != null) {
-                    FLang.send(p, FactionLang.FACTION_INFO_KOTH_LOCATION, convertLocation(f.getHome()));
+                    FLang.send(p, FactionLang.FACTION_INFO_MEMBERS, convertMembers(f));
+                    FLang.send(p, FactionLang.FACTION_INFO_ALLIES, convertAllies(f));
                 }
                 else {
-                    FLang.send(p, FactionLang.FACTION_INFO_KOTH_LOCATION, "Not set");
+                    if (f.getFactionType() == FactionType.KOTH) {
+                        FLang.send(p, FactionLang.FACTION_INFO_KOTH_NAME, f.getDisplayName());
+                        if (f.getHome() != null) {
+                            FLang.send(p, FactionLang.FACTION_INFO_KOTH_LOCATION, convertLocation(f.getHome()));
+                        }
+                        else {
+                            FLang.send(p, FactionLang.FACTION_INFO_KOTH_LOCATION, "Not set");
+                        }
+                    }
+                    else if (f.getFactionType() == FactionType.ROAD) {
+                        FLang.send(p, FactionLang.FACTION_INFO_ROAD_NAME, f.getDisplayName());
+                    }
+                    else if (f.getFactionType() == FactionType.SPECIAL) {
+                        FLang.send(p, FactionLang.FACTION_INFO_SPECIAL_NAME, f.getDisplayName());
+                        if (f.getHome() != null) {
+                            FLang.send(p, FactionLang.FACTION_INFO_SPECIAL_LOCATION, convertLocation(f.getHome()));
+                        }
+                        else {
+                            FLang.send(p, FactionLang.FACTION_INFO_SPECIAL_LOCATION, "Not set");
+                        }
+                    }
+                    else if (f.getFactionType() == FactionType.SPAWN) {
+                        FLang.send(p, FactionLang.FACTION_INFO_SPAWN_NAME, f.getDisplayName());
+                        if (f.getHome() != null) {
+                            FLang.send(p, FactionLang.FACTION_INFO_SPAWN_LOCATION, convertLocation(f.getHome()));
+                        }
+                        else {
+                            FLang.send(p, FactionLang.FACTION_INFO_SPAWN_LOCATION, "Not set");
+                        }
+                    }
                 }
+                FLang.send(p, FactionLang.FACTION_INFO_HEADER_FOOTER);
             }
-            else if (f.getFactionType() == FactionType.ROAD) {
-                FLang.send(p, FactionLang.FACTION_INFO_ROAD_NAME, f.getDisplayName());
-            }
-            else if (f.getFactionType() == FactionType.SPECIAL) {
-                FLang.send(p, FactionLang.FACTION_INFO_SPECIAL_NAME, f.getDisplayName());
-                if (f.getHome() != null) {
-                    FLang.send(p, FactionLang.FACTION_INFO_SPECIAL_LOCATION, convertLocation(f.getHome()));
-                }
-                else {
-                    FLang.send(p, FactionLang.FACTION_INFO_SPECIAL_LOCATION, "Not set");
-                }
-            }
-            else if (f.getFactionType() == FactionType.SPAWN) {
-                FLang.send(p, FactionLang.FACTION_INFO_SPAWN_NAME, f.getDisplayName());
-                if (f.getHome() != null) {
-                    FLang.send(p, FactionLang.FACTION_INFO_SPAWN_LOCATION, convertLocation(f.getHome()));
-                }
-                else {
-                    FLang.send(p, FactionLang.FACTION_INFO_SPAWN_LOCATION, "Not set");
-                }
-            }
-        }
-        FLang.send(p, FactionLang.FACTION_INFO_HEADER_FOOTER);
+        }.runTaskAsynchronously(Factions.getInstance());
     }
 
     public String convertLocation(Location loc) {

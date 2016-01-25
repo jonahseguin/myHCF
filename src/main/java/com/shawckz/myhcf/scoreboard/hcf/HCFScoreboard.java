@@ -6,9 +6,7 @@ import com.shawckz.myhcf.scoreboard.hcf.timer.HCFTimer;
 import com.shawckz.myhcf.scoreboard.hcf.timer.HCFTimerFormat;
 import com.shawckz.myhcf.scoreboard.internal.XScoreboard;
 import com.shawckz.myhcf.scoreboard.internal.timer.TimerPool;
-import com.shawckz.myhcf.util.HCFException;
 import lombok.Getter;
-
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -46,6 +44,14 @@ public class HCFScoreboard extends XScoreboard {
         return getTimer(key, HCFTimerFormat.TENTH_OF_SECOND);
     }
 
+    public boolean hasTimer(FLabel key) {
+        return timers.containsKey(key.toString());
+    }
+
+    public boolean hasHCFLabel(FLabel key) {
+        return labels.containsKey(key.toString());
+    }
+
     public HCFTimer getTimer(FLabel key, boolean visible) {
         HCFTimer timer = getTimer(key);
         timer.setVisible(visible);
@@ -68,6 +74,14 @@ public class HCFScoreboard extends XScoreboard {
 
     public String getKey(FLabel key) {
         return Factions.getInstance().getFactionsConfig().getScoreboardKey(key);
+    }
+
+    public static TimerPool getTimerPool() {
+        return timerPool;
+    }
+
+    public int getNewScoreIndex() {
+        return scoreIndex++;
     }
 
 }

@@ -3,6 +3,7 @@ package com.shawckz.myhcf.configuration;
 import com.shawckz.myhcf.Factions;
 import com.shawckz.myhcf.configuration.annotations.ConfigData;
 import com.shawckz.myhcf.configuration.annotations.ConfigSerializer;
+import com.shawckz.myhcf.configuration.serial.MaterialSerializer;
 import com.shawckz.myhcf.database.mongo.serial.MapSerializer;
 import com.shawckz.myhcf.deathban.DeathbanRank;
 import com.shawckz.myhcf.scoreboard.hcf.FLabel;
@@ -10,6 +11,7 @@ import com.shawckz.myhcf.util.HCFException;
 import lombok.Getter;
 import lombok.Setter;
 import net.md_5.bungee.api.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.plugin.Plugin;
 
 import java.util.ArrayList;
@@ -138,6 +140,33 @@ public class FactionsConfig extends Configuration {
     @ConfigData("spawntag.time.damager")
     private int spawnTagTimeDamager = 60;
 
+    @ConfigData("magicitem.speed.name")
+    private String magicItemSpeedName = "Speed";
+
+    @ConfigData("magicitem.speed.time")
+    private int magicItemSpeedTime = 120;
+
+    @ConfigData("magicitem.speed.amplifier")
+    private int magicItemSpeedAmplifier = 3;
+
+    @ConfigData("magicitem.speed.material")
+    @ConfigSerializer(serializer = MaterialSerializer.class)
+    private Material magicItemSpeedMaterial = Material.SUGAR;
+
+    @ConfigData("magicitem.speed.energy")
+    private double magicItemSpeedEnergy = 10;
+
+    @ConfigData("player.energy.maxenergy")
+    private double maxEnergy = 50D;
+
+    @ConfigData("armorclass.archer.speed.time")
+    private int archerSpeedTime = 120;
+
+    @ConfigData("armorclass.archer.speed.amplifier")
+    private int archerSpeedAmplifier = 2;
+
+    @ConfigData("armorclass.energy.regen-per-quarter-second")
+    private double energyPerQuarterSecond = 0.7;
 
     public String getScoreboardKey(FLabel label) {
         if (!scoreboardKeys.containsKey(label.toString())) {

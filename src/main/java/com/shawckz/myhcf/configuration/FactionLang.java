@@ -42,7 +42,9 @@ public enum FactionLang {
     PVP_TIMER_REMOVE("&eYou are no longer protected from PvP."),
     PVP_TIMER_FORCE_ENABLE("&cYou forcefully enabled {0}'s PvPTimer."),
     FOUND_DIAMONDS_BROADCAST("[FD] &b{0} found {1}"),
-    PLAYER_NOT_FOUND("&cPlayer '{0}' not found.")
+    PLAYER_NOT_FOUND("&cPlayer '{0}' not found."),
+    ARMOR_CLASS_EQUIP("&aEquipped &eArmor Class &7--> &9{0}"),
+    ARMOR_CLASS_REMOVE("&cRemoved &eArmor Class &7--> &9{0}")
     ;
 
     private final String defaultValue;

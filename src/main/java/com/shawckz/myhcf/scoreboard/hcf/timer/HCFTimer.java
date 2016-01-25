@@ -3,11 +3,15 @@ package com.shawckz.myhcf.scoreboard.hcf.timer;
 import com.shawckz.myhcf.scoreboard.internal.XScoreboard;
 import com.shawckz.myhcf.scoreboard.internal.timer.TimerPool;
 import com.shawckz.myhcf.scoreboard.internal.timer.XScoreboardTimer;
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.ChatColor;
 
 import java.text.DecimalFormat;
 import java.util.concurrent.TimeUnit;
 
+@Getter
+@Setter
 public class HCFTimer extends XScoreboardTimer {
 
     private final String key;

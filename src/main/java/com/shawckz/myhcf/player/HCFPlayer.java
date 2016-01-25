@@ -1,6 +1,7 @@
 package com.shawckz.myhcf.player;
 
 import com.shawckz.myhcf.Factions;
+import com.shawckz.myhcf.armorclass.ArmorClassType;
 import com.shawckz.myhcf.database.mongo.annotations.CollectionName;
 import com.shawckz.myhcf.database.mongo.annotations.MongoColumn;
 import com.shawckz.myhcf.deathban.DeathbanRank;
@@ -50,9 +51,13 @@ public class HCFPlayer extends CachePlayer {
     @MongoColumn
     private String deathbanRank = "default";
 
+    @MongoColumn
+    private double balance = 0.0D;
+
     private Player bukkitPlayer;
     private HCFScoreboard scoreboard;
     private ChatMode chatMode = ChatMode.PUBLIC;
+    private ArmorClassType armorClassType = null;
 
     public DeathbanRank getDeathbanRank() {
         DeathbanRank deathbanRank = Factions.getInstance().getDeathbanRankManager().getRank(this.deathbanRank);

@@ -5,8 +5,8 @@ import com.shawckz.myhcf.scoreboard.internal.timer.XTimerTask;
 
 public abstract class HCFTimerTask implements XTimerTask {
 
-    private final XScoreboardTimer timer;
-    private final long interval;
+    protected final XScoreboardTimer timer;
+    protected final long interval;
 
     public HCFTimerTask(XScoreboardTimer timer, long interval) {
         this.timer = timer;
