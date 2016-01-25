@@ -21,6 +21,7 @@ public class FEventManager {
         listeners.add(new PreventionListener());
         listeners.add(new PvPTimerListener());
         listeners.add(new FoundDiamondsListener());
+        listeners.add(Factions.getInstance().getVisualMap());
     }
 
     public void register() {

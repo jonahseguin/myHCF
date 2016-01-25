@@ -11,6 +11,7 @@ import com.shawckz.myhcf.deathban.DeathbanRankManager;
 import com.shawckz.myhcf.faction.FDataMode;
 import com.shawckz.myhcf.faction.FactionManager;
 import com.shawckz.myhcf.land.LandBoard;
+import com.shawckz.myhcf.land.claiming.VisualMap;
 import com.shawckz.myhcf.listener.FEventManager;
 import com.shawckz.myhcf.player.HCFCache;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -38,6 +39,7 @@ public class Factions extends JavaPlugin {
     private LandBoard landBoard;
     private GCommandHandler gCommandHandler;
     private ArmorClassManager armorClassManager;
+    private VisualMap visualMap;
 
     @Override
     public void onEnable() {
@@ -49,6 +51,7 @@ public class Factions extends JavaPlugin {
         commandManager = new FCommandManager(this);
         factionManager = new FactionManager();
         landBoard = new LandBoard();
+        visualMap = new VisualMap(this);
         fEventManager = new FEventManager(this);
         fEventManager.register();
         gCommandHandler = new GCommandHandler(this);
@@ -128,5 +131,9 @@ public class Factions extends JavaPlugin {
 
     public ArmorClassManager getArmorClassManager() {
         return armorClassManager;
+    }
+
+    public VisualMap getVisualMap() {
+        return visualMap;
     }
 }
