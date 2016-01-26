@@ -14,6 +14,7 @@ import com.shawckz.myhcf.land.LandBoard;
 import com.shawckz.myhcf.land.claiming.VisualMap;
 import com.shawckz.myhcf.listener.FEventManager;
 import com.shawckz.myhcf.player.HCFCache;
+import com.shawckz.myhcf.spawn.Spawn;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
@@ -40,6 +41,7 @@ public class Factions extends JavaPlugin {
     private GCommandHandler gCommandHandler;
     private ArmorClassManager armorClassManager;
     private VisualMap visualMap;
+    private Spawn spawn;
 
     @Override
     public void onEnable() {
@@ -59,6 +61,7 @@ public class Factions extends JavaPlugin {
         gCommandHandler.registerCommands(new CmdPvPTimer());
 
         armorClassManager = new ArmorClassManager(this);
+        spawn = new Spawn(this);
     }
 
     @Override
@@ -135,5 +138,9 @@ public class Factions extends JavaPlugin {
 
     public VisualMap getVisualMap() {
         return visualMap;
+    }
+
+    public Spawn getSpawn() {
+        return spawn;
     }
 }

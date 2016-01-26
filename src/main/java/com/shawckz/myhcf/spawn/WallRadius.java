@@ -1,9 +1,9 @@
 package com.shawckz.myhcf.spawn;
 
 import com.shawckz.myhcf.util.HCFException;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -99,8 +99,49 @@ public class WallRadius {
         playerCache.clear();
     }
 
-    public void resetBlock(Player p, Location loc) {
+    public void send(Player player, Material material, Set<Location> locations) {
+        if (!playerCache.containsKey(player.getName())) {
+            playerCache.put(player.getName(), new HashSet<>());
+        }
+        Set<Location> locs = playerCache.get(player.getName());
+        if (locations != null) {
+            for (Location l : locations) {
+                locs.add(l);
+                sendBlock(player, l, material);
+            }
+        }
+        playerCache.put(player.getName(), locs);
+    }
+
+    public void remove(Player player, Set<Location> locations) {
+        if (!playerCache.containsKey(player.getName())) {
+            playerCache.put(player.getName(), new HashSet<>());
+        }
+        Set<Location> locs = playerCache.get(player.getName());
+        if (locations != null) {
+            for (Location l : locations) {
+                if (locs.contains(l)) {
+                    locs.remove(l);
+                }
+                resetBlock(player, l);
+            }
+        }
+        playerCache.put(player.getName(), locs);
+    }
+
+    private void sendBlock(Player p, Location loc, Material material) {
+        p.sendBlockChange(loc, material, (byte) 0);
+    }
+
+    private void resetBlock(Player p, Location loc) {
         p.sendBlockChange(loc, loc.getBlock().getType(), loc.getBlock().getData());
+    }
+
+    public boolean hasBlock(Player player, Location loc) {
+        if (playerCache.containsKey(player.getName())) {
+            return playerCache.get(player.getName()).contains(loc);
+        }
+        return false;
     }
 
 }

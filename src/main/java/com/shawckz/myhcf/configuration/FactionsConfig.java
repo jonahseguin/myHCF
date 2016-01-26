@@ -4,6 +4,7 @@ import com.shawckz.myhcf.Factions;
 import com.shawckz.myhcf.configuration.annotations.ConfigData;
 import com.shawckz.myhcf.configuration.annotations.ConfigSerializer;
 import com.shawckz.myhcf.configuration.serial.MaterialSerializer;
+import com.shawckz.myhcf.database.mongo.serial.LocationSerializer;
 import com.shawckz.myhcf.database.mongo.serial.MapSerializer;
 import com.shawckz.myhcf.deathban.DeathbanRank;
 import com.shawckz.myhcf.scoreboard.hcf.FLabel;
@@ -11,6 +12,7 @@ import com.shawckz.myhcf.util.HCFException;
 import lombok.Getter;
 import lombok.Setter;
 import net.md_5.bungee.api.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.plugin.Plugin;
 
@@ -75,6 +77,9 @@ public class FactionsConfig extends Configuration {
 
     @ConfigData("factions.max-claims")
     private int maxFactionClaims = 5;
+
+    @ConfigData("factions.max-players")
+    private int maxFactionSize = 15;
 
     @ConfigData("factions.dtr.base-dtr")
     private double baseDtr = 1.01;
@@ -167,6 +172,19 @@ public class FactionsConfig extends Configuration {
 
     @ConfigData("armorclass.energy.regen-per-quarter-second")
     private double energyPerQuarterSecond = 0.7;
+
+    @ConfigData("world.disable-enderchests")
+    private boolean disableEnderchests = false;
+
+    @ConfigData("world.disable-blaze-spawners")
+    private String[] disableBlazeSpawners = new String[]{"world_nether", "world_the_end"};
+
+    @ConfigData("multiplier.exp")
+    private int expMultiplier = 2;
+
+    @ConfigData("spawn.spawn")
+    @ConfigSerializer(serializer = LocationSerializer.class)
+    private Location spawn;
 
     public String getScoreboardKey(FLabel label) {
         if (!scoreboardKeys.containsKey(label.toString())) {

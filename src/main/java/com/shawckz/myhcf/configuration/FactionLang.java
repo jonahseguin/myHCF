@@ -24,6 +24,9 @@ public enum FactionLang {
     FACTION_INFO_SPECIAL_LOCATION("&eLocation&7: &9{0}"),
     FACTION_INFO_SPAWN_NAME("&a{0}"),
     FACTION_INFO_SPAWN_LOCATION("&eLocation&7: &9{0}"),
+    FACTION_JOIN_PLAYER_NOT_IN_FACTION("&cPlayer '{0}' is not in a faction."),
+    FACTION_JOIN_NOT_INVITED("&cYou are not invited to the faction '{0}'."),
+    FACTION_JOIN_FULL("&cThe faction '{0}' is full."),
     DEATHBAN_KICK("&cYou have been deathbanned.\\n&cYou have {0} lives, login again to use one.\\n&cYour deathban expires in {1}."),
     DEATHBAN_LIFE_USE("&aYou used one of your lives to revive yourself.  You now have {0} lives."),
     BORDER_BLOCK_DENY("&cYou cannot modify blocks beyond the world border."),
@@ -44,7 +47,9 @@ public enum FactionLang {
     FOUND_DIAMONDS_BROADCAST("[FD] &b{0} found {1}"),
     PLAYER_NOT_FOUND("&cPlayer '{0}' not found."),
     ARMOR_CLASS_EQUIP("&aEquipped &eArmor Class &7--> &9{0}"),
-    ARMOR_CLASS_REMOVE("&cRemoved &eArmor Class &7--> &9{0}")
+    ARMOR_CLASS_REMOVE("&cRemoved &eArmor Class &7--> &9{0}"),
+    ENDER_CHEST_DISABLED("&cEnder Chests are disabled."),
+    BLAZE_SPAWNER_DISABLED("&cDestroying Blaze Spawners is disabled in this world.")
     ;
 
     private final String defaultValue;

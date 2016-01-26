@@ -105,6 +105,7 @@ public class MongoFaction extends AutoMongo implements Faction {
         }
     }
 
+    @Override
     public void addPlayer(HCFPlayer player) {
         if (player == null) {
             throw new IllegalArgumentException("Cannot add null player to faction");

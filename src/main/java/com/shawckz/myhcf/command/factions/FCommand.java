@@ -25,7 +25,7 @@ public @interface FCommand {
 
     String[] aliases() default {};
 
-    boolean playerOnly() default true;
+    boolean playerOnly() default false;
 
     String perm() default "";
 

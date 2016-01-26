@@ -30,6 +30,8 @@ public interface Faction {
 
     Location getHome();
 
+    void addPlayer(HCFPlayer player);
+
     void setHome(Location home);
 
     double getDeathsUntilRaidable();

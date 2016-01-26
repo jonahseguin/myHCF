@@ -12,6 +12,7 @@ import com.shawckz.myhcf.scoreboard.hcf.FLabel;
 import com.shawckz.myhcf.scoreboard.hcf.HCFScoreboard;
 import com.shawckz.myhcf.scoreboard.hcf.timer.HCFTimer;
 import com.shawckz.myhcf.util.ChatMode;
+import com.shawckz.myhcf.util.FSelection;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -58,6 +59,8 @@ public class HCFPlayer extends CachePlayer {
     private HCFScoreboard scoreboard;
     private ChatMode chatMode = ChatMode.PUBLIC;
     private ArmorClassType armorClassType = null;
+
+    private FSelection selection = null;
 
     public DeathbanRank getDeathbanRank() {
         DeathbanRank deathbanRank = Factions.getInstance().getDeathbanRankManager().getRank(this.deathbanRank);

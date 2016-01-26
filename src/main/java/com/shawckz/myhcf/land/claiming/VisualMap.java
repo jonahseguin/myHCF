@@ -65,6 +65,10 @@ public class VisualMap implements Listener {
         return false;
     }
 
+    public boolean isMapEnabled(Player player) {
+        return players.contains(player.getName());
+    }
+
     public void enableMap(Player player) {
         if (!players.contains(player.getName())) {
             players.add(player.getName());

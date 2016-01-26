@@ -1,22 +1,60 @@
 package com.shawckz.myhcf.listener;
 
 import com.shawckz.myhcf.Factions;
+import com.shawckz.myhcf.configuration.FLang;
+import com.shawckz.myhcf.configuration.FactionLang;
 import com.shawckz.myhcf.faction.Faction;
 import com.shawckz.myhcf.faction.FactionType;
 import com.shawckz.myhcf.land.LandBoard;
-
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.CreatureSpawner;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 public class PreventionListener implements Listener {
 
     private final LandBoard landBoard = Factions.getInstance().getLandBoard();
+
+    @EventHandler
+    public void onMineBlazeSpawner(BlockBreakEvent e) {
+        if (e.getBlock().getType() == Material.MOB_SPAWNER) {
+            CreatureSpawner spawner = (CreatureSpawner) e.getBlock().getState();
+            if (spawner.getSpawnedType() == EntityType.BLAZE) {
+                String world = e.getBlock().getLocation().getWorld().getName();
+                String[] disabled = Factions.getInstance().getFactionsConfig().getDisableBlazeSpawners();
+                for (String s : disabled) {
+                    if (world.equalsIgnoreCase(s)) {
+                        FLang.send(e.getPlayer(), FactionLang.BLAZE_SPAWNER_DISABLED);
+                        e.setCancelled(true);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onInteract(PlayerInteractEvent e) {
+        if (!Factions.getInstance().getFactionsConfig().isDisableEnderchests()) return;
+        Player player = e.getPlayer();
+        if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            if (e.getClickedBlock().getType() == Material.ENDER_CHEST) {
+                e.setCancelled(true);
+                FLang.send(player, FactionLang.ENDER_CHEST_DISABLED);
+            }
+        }
+    }
 
     @EventHandler
     public void onEntityChangeBlock(EntityChangeBlockEvent e) {
