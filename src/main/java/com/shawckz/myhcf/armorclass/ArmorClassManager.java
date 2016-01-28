@@ -6,7 +6,6 @@
 package com.shawckz.myhcf.armorclass;
 
 import com.shawckz.myhcf.Factions;
-import com.shawckz.myhcf.armorclass.classes.Archer;
 import com.shawckz.myhcf.armorclass.magicitems.MagicSpeed;
 import com.shawckz.myhcf.player.HCFPlayer;
 import org.bukkit.Bukkit;
@@ -28,7 +27,6 @@ public class ArmorClassManager {
     private final Map<MagicItemType, MagicItem> magicItems = new HashMap<>();
 
     public ArmorClassManager(Factions instance) {
-        registerArmorClass(new Archer());
         registerMagicItem(new MagicSpeed());
         runTimer();
     }

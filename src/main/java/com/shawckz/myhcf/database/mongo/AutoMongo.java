@@ -12,6 +12,7 @@ import com.shawckz.myhcf.database.mongo.annotations.DatabaseSerializer;
 import com.shawckz.myhcf.database.mongo.annotations.MongoColumn;
 import org.apache.commons.lang.ClassUtils;
 import org.bson.Document;
+import org.bukkit.Bukkit;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -20,8 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
-
-import org.bukkit.Bukkit;
 
 public abstract class AutoMongo {
 
@@ -53,7 +52,8 @@ public abstract class AutoMongo {
                 if (column.identifier()) {
                     identifier = columnName;
                     identifierValue = getValue(field);
-                } else {
+                }
+                else {
                     values.put(columnName, getValue(field));
                 }
             }
@@ -70,7 +70,8 @@ public abstract class AutoMongo {
 
         if (documentExists(searchQuery, col)) {
             col.updateOne(searchQuery, new Document("$set", doc));
-        } else {
+        }
+        else {
             col.insertOne(doc);
         }
     }
@@ -106,7 +107,8 @@ public abstract class AutoMongo {
                     }
                 }
                 vals.add(mongo);
-            } catch (InstantiationException | IllegalAccessException e) {
+            }
+            catch (InstantiationException | IllegalAccessException e) {
                 e.printStackTrace();
             }
 
@@ -159,16 +161,16 @@ public abstract class AutoMongo {
     public String getValue(Field field) {
         try {
             Object o = field.get(this);
-            if (o == null) {
-                o = "NULL";
+            if (o != null) {
+                String ret = o.toString();
+                if (ret != null && !ret.equals("NULL") && field.isAnnotationPresent(DatabaseSerializer.class)) {
+                    DatabaseSerializer serializer = field.getAnnotation(DatabaseSerializer.class);
+                    ret = ((AbstractSerializer) serializer.serializer().newInstance()).toString(o);
+                }
+                return ret;
             }
-            String ret = o.toString();
-            if (field.isAnnotationPresent(DatabaseSerializer.class)) {
-                DatabaseSerializer serializer = field.getAnnotation(DatabaseSerializer.class);
-                ret = ((AbstractSerializer) serializer.serializer().newInstance()).toString(o);
-            }
-            return ret;
-        } catch (IllegalAccessException | InstantiationException e) {
+        }
+        catch (IllegalAccessException | InstantiationException e) {
             e.printStackTrace();
         }
         return null;
@@ -182,17 +184,25 @@ public abstract class AutoMongo {
             field.setAccessible(true);
             if (value == null || type.equals(value.getClass())) {
                 field.set(this, value);
-            } else if (field.isAnnotationPresent(DatabaseSerializer.class)) {
+            }
+            else if (field.isAnnotationPresent(DatabaseSerializer.class)) {
                 AbstractSerializer serializer = field.getAnnotation(DatabaseSerializer.class).serializer().newInstance();
                 field.set(this, serializer.fromString(value));
-            } else if (type.equals(UUID.class)) {
+            }
+            else if (type.equals(UUID.class)) {
                 field.set(this, type.getDeclaredMethod("fromString", String.class).invoke(null, value.toString()));
-            } else if (!Primitives.isWrapperType(type) && !type.equals(String.class) && !type.equals(Long.class) && !type.isPrimitive()) {
+            }
+            else if (type.equals(String.class)) {
+                field.set(this, String.valueOf(value));
+            }
+            else if (!Primitives.isWrapperType(type) && !type.equals(String.class) && !type.equals(Long.class) && !type.isPrimitive()) {
                 field.set(this, type.getDeclaredMethod("valueOf", String.class).invoke(null, value.toString()));
-            } else {
+            }
+            else {
                 field.set(this, type.getDeclaredMethod("valueOf", value.getClass()).invoke(null, value.toString()));
             }
-        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+        }
+        catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
     }

@@ -71,7 +71,16 @@ public class CmdFactionCreate implements HCFCommand {
 
                     sender.sendMessage(ChatColor.GREEN + "You have selected to make a faction by name '" + name + "' with type '" + factionType.toString() + "'");
 
-                    //TODO: Create special faction
+                    final Faction faction = Factions.getInstance().getFactionManager().createFaction(name, factionType);
+
+                    Factions.getInstance().getFactionManager().addToCache(faction);
+
+                    new BukkitRunnable(){
+                        @Override
+                        public void run() {
+                            faction.save();
+                        }
+                    }.runTaskAsynchronously(Factions.getInstance());
 
                 }
                 else {

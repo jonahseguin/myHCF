@@ -22,6 +22,8 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
+import java.util.List;
+
 public class PreventionListener implements Listener {
 
     private final LandBoard landBoard = Factions.getInstance().getLandBoard();
@@ -32,7 +34,7 @@ public class PreventionListener implements Listener {
             CreatureSpawner spawner = (CreatureSpawner) e.getBlock().getState();
             if (spawner.getSpawnedType() == EntityType.BLAZE) {
                 String world = e.getBlock().getLocation().getWorld().getName();
-                String[] disabled = Factions.getInstance().getFactionsConfig().getDisableBlazeSpawners();
+                List<String> disabled = Factions.getInstance().getFactionsConfig().getDisableBlazeSpawners();
                 for (String s : disabled) {
                     if (world.equalsIgnoreCase(s)) {
                         FLang.send(e.getPlayer(), FactionLang.BLAZE_SPAWNER_DISABLED);

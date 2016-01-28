@@ -12,6 +12,7 @@ import com.shawckz.myhcf.util.HCFException;
 import lombok.Getter;
 import lombok.Setter;
 import net.md_5.bungee.api.ChatColor;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.plugin.Plugin;
@@ -177,14 +178,14 @@ public class FactionsConfig extends Configuration {
     private boolean disableEnderchests = false;
 
     @ConfigData("world.disable-blaze-spawners")
-    private String[] disableBlazeSpawners = new String[]{"world_nether", "world_the_end"};
+    private List<String> disableBlazeSpawners = new ArrayList<>();
 
     @ConfigData("multiplier.exp")
     private int expMultiplier = 2;
 
     @ConfigData("spawn.spawn")
     @ConfigSerializer(serializer = LocationSerializer.class)
-    private Location spawn;
+    private Location spawn = Bukkit.getWorld("world").getSpawnLocation();
 
     public String getScoreboardKey(FLabel label) {
         if (!scoreboardKeys.containsKey(label.toString())) {

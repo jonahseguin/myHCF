@@ -1,6 +1,7 @@
 package com.shawckz.myhcf;
 
 import com.shawckz.myhcf.armorclass.ArmorClassManager;
+import com.shawckz.myhcf.armorclass.classes.Archer;
 import com.shawckz.myhcf.command.factions.FCommandManager;
 import com.shawckz.myhcf.command.normal.GCommandHandler;
 import com.shawckz.myhcf.command.normal.commands.CmdPvPTimer;
@@ -61,6 +62,7 @@ public class Factions extends JavaPlugin {
         gCommandHandler.registerCommands(new CmdPvPTimer());
 
         armorClassManager = new ArmorClassManager(this);
+        armorClassManager.registerArmorClass(new Archer());
         spawn = new Spawn(this);
     }
 

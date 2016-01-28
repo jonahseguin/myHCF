@@ -35,7 +35,7 @@ public class CmdFactionDisband implements HCFCommand {
             //Disband another fac
             Factions.getInstance().getFactionManager().getFaction(args.getArg(0), faction -> {
                 if (faction != null) {
-                    disband(faction, (sender instanceof Player ? sender.getName() : "Server"));
+                    disband(faction, sender);
                 }
                 else {
                     sender.sendMessage(ChatColor.RED + "Faction '" + args.getArg(0) + "' not found.");
@@ -51,7 +51,7 @@ public class CmdFactionDisband implements HCFCommand {
                         Faction faction = player.getFaction();
                         if (faction.isNormal()) {
                             if (faction.getDtrFreezeFinish() <= System.currentTimeMillis()) {
-                                disband(faction, sender.getName());
+                                disband(faction, sender);
                                 sender.sendMessage(ChatColor.YELLOW + "You disbanded your faction.");
                             }
                             else {
@@ -59,7 +59,7 @@ public class CmdFactionDisband implements HCFCommand {
                             }
                         }
                         else {
-                            disband(faction, sender.getName());
+                            disband(faction, sender);
                         }
                     }
                     else {
@@ -76,17 +76,18 @@ public class CmdFactionDisband implements HCFCommand {
         }
     }
 
-    public void disband(Faction faction, String disbander) {
+    public void disband(Faction faction, CommandSender disbander) {
         faction.delete();
         if (faction.isNormal()) {
             //Only broadcast if normal
-            Bukkit.broadcastMessage(FLang.format(FactionLang.FACTION_DISBAND_BROADCAST, faction.getDisplayName(), disbander));
+            Bukkit.broadcastMessage(FLang.format(FactionLang.FACTION_DISBAND_BROADCAST, faction.getDisplayName(), disbander.getName()));
         }
         Factions.getInstance().getFactionManager().removeFromCache(faction);
         for (HCFPlayer player : faction.getOnlineMembers()) {
             player.setFactionId(null);
         }
         Factions.getInstance().getLandBoard().unclaimAll(faction);
+        FLang.send(disbander, FactionLang.FACTION_DISBAND_FINISH, faction.getDisplayName());
     }
 
 }

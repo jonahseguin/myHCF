@@ -10,6 +10,7 @@ public class LocationSerializer extends AbstractSerializer<Location> {
 
     @Override
     public String toString(Location data) {
+        if(data == null) return null;
         String s = data.getWorld().getName() + ",";
         s += data.getBlockX() + ",";
         s += data.getBlockY() + ",";
@@ -21,7 +22,9 @@ public class LocationSerializer extends AbstractSerializer<Location> {
 
     @Override
     public Location fromString(Object data) {
-        if (data instanceof String) {
+        if (data != null && data instanceof String) {
+            Bukkit.getLogger().info("LocationSrializer fromString: " + ((String) data));
+            if(data.equals("NULL")) return null;
             String[] split = ((String) data).split(",");
 
             World world = Bukkit.getWorld(split[0]);

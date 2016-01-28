@@ -43,13 +43,19 @@ public class VisualMap implements Listener {
         new BukkitRunnable() {
             @Override
             public void run() {
+                if(queue.isEmpty()) return;
                 for (int i = 0; i < 5; i++) {
                     ClaimQueue q = queue.peek();
-                    if (queue.contains(q)) {
-                        queue.remove(q);
+                    if(q != null) {
+                        if (queue.contains(q)) {
+                            queue.remove(q);
+                        }
+                        if (q.getPlayer() != null && q.getPlayer().isOnline()) {
+                            drawNearClaims(q.getPlayer(), q.getLocation());
+                        }
                     }
-                    if (q.getPlayer() != null && q.getPlayer().isOnline()) {
-                        drawNearClaims(q.getPlayer(), q.getLocation());
+                    else{
+                        break;
                     }
                 }
             }

@@ -64,23 +64,21 @@ public class FCmdArgs {
      * @return The filtered String[]
      */
     private String[] filterFlags(String[] a) {//removes the flags
+        int flags = 0;
+        for(int i = 0; i < a.length; i++){
+            if(a[i].startsWith("-")){
+                flags++;
+            }
+        }
         int x = 0;
-        int removed = 0;
-        String[] newArgs = new String[a.length];
-        for (int i = 0; i < a.length; i++) {
-            String s = a[i];
+        String[] newArgs = new String[a.length - flags];
+        for (String s : a) {
             if (!s.startsWith("-")) {
                 newArgs[x] = s;
                 x++;
-            } else {
-                removed++;
             }
         }
-        String[] xArgs = new String[a.length - removed];
-        for (int i = 0; i < newArgs.length; i++) {
-            xArgs[i] = newArgs[i];
-        }
-        return xArgs;
+        return newArgs;
     }
 
     /**
