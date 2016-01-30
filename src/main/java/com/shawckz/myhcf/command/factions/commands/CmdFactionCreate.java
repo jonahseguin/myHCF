@@ -13,17 +13,19 @@ import com.shawckz.myhcf.configuration.FLang;
 import com.shawckz.myhcf.configuration.FactionLang;
 import com.shawckz.myhcf.configuration.FactionsConfig;
 import com.shawckz.myhcf.faction.Faction;
+import com.shawckz.myhcf.faction.FactionRole;
 import com.shawckz.myhcf.faction.FactionType;
 import com.shawckz.myhcf.faction.serial.FactionTypeSerializer;
 import com.shawckz.myhcf.player.HCFPlayer;
 import com.shawckz.myhcf.util.HCFException;
+
+import java.util.regex.Pattern;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
-
-import java.util.regex.Pattern;
 
 /**
  * Created by Jonah Seguin on 1/23/2016.
@@ -108,6 +110,7 @@ public class CmdFactionCreate implements HCFCommand {
 
                         faction.setLeader(hcfPlayer);
                         hcfPlayer.setFactionId(faction.getId());
+                        hcfPlayer.setFactionRole(FactionRole.LEADER);
 
                         Factions.getInstance().getFactionManager().addToCache(faction);
 

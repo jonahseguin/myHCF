@@ -76,8 +76,17 @@ public class HCFPlayer extends CachePlayer {
     }
 
     public Faction getFaction() {
-        if (Factions.getInstance().getFactionManager().isInCacheById(factionId)) {
-            return Factions.getInstance().getFactionManager().getLocalFactionById(factionId);
+        if(factionId != null) {
+            if (Factions.getInstance().getFactionManager().isInCacheById(factionId)) {
+                return Factions.getInstance().getFactionManager().getLocalFactionById(factionId);
+            }
+            else{
+                Faction faction = Factions.getInstance().getFactionManager().getFactionById(factionId);
+                if(faction != null){
+                    Factions.getInstance().getFactionManager().addToCache(faction);
+                }
+                return faction;
+            }
         }
         return null;
     }

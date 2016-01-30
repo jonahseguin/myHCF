@@ -15,15 +15,16 @@ import com.shawckz.myhcf.faction.Faction;
 import com.shawckz.myhcf.faction.FactionRole;
 import com.shawckz.myhcf.faction.FactionType;
 import com.shawckz.myhcf.player.HCFPlayer;
+
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
-
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Jonah Seguin on 1/24/2016.
@@ -162,7 +163,9 @@ public class CmdFactionInfo implements HCFCommand {
             }
 
             FLang.send(p, FactionLang.FACTION_INFO_MEMBERS, convertMembers(f));
-            FLang.send(p, FactionLang.FACTION_INFO_ALLIES, convertAllies(f));
+            if(f.getAllies().size() > 0) {
+                FLang.send(p, FactionLang.FACTION_INFO_ALLIES, convertAllies(f));
+            }
         }
         else {
             if (f.getFactionType() == FactionType.KOTH) {
