@@ -51,7 +51,9 @@ public enum FactionLang {
     ARMOR_CLASS_EQUIP("&aEquipped &eArmor Class &7--> &9{0}"),
     ARMOR_CLASS_REMOVE("&cRemoved &eArmor Class &7--> &9{0}"),
     ENDER_CHEST_DISABLED("&cEnder Chests are disabled."),
-    BLAZE_SPAWNER_DISABLED("&cDestroying Blaze Spawners is disabled in this world.")
+    BLAZE_SPAWNER_DISABLED("&cDestroying Blaze Spawners is disabled in this world."),
+    DEATH_MESSAGE("&9{0}&e died."),
+    DEATH_MESSAGE_PLAYER("&9{0} &ewas killed by &9{1}&e.")
     ;
 
     private final String defaultValue;

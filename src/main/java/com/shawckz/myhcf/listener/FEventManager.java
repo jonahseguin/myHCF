@@ -26,6 +26,7 @@ public class FEventManager {
         listeners.add(Factions.getInstance().getVisualMap());
         listeners.add(new ExpMultiplierListener());
         listeners.add(new WrenchListener());
+        listeners.add(new DeathMessageListener());
     }
 
     public void add(Listener listener) {
