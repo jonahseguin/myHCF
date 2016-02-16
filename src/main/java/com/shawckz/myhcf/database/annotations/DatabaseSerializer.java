@@ -1,4 +1,4 @@
-package com.shawckz.myhcf.database.mongo.annotations;
+package com.shawckz.myhcf.database.annotations;
 
 
 import java.lang.annotation.ElementType;

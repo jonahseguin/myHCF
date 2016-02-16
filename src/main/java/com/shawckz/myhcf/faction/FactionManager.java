@@ -1,15 +1,19 @@
 package com.shawckz.myhcf.faction;
 
-import com.mongodb.BasicDBObject;
 import com.shawckz.myhcf.Factions;
-import com.shawckz.myhcf.database.mongo.AutoMongo;
+import com.shawckz.myhcf.database.AutoDBer;
+import com.shawckz.myhcf.database.search.SearchText;
 import com.shawckz.myhcf.event.FactionLoadEvent;
 import com.shawckz.myhcf.event.FactionUnloadEvent;
-import com.shawckz.myhcf.faction.data.MongoFaction;
+import com.shawckz.myhcf.faction.data.DBFaction;
 import com.shawckz.myhcf.util.HCFException;
-import org.bukkit.Bukkit;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
+import org.bukkit.Bukkit;
 
 public class FactionManager {
 
@@ -17,6 +21,12 @@ public class FactionManager {
 
     public Collection<Faction> getFactions() {
         return factions.values();
+    }
+
+    private final AutoDBer db = new AutoDBer(Factions.getDataMode());
+
+    public AutoDBer getDbHandler() {
+        return db;
     }
 
     public void addToCache(Faction faction) {
@@ -39,9 +49,9 @@ public class FactionManager {
     }
 
     public Faction createFaction(String name, FactionType type) {
-        if (Factions.DATA_MODE == FDataMode.MONGO) {
+        if (Factions.getDataMode() == FDataMode.MONGO) {
             String id = UUID.randomUUID().toString().toLowerCase(); //Maybe use an md5 of the name for the ID instead?
-            return new MongoFaction(id, name.toLowerCase(), name, type);
+            return new DBFaction(id, name.toLowerCase(), name, type);
         }
         else {
             throw new HCFException("Could not create a faction (unknown data mode)");
@@ -127,37 +137,19 @@ public class FactionManager {
     }
 
     public Faction getFactionFromDatabase(String name) {
-        if (Factions.DATA_MODE == FDataMode.MONGO) {
-            List<AutoMongo> mongos = MongoFaction.select(new BasicDBObject("name", name), MongoFaction.class);
-            for (AutoMongo mongo : mongos) {
-                if (mongo instanceof MongoFaction) {
-                    MongoFaction faction = (MongoFaction) mongo;
-                    if (faction.getName().equalsIgnoreCase(name)) {
-                        return faction;
-                    }
-                }
-            }
-        }
-        else {
-            throw new HCFException("Could not get faction from database by name '" + name + "' (unregistered FDataMode)");
+        DBFaction dbFaction = new DBFaction();
+        db.getAutoDB().fetch(dbFaction, new SearchText("name", name));
+        if(dbFaction.getName().equalsIgnoreCase(name)){
+            return dbFaction;
         }
         return null;
     }
 
     public Faction getFactionFromDatabaseById(String id) {
-        if (Factions.DATA_MODE == FDataMode.MONGO) {
-            List<AutoMongo> mongos = MongoFaction.select(new BasicDBObject("_id", id), MongoFaction.class);
-            for (AutoMongo mongo : mongos) {
-                if (mongo instanceof MongoFaction) {
-                    MongoFaction faction = (MongoFaction) mongo;
-                    if (faction.getId().equalsIgnoreCase(id)) {
-                        return faction;
-                    }
-                }
-            }
-        }
-        else {
-            throw new HCFException("Could not get faction from database by id '" + id + "' (unregistered FDataMode)");
+        DBFaction dbFaction = new DBFaction();
+        db.getAutoDB().fetch(dbFaction, new SearchText("_id", id));
+        if(dbFaction.getId().equalsIgnoreCase(id)){
+            return dbFaction;
         }
         return null;
     }

@@ -1,11 +1,13 @@
 package com.shawckz.myhcf.land;
 
 import com.shawckz.myhcf.Factions;
+import com.shawckz.myhcf.database.AutoDBer;
 import com.shawckz.myhcf.faction.Faction;
-import org.bukkit.Location;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
+
+import org.bukkit.Location;
+import org.bukkit.scheduler.BukkitRunnable;
 
 /**
  * Created by 360 on 14/07/2015.
@@ -13,6 +15,12 @@ import java.util.*;
 public class LandBoard {
 
     private final Map<Claim, String> land = new HashMap<>();
+
+    private final AutoDBer db = new AutoDBer(Factions.getDataMode());
+
+    public AutoDBer getDbHandler() {
+        return db;
+    }
 
     public boolean isProtected(Location loc) {
         Faction f = getFactionAt(loc);
@@ -96,7 +104,7 @@ public class LandBoard {
             @Override
             public void run() {
                 for (Claim claim : delete) {
-                    claim.delete();
+                    db.getAutoDB().delete(claim);
                 }
             }
         }.runTaskAsynchronously(Factions.getInstance());

@@ -5,11 +5,11 @@
 
 package com.shawckz.myhcf.koth;
 
-import com.mongodb.BasicDBObject;
-import com.shawckz.myhcf.database.mongo.AutoMongo;
+import com.mongodb.client.MongoCursor;
+import com.shawckz.myhcf.Factions;
+import org.bson.Document;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -24,12 +24,12 @@ public class KothManager {
 
     public void loadKoths() {
         koths.clear();
-        List<AutoMongo> m = Koth.select(new BasicDBObject(), Koth.class);
-        for (AutoMongo mongo : m) {
-            if (mongo instanceof Koth) {
-                Koth koth = (Koth) mongo;
-                koths.put(koth.getName(), koth);
-            }
+        MongoCursor<Document> it = Factions.getInstance().getDatabaseManager().getDatabase().getCollection("myhcfkoths").find().iterator();
+        while(it.hasNext()){
+            Document doc = it.next();
+            Koth koth = new Koth();
+            Factions.getInstance().getFactionManager().getDbHandler().getAutoDB().fromDocument(koth, doc);
+            koths.put(koth.getName(), koth);
         }
     }
 

@@ -1,7 +1,12 @@
 package com.shawckz.myhcf.player.cache;
 
+import com.shawckz.myhcf.Factions;
+import com.shawckz.myhcf.database.AutoDBer;
+import com.shawckz.myhcf.database.annotations.DBColumn;
+import com.shawckz.myhcf.database.search.SearchText;
+import com.shawckz.myhcf.util.HCFException;
+
 import java.lang.reflect.Field;
-import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -16,10 +21,6 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import com.mongodb.BasicDBObject;
-import com.shawckz.myhcf.database.mongo.AutoMongo;
-import com.shawckz.myhcf.database.mongo.annotations.MongoColumn;
-
 /*
  * Copyright (c) 2015 Jonah Seguin (Shawckz).  All rights reserved.  You may not modify, decompile, distribute or use any code/text contained in this document(plugin) without explicit signed permission from Jonah Seguin.
  */
@@ -33,11 +34,13 @@ public abstract class AbstractCache implements Listener {
     private final static ConcurrentMap<String, CachePlayer> playersUUID = new ConcurrentHashMap<>();
     private final Plugin plugin;
     private final Class<? extends CachePlayer> aClass;
+    private final AutoDBer db;
 
     public AbstractCache(Plugin plugin, Class<? extends CachePlayer> aClass) {
         this.plugin = plugin;
         this.aClass = aClass;
         Bukkit.getServer().getPluginManager().registerEvents(this, plugin);
+        this.db = new AutoDBer(Factions.getInstance().getFactionsConfig().getDataMode());
     }
 
     public ConcurrentMap<String, CachePlayer> getPlayersMap() {
@@ -84,7 +87,7 @@ public abstract class AbstractCache implements Listener {
     public CachePlayer loadCachePlayer(String name) {
         String key = "username";
         for (Field f : aClass.getDeclaredFields()) {
-            MongoColumn row = f.getAnnotation(MongoColumn.class);
+            DBColumn row = f.getAnnotation(DBColumn.class);
             if (row != null) {
                 if (row.identifier()) {
                     if (row.name().equalsIgnoreCase("name") || f.getName().equalsIgnoreCase("username")) {
@@ -95,20 +98,21 @@ public abstract class AbstractCache implements Listener {
             }
         }
 
-        List<AutoMongo> autoMongos = CachePlayer.select(new BasicDBObject(key, name), aClass);
-        for (AutoMongo mongo : autoMongos) {
-            if (mongo instanceof CachePlayer) {
-                CachePlayer cachePlayer = (CachePlayer) mongo;
-                return cachePlayer;
-            }
+        try{
+            CachePlayer cachePlayer = aClass.newInstance();
+            db.getAutoDB().fetch(cachePlayer, new SearchText(key, name));
+
+            return cachePlayer;
         }
-        return null;
+        catch (InstantiationException | IllegalAccessException ex) {
+            throw new HCFException("Could not instantiate CachePlayer");
+        }
     }
 
     public CachePlayer loadCachePlayerByid(String uuid) {
         String key = "uniqueId";
         for (Field f : aClass.getDeclaredFields()) {
-            MongoColumn row = f.getAnnotation(MongoColumn.class);
+            DBColumn row = f.getAnnotation(DBColumn.class);
             if (row != null) {
                 if (row.identifier()) {
                     if (row.name().equalsIgnoreCase("uuid") || f.getName().equalsIgnoreCase("id") || f.getName().equalsIgnoreCase("uniqueId")) {
@@ -119,14 +123,15 @@ public abstract class AbstractCache implements Listener {
             }
         }
 
-        List<AutoMongo> autoMongos = CachePlayer.select(new BasicDBObject(key, uuid), aClass);
-        for (AutoMongo mongo : autoMongos) {
-            if (mongo instanceof CachePlayer) {
-                CachePlayer cachePlayer = (CachePlayer) mongo;
-                return cachePlayer;
-            }
+        try{
+            CachePlayer cachePlayer = aClass.newInstance();
+            db.getAutoDB().fetch(cachePlayer, new SearchText(key, uuid));
+
+            return cachePlayer;
         }
-        return null;
+        catch (InstantiationException | IllegalAccessException ex) {
+            throw new HCFException("Could not instantiate CachePlayer");
+        }
     }
 
     public CachePlayer getBasePlayer(Player p) {
@@ -171,7 +176,7 @@ public abstract class AbstractCache implements Listener {
         } else {
             cp = create(name, uuid);
             put(cp);
-            cp.update();
+            db.getAutoDB().push(cp);
         }
     }
 
@@ -200,7 +205,7 @@ public abstract class AbstractCache implements Listener {
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    cachePlayer.update();
+                    db.getAutoDB().push(cachePlayer);
                 }
             }.runTaskAsynchronously(plugin);
         }

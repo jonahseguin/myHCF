@@ -77,7 +77,7 @@ public class CmdFactionDisband implements HCFCommand {
     }
 
     public void disband(Faction faction, CommandSender disbander) {
-        faction.delete();
+        Factions.getInstance().getFactionManager().getDbHandler().getAutoDB().delete(faction);
         if (faction.isNormal()) {
             //Only broadcast if normal
             Bukkit.broadcastMessage(FLang.format(FactionLang.FACTION_DISBAND_BROADCAST, faction.getDisplayName(), disbander.getName()));

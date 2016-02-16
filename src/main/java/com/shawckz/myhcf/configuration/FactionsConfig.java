@@ -4,23 +4,26 @@ import com.shawckz.myhcf.Factions;
 import com.shawckz.myhcf.configuration.annotations.ConfigData;
 import com.shawckz.myhcf.configuration.annotations.ConfigSerializer;
 import com.shawckz.myhcf.configuration.serial.MaterialSerializer;
-import com.shawckz.myhcf.database.mongo.serial.LocationSerializer;
-import com.shawckz.myhcf.database.mongo.serial.MapSerializer;
+import com.shawckz.myhcf.database.serial.LocationSerializer;
+import com.shawckz.myhcf.database.serial.MapSerializer;
 import com.shawckz.myhcf.deathban.DeathbanRank;
+import com.shawckz.myhcf.faction.FDataMode;
 import com.shawckz.myhcf.scoreboard.hcf.FLabel;
+import com.shawckz.myhcf.util.DataModeSerializer;
 import com.shawckz.myhcf.util.HCFException;
 import lombok.Getter;
 import lombok.Setter;
 import net.md_5.bungee.api.ChatColor;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.plugin.Plugin;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.plugin.Plugin;
 
 
 @Getter
@@ -66,6 +69,10 @@ public class FactionsConfig extends Configuration {
     }
 
     //No final variables (if they are in the config)
+
+    @ConfigData("datamode")
+    @ConfigSerializer(serializer = DataModeSerializer.class)
+    private FDataMode dataMode;
 
     @ConfigData("debug")
     private boolean debug = false;
@@ -186,6 +193,16 @@ public class FactionsConfig extends Configuration {
     @ConfigData("spawn.spawn")
     @ConfigSerializer(serializer = LocationSerializer.class)
     private Location spawn = Bukkit.getWorld("world").getSpawnLocation();
+
+    @ConfigData("wrench.material")
+    @ConfigSerializer(serializer = MaterialSerializer.class)
+    private Material wrenchMaterial = Material.GOLD_PICKAXE;
+
+    @ConfigData("wrench.name")
+    private String wrenchName = "&7[&6Wrench&7]";
+
+    @ConfigData("wrench.uses")
+    private int wrenchUses = 1;
 
     public String getScoreboardKey(FLabel label) {
         if (!scoreboardKeys.containsKey(label.toString())) {

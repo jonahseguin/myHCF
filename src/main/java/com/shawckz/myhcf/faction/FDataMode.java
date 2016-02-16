@@ -13,7 +13,8 @@ package com.shawckz.myhcf.faction;
  */
 public enum FDataMode {
 
-    MONGO
+    MONGO,
+    JSON
     //Planning on adding flat file support soon, possibly SQL
 
 }

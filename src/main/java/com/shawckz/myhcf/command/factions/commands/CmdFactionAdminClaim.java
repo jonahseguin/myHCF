@@ -40,7 +40,7 @@ public class CmdFactionAdminClaim implements HCFCommand {
                         new BukkitRunnable() {
                             @Override
                             public void run() {
-                                claim.update();
+                                Factions.getInstance().getLandBoard().getDbHandler().getAutoDB().push(claim);
                             }
                         }.runTaskAsynchronously(Factions.getInstance());
                         p.sendMessage(ChatColor.YELLOW + "Successfully admin-claimed for faction '" + faction.getDisplayName() + "'.");

@@ -1,11 +1,12 @@
 package com.shawckz.myhcf.listener;
 
 import com.shawckz.myhcf.Factions;
-import org.bukkit.event.HandlerList;
-import org.bukkit.event.Listener;
 
 import java.util.HashSet;
 import java.util.Set;
+
+import org.bukkit.event.HandlerList;
+import org.bukkit.event.Listener;
 
 public class FEventManager {
 
@@ -24,6 +25,7 @@ public class FEventManager {
         listeners.add(new FoundDiamondsListener());
         listeners.add(Factions.getInstance().getVisualMap());
         listeners.add(new ExpMultiplierListener());
+        listeners.add(new WrenchListener());
     }
 
     public void add(Listener listener) {

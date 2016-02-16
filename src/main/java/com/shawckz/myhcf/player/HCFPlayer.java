@@ -2,8 +2,8 @@ package com.shawckz.myhcf.player;
 
 import com.shawckz.myhcf.Factions;
 import com.shawckz.myhcf.armorclass.ArmorClassType;
-import com.shawckz.myhcf.database.mongo.annotations.CollectionName;
-import com.shawckz.myhcf.database.mongo.annotations.MongoColumn;
+import com.shawckz.myhcf.database.annotations.CollectionName;
+import com.shawckz.myhcf.database.annotations.DBColumn;
 import com.shawckz.myhcf.deathban.DeathbanRank;
 import com.shawckz.myhcf.faction.Faction;
 import com.shawckz.myhcf.faction.FactionRole;
@@ -29,30 +29,30 @@ public class HCFPlayer extends CachePlayer {
         //Leave empty constructor so that AutoMongo can instantiate
     }
 
-    @MongoColumn(name = "name")//Don't make name an identifier as it could change and mess up the database query.
+    @DBColumn(name = "name")//Don't make name an identifier as it could change and mess up the database query.
     @NonNull
     private String name;
 
-    @MongoColumn(name = "uniqueId", identifier = true)
+    @DBColumn(name = "uniqueId", identifier = true)
     @NonNull
     private String uniqueId;
 
-    @MongoColumn(name = "factionId")
+    @DBColumn(name = "factionId")
     private String factionId = null;
 
-    @MongoColumn
+    @DBColumn
     private FactionRole factionRole = FactionRole.MEMBER;
 
-    @MongoColumn
+    @DBColumn
     private int lives = 0;
 
-    @MongoColumn
+    @DBColumn
     private long deathban = 0L;
 
-    @MongoColumn
+    @DBColumn
     private String deathbanRank = "default";
 
-    @MongoColumn
+    @DBColumn
     private double balance = 0.0D;
 
     private Player bukkitPlayer;

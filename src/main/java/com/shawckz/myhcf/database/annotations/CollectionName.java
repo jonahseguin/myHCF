@@ -1,16 +1,13 @@
-package com.shawckz.myhcf.database.mongo.annotations;
+package com.shawckz.myhcf.database.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
-public @interface MongoColumn {
+@Target(ElementType.TYPE)
+public @interface CollectionName {
 
-    String name() default "";
-
-    boolean identifier() default false;
+    String name();
 }

@@ -6,12 +6,12 @@ package com.shawckz.myhcf.player.cache;
  */
 
 
-import com.shawckz.myhcf.database.mongo.AutoMongo;
+import com.shawckz.myhcf.database.AutoDBable;
 
 /**
  * Created by Jonah on 6/11/2015.
  */
-public abstract class CachePlayer extends AutoMongo {
+public abstract class CachePlayer implements AutoDBable {
 
     public CachePlayer() {
     }

@@ -1,17 +1,18 @@
 package com.shawckz.myhcf.land;
 
 import com.shawckz.myhcf.Factions;
-import com.shawckz.myhcf.database.mongo.AutoMongo;
-import com.shawckz.myhcf.database.mongo.annotations.CollectionName;
-import com.shawckz.myhcf.database.mongo.annotations.MongoColumn;
+import com.shawckz.myhcf.database.AutoDBable;
+import com.shawckz.myhcf.database.annotations.CollectionName;
+import com.shawckz.myhcf.database.annotations.DBColumn;
 import com.shawckz.myhcf.util.HCFException;
 import lombok.*;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
 
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 
 /**
  * Created by 360 on 21/07/2015.
@@ -21,32 +22,32 @@ import java.util.Set;
 @Getter
 @Setter
 @CollectionName(name = "myhcfclaims")
-public class Claim extends AutoMongo implements Iterable<Coordinate> {
+public class Claim implements AutoDBable, Iterable<Coordinate> {
 
     @NonNull
-    @MongoColumn
+    @DBColumn
     private String factionID;
 
     @NonNull
-    @MongoColumn
+    @DBColumn
     private String world;
     @NonNull
-    @MongoColumn
+    @DBColumn
     private int minX;
     @NonNull
-    @MongoColumn
+    @DBColumn
     private int minY;
     @NonNull
-    @MongoColumn
+    @DBColumn
     private int minZ;
     @NonNull
-    @MongoColumn
+    @DBColumn
     private int maxX;
     @NonNull
-    @MongoColumn
+    @DBColumn
     private int maxY;
     @NonNull
-    @MongoColumn
+    @DBColumn
     private int maxZ;
 
     private ClaimType claimType = ClaimType.NORMAL;

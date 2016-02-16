@@ -16,6 +16,7 @@ import com.shawckz.myhcf.land.claiming.VisualMap;
 import com.shawckz.myhcf.listener.FEventManager;
 import com.shawckz.myhcf.player.HCFCache;
 import com.shawckz.myhcf.spawn.Spawn;
+
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
@@ -25,8 +26,6 @@ import org.bukkit.plugin.java.JavaPlugin;
  * @version 0.0.0
  */
 public class Factions extends JavaPlugin {
-
-    public static final FDataMode DATA_MODE = FDataMode.MONGO;// TODO: Change to a getter and make configurable
 
     private static Factions instance;
 
@@ -145,4 +144,9 @@ public class Factions extends JavaPlugin {
     public Spawn getSpawn() {
         return spawn;
     }
+
+    public static FDataMode getDataMode() {
+        return getInstance().getFactionsConfig().getDataMode();
+    }
+
 }

@@ -5,16 +5,19 @@
 
 package com.shawckz.myhcf.spawn;
 
-import com.mongodb.BasicDBObject;
+import com.mongodb.client.MongoCursor;
 import com.shawckz.myhcf.Factions;
-import com.shawckz.myhcf.database.mongo.AutoMongo;
 import com.shawckz.myhcf.faction.Faction;
 import com.shawckz.myhcf.faction.FactionType;
-import com.shawckz.myhcf.faction.data.MongoFaction;
+import com.shawckz.myhcf.faction.data.DBFaction;
 import com.shawckz.myhcf.land.Claim;
 import com.shawckz.myhcf.land.LandBoard;
 import com.shawckz.myhcf.player.HCFPlayer;
 import com.shawckz.myhcf.scoreboard.hcf.FLabel;
+import org.bson.Document;
+
+import java.util.Set;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -22,9 +25,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
-
-import java.util.List;
-import java.util.Set;
 
 /**
  * Created by Jonah Seguin on 1/25/2016.
@@ -41,20 +41,22 @@ public class Spawn implements Listener {
 
     public Spawn(Factions instance) {
         boolean foundFac = false;
-        List<AutoMongo> mongos = MongoFaction.select(new BasicDBObject("factionType", FactionType.SPAWN.toString()), MongoFaction.class);
-        for (AutoMongo mongo : mongos) {
-            if (mongo instanceof MongoFaction) {
-                MongoFaction mongoFaction = (MongoFaction) mongo;
-                if (mongoFaction.getFactionType() == FactionType.SPAWN) {
-                    this.spawnFaction = mongoFaction;
-                    foundFac = true;
-                    break;
-                }
+        MongoCursor<Document> it = Factions.getInstance().getDatabaseManager().getDatabase().getCollection("myhcffactions").find(new Document("factionType", FactionType.SPAWN.toString())).iterator();
+
+        while(it.hasNext()) {
+            Document doc = it.next();
+            DBFaction fac = new DBFaction();
+            Factions.getInstance().getFactionManager().getDbHandler().getAutoDB().fromDocument(fac, doc);
+            if(fac.getFactionType() == FactionType.SPAWN) {
+                this.spawnFaction = fac;
+                foundFac = true;
+                break;
             }
         }
+
         if (!foundFac) {
             this.spawnFaction = Factions.getInstance().getFactionManager().createFaction("Spawn", FactionType.SPAWN);
-            spawnFaction.save();
+            Factions.getInstance().getFactionManager().getDbHandler().getAutoDB().push(spawnFaction);
         }
 
         instance.getFactionManager().addToCache(spawnFaction);

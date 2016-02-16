@@ -1,14 +1,14 @@
 package com.shawckz.myhcf.faction;
 
+import com.shawckz.myhcf.database.AutoDBable;
 import com.shawckz.myhcf.player.HCFPlayer;
 import com.shawckz.myhcf.util.Relation;
-import org.bukkit.Location;
 
 import java.util.Set;
 
-public interface Faction {
+import org.bukkit.Location;
 
-    void save();
+public interface Faction extends AutoDBable {
 
     String getId();
 
@@ -75,8 +75,6 @@ public interface Faction {
     Relation getRelationTo(Faction faction);
 
     Set<String> getAllies();
-
-    void delete();
 
     String getDescription();
 

@@ -1,4 +1,4 @@
-package com.shawckz.myhcf.database.mongo.serial;
+package com.shawckz.myhcf.database.serial;
 
 import java.util.HashMap;
 

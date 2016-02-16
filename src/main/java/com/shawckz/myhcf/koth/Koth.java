@@ -6,15 +6,16 @@
 package com.shawckz.myhcf.koth;
 
 import com.shawckz.myhcf.Factions;
-import com.shawckz.myhcf.database.mongo.AutoMongo;
-import com.shawckz.myhcf.database.mongo.annotations.CollectionName;
-import com.shawckz.myhcf.database.mongo.annotations.DatabaseSerializer;
-import com.shawckz.myhcf.database.mongo.annotations.MongoColumn;
-import com.shawckz.myhcf.database.mongo.serial.LocationSerializer;
+import com.shawckz.myhcf.database.AutoDBable;
+import com.shawckz.myhcf.database.annotations.CollectionName;
+import com.shawckz.myhcf.database.annotations.DBColumn;
+import com.shawckz.myhcf.database.annotations.DatabaseSerializer;
+import com.shawckz.myhcf.database.serial.LocationSerializer;
 import com.shawckz.myhcf.faction.Faction;
 import com.shawckz.myhcf.faction.FactionType;
 import com.shawckz.myhcf.spawn.WallRadius;
 import lombok.Getter;
+
 import org.bukkit.Location;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -26,20 +27,20 @@ import org.bukkit.scheduler.BukkitRunnable;
  */
 @Getter
 @CollectionName(name = "myhcfkoths")
-public class Koth extends AutoMongo {
+public class Koth implements AutoDBable {
 
-    @MongoColumn
+    @DBColumn
     private String name;
 
-    @MongoColumn
+    @DBColumn
     @DatabaseSerializer(serializer = LocationSerializer.class)
     private Location pos1;
 
-    @MongoColumn
+    @DBColumn
     @DatabaseSerializer(serializer = LocationSerializer.class)
     private Location pos2;
 
-    @MongoColumn
+    @DBColumn
     private String factionID;
 
     private WallRadius wallRadius;
@@ -59,7 +60,7 @@ public class Koth extends AutoMongo {
         new BukkitRunnable() {
             @Override
             public void run() {
-                faction.save();
+                Factions.getInstance().getFactionManager().getDbHandler().getAutoDB().push(faction);
             }
         }.runTaskAsynchronously(Factions.getInstance());
         wallRadius.updateCache();

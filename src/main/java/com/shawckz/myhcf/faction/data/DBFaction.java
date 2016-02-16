@@ -3,11 +3,11 @@ package com.shawckz.myhcf.faction.data;
 import com.shawckz.myhcf.Factions;
 import com.shawckz.myhcf.configuration.FLang;
 import com.shawckz.myhcf.configuration.FactionLang;
-import com.shawckz.myhcf.database.mongo.AutoMongo;
-import com.shawckz.myhcf.database.mongo.annotations.CollectionName;
-import com.shawckz.myhcf.database.mongo.annotations.DatabaseSerializer;
-import com.shawckz.myhcf.database.mongo.annotations.MongoColumn;
-import com.shawckz.myhcf.database.mongo.serial.LocationSerializer;
+import com.shawckz.myhcf.database.AutoDBable;
+import com.shawckz.myhcf.database.annotations.CollectionName;
+import com.shawckz.myhcf.database.annotations.DBColumn;
+import com.shawckz.myhcf.database.annotations.DatabaseSerializer;
+import com.shawckz.myhcf.database.serial.LocationSerializer;
 import com.shawckz.myhcf.faction.Faction;
 import com.shawckz.myhcf.faction.FactionRole;
 import com.shawckz.myhcf.faction.FactionType;
@@ -19,67 +19,68 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
+
 @CollectionName(name = "myhcffactions")
 @Getter
 @Setter
 @RequiredArgsConstructor
-public class MongoFaction extends AutoMongo implements Faction {
+public class DBFaction implements AutoDBable, Faction {
 
     @NonNull
-    @MongoColumn(name = "_id", identifier = true)
+    @DBColumn(name = "_id", identifier = true)
     private String id;
 
     @NonNull
-    @MongoColumn
+    @DBColumn
     private String name;
 
     @NonNull
-    @MongoColumn
+    @DBColumn
     private String displayName;
 
     @NonNull
-    @MongoColumn
+    @DBColumn
     @DatabaseSerializer(serializer = FactionTypeSerializer.class)
     private FactionType factionType;
 
-    @MongoColumn
+    @DBColumn
     private String description = "Default faction description";
 
-    @MongoColumn
+    @DBColumn
     @DatabaseSerializer(serializer = LocationSerializer.class)
     private Location home = null;
-    @MongoColumn
+    @DBColumn
     private double deathsUntilRaidable = Factions.getInstance().getFactionsConfig().getBaseDtr();
 
-    @MongoColumn
+    @DBColumn
     @DatabaseSerializer(serializer = HCFPlayerIdSerializer.class)
     private HCFPlayer leader;
 
-    @MongoColumn
+    @DBColumn
     private double balance = 0.0D;
 
-    @MongoColumn
+    @DBColumn
     private long dtrFreezeFinish = 0L;
 
-    @MongoColumn
+    @DBColumn
     private Set<String> allies = new HashSet<>();//(Set<Faction ID>)
 
-    @MongoColumn
+    @DBColumn
     private Set<String> members = new HashSet<>();//(Set<Player UUID>)
 
-    @MongoColumn
+    @DBColumn
     private Set<String> invitations = new HashSet<>();//(Set<Player UUID>)
 
-    public MongoFaction() {
+    public DBFaction() {
     } //Leave empty constructor so that AutoMongo can instantiate.
 
     @Override
@@ -197,11 +198,6 @@ public class MongoFaction extends AutoMongo implements Faction {
         for (String s : members) {
             Factions.getInstance().getCache().getHCFPlayerByUUID(s);
         }
-    }
-
-    @Override
-    public void save() {
-        update();
     }
 
     @Override
