@@ -46,7 +46,7 @@ public class Spawn implements Listener {
         while(it.hasNext()) {
             Document doc = it.next();
             DBFaction fac = new DBFaction();
-            Factions.getInstance().getFactionManager().getDbHandler().getAutoDB().fromDocument(fac, doc);
+            Factions.getInstance().getDbHandler().fromDocument(fac, doc);
             if(fac.getFactionType() == FactionType.SPAWN) {
                 this.spawnFaction = fac;
                 foundFac = true;
@@ -56,7 +56,7 @@ public class Spawn implements Listener {
 
         if (!foundFac) {
             this.spawnFaction = Factions.getInstance().getFactionManager().createFaction("Spawn", FactionType.SPAWN);
-            Factions.getInstance().getFactionManager().getDbHandler().getAutoDB().push(spawnFaction);
+            Factions.getInstance().getDbHandler().push(spawnFaction);
         }
 
         instance.getFactionManager().addToCache(spawnFaction);

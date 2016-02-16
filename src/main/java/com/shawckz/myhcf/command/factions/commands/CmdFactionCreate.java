@@ -80,7 +80,7 @@ public class CmdFactionCreate implements HCFCommand {
                     new BukkitRunnable(){
                         @Override
                         public void run() {
-                            Factions.getInstance().getFactionManager().getDbHandler().getAutoDB().push(faction);
+                            Factions.getInstance().getDbHandler().push(faction);
                         }
                     }.runTaskAsynchronously(Factions.getInstance());
 
@@ -118,7 +118,7 @@ public class CmdFactionCreate implements HCFCommand {
 
                         sender.sendMessage(FLang.format(FactionLang.FACTION_CREATE_FINISH));
 
-                        Factions.getInstance().getFactionManager().getDbHandler().getAutoDB().push(faction);
+                        Factions.getInstance().getDbHandler().push(faction);
                     }
                     else {
                         sender.sendMessage(ChatColor.RED + "A faction with name '" + name + "' already exists.");

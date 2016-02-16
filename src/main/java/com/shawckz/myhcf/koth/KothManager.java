@@ -28,7 +28,7 @@ public class KothManager {
         while(it.hasNext()){
             Document doc = it.next();
             Koth koth = new Koth();
-            Factions.getInstance().getFactionManager().getDbHandler().getAutoDB().fromDocument(koth, doc);
+            Factions.getInstance().getDbHandler().fromDocument(koth, doc);
             koths.put(koth.getName(), koth);
         }
     }

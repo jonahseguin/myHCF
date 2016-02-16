@@ -60,7 +60,7 @@ public class Koth implements AutoDBable {
         new BukkitRunnable() {
             @Override
             public void run() {
-                Factions.getInstance().getFactionManager().getDbHandler().getAutoDB().push(faction);
+                Factions.getInstance().getDbHandler().push(faction);
             }
         }.runTaskAsynchronously(Factions.getInstance());
         wallRadius.updateCache();

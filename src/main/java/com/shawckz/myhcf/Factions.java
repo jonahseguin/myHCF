@@ -7,6 +7,8 @@ import com.shawckz.myhcf.command.normal.GCommandHandler;
 import com.shawckz.myhcf.command.normal.commands.CmdPvPTimer;
 import com.shawckz.myhcf.configuration.FactionsConfig;
 import com.shawckz.myhcf.configuration.LanguageConfig;
+import com.shawckz.myhcf.database.AutoDB;
+import com.shawckz.myhcf.database.AutoDBer;
 import com.shawckz.myhcf.database.DatabaseManager;
 import com.shawckz.myhcf.deathban.DeathbanRankManager;
 import com.shawckz.myhcf.faction.FDataMode;
@@ -30,6 +32,7 @@ public class Factions extends JavaPlugin {
     private static Factions instance;
 
     private DatabaseManager databaseManager;
+    private AutoDBer dbHandler;
     private HCFCache cache;
     private FCommandManager commandManager;
     private FEventManager fEventManager;
@@ -49,6 +52,7 @@ public class Factions extends JavaPlugin {
         factionsConfig = new FactionsConfig(this);
         lang = new LanguageConfig(this);
         databaseManager = new DatabaseManager(this);
+        dbHandler = new AutoDBer(getDataMode());
         cache = new HCFCache(this);
         commandManager = new FCommandManager(this);
         factionManager = new FactionManager();
@@ -79,6 +83,10 @@ public class Factions extends JavaPlugin {
         factionsConfig = null;
         lang = null;
         instance = null;
+    }
+
+    public AutoDB getDbHandler() {
+        return dbHandler.getAutoDB();
     }
 
     public GCommandHandler getGCommandHandler() {

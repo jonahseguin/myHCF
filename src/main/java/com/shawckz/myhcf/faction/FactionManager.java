@@ -1,7 +1,6 @@
 package com.shawckz.myhcf.faction;
 
 import com.shawckz.myhcf.Factions;
-import com.shawckz.myhcf.database.AutoDBer;
 import com.shawckz.myhcf.database.search.SearchText;
 import com.shawckz.myhcf.event.FactionLoadEvent;
 import com.shawckz.myhcf.event.FactionUnloadEvent;
@@ -21,12 +20,6 @@ public class FactionManager {
 
     public Collection<Faction> getFactions() {
         return factions.values();
-    }
-
-    private final AutoDBer db = new AutoDBer(Factions.getDataMode());
-
-    public AutoDBer getDbHandler() {
-        return db;
     }
 
     public void addToCache(Faction faction) {
@@ -138,7 +131,7 @@ public class FactionManager {
 
     public Faction getFactionFromDatabase(String name) {
         DBFaction dbFaction = new DBFaction();
-        db.getAutoDB().fetch(dbFaction, new SearchText("name", name));
+        Factions.getInstance().getDbHandler().fetch(dbFaction, new SearchText("name", name));
         if(dbFaction.getName().equalsIgnoreCase(name)){
             return dbFaction;
         }
@@ -147,7 +140,7 @@ public class FactionManager {
 
     public Faction getFactionFromDatabaseById(String id) {
         DBFaction dbFaction = new DBFaction();
-        db.getAutoDB().fetch(dbFaction, new SearchText("_id", id));
+        Factions.getInstance().getDbHandler().fetch(dbFaction, new SearchText("_id", id));
         if(dbFaction.getId().equalsIgnoreCase(id)){
             return dbFaction;
         }
