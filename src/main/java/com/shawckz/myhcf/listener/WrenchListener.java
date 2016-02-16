@@ -15,6 +15,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 
 public class WrenchListener implements Listener {
 
@@ -43,6 +44,16 @@ public class WrenchListener implements Listener {
                         throw new HCFException("Could not get wrench correctly");
                     }
                 }
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onPlace(BlockPlaceEvent e) {
+        if(!e.isCancelled()) {
+            if(e.getBlock().getType() == Material.MOB_SPAWNER){
+                CreatureSpawner spawner = (CreatureSpawner) e.getBlock().getState();
+                spawner.setSpawnedType(WrenchSpawner.fromItem(e.getItemInHand()));
             }
         }
     }
