@@ -1,15 +1,17 @@
 package com.shawckz.myhcf.database;
 
-import java.util.Arrays;
-
-import org.bukkit.plugin.Plugin;
-
 import com.mongodb.MongoClient;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoDatabase;
+import com.shawckz.myhcf.Factions;
 import com.shawckz.myhcf.configuration.Configuration;
 import com.shawckz.myhcf.configuration.annotations.ConfigData;
+import com.shawckz.myhcf.faction.FDataMode;
+
+import java.util.Arrays;
+
+import org.bukkit.plugin.Plugin;
 
 
 /**
@@ -50,7 +52,10 @@ public class DatabaseManager extends Configuration {
     }
 
     private void setup() {
-
+        if(Factions.getDataMode() != FDataMode.MONGO) {
+            Factions.getInstance().getLogger().info("DataMode not Mongo; not attempting connection");
+            return;
+        }
         if (!useAuth) {
             mongoClient = new MongoClient(new ServerAddress(host, port));
         } else {

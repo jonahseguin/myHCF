@@ -46,6 +46,10 @@ public class FactionManager {
             String id = UUID.randomUUID().toString().toLowerCase(); //Maybe use an md5 of the name for the ID instead?
             return new DBFaction(id, name.toLowerCase(), name, type);
         }
+        else if (Factions.getDataMode() == FDataMode.JSON) {
+            String id = UUID.randomUUID().toString().toLowerCase();
+            return new DBFaction(id, name.toLowerCase(), name, type);
+        }
         else {
             throw new HCFException("Could not create a faction (unknown data mode)");
         }
@@ -131,18 +135,20 @@ public class FactionManager {
 
     public Faction getFactionFromDatabase(String name) {
         DBFaction dbFaction = new DBFaction();
-        Factions.getInstance().getDbHandler().fetch(dbFaction, new SearchText("name", name));
-        if(dbFaction.getName().equalsIgnoreCase(name)){
-            return dbFaction;
+        if(Factions.getInstance().getDbHandler().fetch(dbFaction, new SearchText("name", name))) {
+            if (dbFaction.getName().equalsIgnoreCase(name)) {
+                return dbFaction;
+            }
         }
         return null;
     }
 
     public Faction getFactionFromDatabaseById(String id) {
         DBFaction dbFaction = new DBFaction();
-        Factions.getInstance().getDbHandler().fetch(dbFaction, new SearchText("_id", id));
-        if(dbFaction.getId().equalsIgnoreCase(id)){
-            return dbFaction;
+        if(Factions.getInstance().getDbHandler().fetch(dbFaction, new SearchText("_id", id))) {
+            if (dbFaction.getId().equalsIgnoreCase(id)) {
+                return dbFaction;
+            }
         }
         return null;
     }

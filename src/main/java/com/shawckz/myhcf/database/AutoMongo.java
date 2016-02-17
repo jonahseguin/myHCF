@@ -9,6 +9,7 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
+import com.mongodb.client.result.DeleteResult;
 import com.shawckz.myhcf.Factions;
 import com.shawckz.myhcf.configuration.AbstractSerializer;
 import com.shawckz.myhcf.database.annotations.CollectionName;
@@ -26,7 +27,7 @@ import java.util.*;
 public class AutoMongo implements AutoDB {
 
     @Override
-    public void push(AutoDBable a) {
+    public boolean push(AutoDBable a) {
         if (!a.getClass().isAnnotationPresent(CollectionName.class)) {
             throw new HCFException("CollectionName not found while using AutoMongo");
         }
@@ -51,6 +52,7 @@ public class AutoMongo implements AutoDB {
         else {
             col.insertOne(doc);
         }
+        return true;
     }
 
     @Override
@@ -71,7 +73,7 @@ public class AutoMongo implements AutoDB {
     }
 
     @Override
-    public void fetch(AutoDBable a, DBSearch search) {
+    public boolean fetch(AutoDBable a, DBSearch search) {
         if (!a.getClass().isAnnotationPresent(CollectionName.class)) {
             throw new HCFException("CollectionName not found while using AutoMongo");
         }
@@ -86,7 +88,9 @@ public class AutoMongo implements AutoDB {
 
         if(cursor.hasNext()) {
             fromDocument(a, cursor.next());
+            return true;
         }
+        return false;
     }
 
     @Override
@@ -98,7 +102,7 @@ public class AutoMongo implements AutoDB {
     }
 
     @Override
-    public void delete(AutoDBable a) {
+    public boolean delete(AutoDBable a) {
         if (!a.getClass().isAnnotationPresent(CollectionName.class)) {
             throw new HCFException("CollectionName not found while using AutoMongo");
         }
@@ -107,7 +111,11 @@ public class AutoMongo implements AutoDB {
         MongoCollection<Document> col = Factions.getInstance().getDatabaseManager().getDatabase().getCollection(collection);
         AutoDBValue value = new AutoDBValue(a);
         BasicDBObject searchQuery = new BasicDBObject().append(value.getIdentifier(), value.getIdentifierValue());
-        col.deleteOne(searchQuery);
+        DeleteResult result = col.deleteOne(searchQuery);
+        if(result.wasAcknowledged() && result.getDeletedCount() > 0) {
+            return true;
+        }
+        return false;
     }
 
     private boolean documentExists(BasicDBObject search, MongoCollection col) {

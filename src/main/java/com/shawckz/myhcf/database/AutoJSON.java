@@ -9,6 +9,7 @@ import com.shawckz.myhcf.Factions;
 import com.shawckz.myhcf.configuration.AbstractSerializer;
 import com.shawckz.myhcf.database.annotations.DBColumn;
 import com.shawckz.myhcf.database.annotations.DatabaseSerializer;
+import com.shawckz.myhcf.database.annotations.JSONDirectory;
 import com.shawckz.myhcf.database.search.DBSearch;
 import com.shawckz.myhcf.util.HCFException;
 import org.apache.commons.lang.ClassUtils;
@@ -26,25 +27,48 @@ public class AutoJSON implements AutoDB {
 
     private static final JSONParser parser = new JSONParser();
 
-    private File getFile(String id) {
-        return new File(Factions.getInstance().getDataFolder() + File.separator + "players" + File.separator + id.toLowerCase() + ".json");
+    private File getFile(String id, String folder) {
+        return new File(Factions.getInstance().getDataFolder().getPath() + File.separator + folder + File.separator + id + ".json");
+    }
+
+    private File getAndCreate(String id, String folder) {
+        {
+            File dir = new File(Factions.getInstance().getDataFolder() + File.separator + folder);
+            if(!dir.exists()){
+                dir.mkdirs();
+            }
+        }
+
+        File f = getFile(id, folder);
+        if(!f.exists()) {
+            try{
+                f.createNewFile();
+            }
+            catch (IOException ex){
+                throw new HCFException("Could not create file (getAndCreate AutoJSON)", ex);
+            }
+        }
+        return f;
     }
 
     private Document getDocumentFromFile(File file) {
-        try {
-            Object obj = parser.parse(new FileReader(file));
-            return Document.parse(((JSONObject)obj).toJSONString());
-        }
-        catch (IOException | ParseException ex) {
-            ex.printStackTrace();
+        if(file != null && file.exists()) {
+            try {
+                Object obj = parser.parse(new FileReader(file));
+                return Document.parse(((JSONObject) obj).toJSONString());
+            }
+            catch (IOException | ParseException ex) {
+                ex.printStackTrace();
+            }
         }
         return null;
     }
 
     private void saveToFile(Document document, File file) {
         try {
+            System.out.println("Saving file :: Path: " + file.getPath());
             if (!file.exists()) {
-                file.createNewFile();
+                throw new HCFException("File to save to does not exist");
             }
             else {
                 new PrintWriter(file).close();
@@ -62,14 +86,15 @@ public class AutoJSON implements AutoDB {
     }
 
     @Override
-    public void push(AutoDBable a) {
+    public boolean push(AutoDBable a) {
         AutoDBValue value = new AutoDBValue(a);
         Document document = new Document(value.getIdentifier(), value.getIdentifierValue());
         document.putAll(value.getValues());
 
         if(value.getIdentifierValue() instanceof String) {
             String id = (String) value.getIdentifierValue();
-            saveToFile(document, getFile(id));
+            saveToFile(document, getAndCreate(id, getDirectory(a).name()));
+            return true;
         }
         else{
             throw new HCFException("AutoJSON identifier value must be a String");
@@ -77,27 +102,46 @@ public class AutoJSON implements AutoDB {
     }
 
     @Override
-    public void fetch(AutoDBable a, DBSearch search) {
+    public boolean fetch(AutoDBable a, DBSearch search) {
         if(search.getValue() instanceof String) {
+
             String id = (String) search.getValue();
-            Document document = getDocumentFromFile(getFile(id));
-            fromDocument(a, document);
+            File f = getFile(id, getDirectory(a).name());
+            if(f != null && f.exists()) {
+                Document document = getDocumentFromFile(f);
+                if (document != null) {
+                    fromDocument(a, document);
+                    return true;
+                }
+            }
         }
         else{
             throw new HCFException("AutoJSON identifier value must be a String");
         }
+        return false;
     }
 
     @Override
-    public void delete(AutoDBable a) {
+    public boolean delete(AutoDBable a) {
         AutoDBValue value = new AutoDBValue(a);
         if(value.getIdentifierValue() instanceof String) {
             String id = (String) value.getIdentifierValue();
-            getFile(id).delete();
+            File f = getFile(id, getDirectory(a).name());
+            if(f != null && f.exists()) {
+                return f.delete();
+            }
+            return false;
         }
         else{
             throw new HCFException("AutoJSON identifier value must be a String");
         }
+    }
+
+    private JSONDirectory getDirectory(AutoDBable a) {
+        if(a.getClass().isAnnotationPresent(JSONDirectory.class)) {
+            return a.getClass().getAnnotation(JSONDirectory.class);
+        }
+        throw new HCFException("JSONDirectory not found for class " + a.getClass().getSimpleName());
     }
 
     @Override

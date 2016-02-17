@@ -10,6 +10,8 @@ import org.bukkit.Location;
 
 public interface Faction extends AutoDBable {
 
+    void setId(String id);
+
     String getId();
 
     String getName();

@@ -4,6 +4,7 @@ import com.shawckz.myhcf.Factions;
 import com.shawckz.myhcf.armorclass.ArmorClassType;
 import com.shawckz.myhcf.database.annotations.CollectionName;
 import com.shawckz.myhcf.database.annotations.DBColumn;
+import com.shawckz.myhcf.database.annotations.JSONDirectory;
 import com.shawckz.myhcf.deathban.DeathbanRank;
 import com.shawckz.myhcf.faction.Faction;
 import com.shawckz.myhcf.faction.FactionRole;
@@ -20,6 +21,7 @@ import lombok.Setter;
 import org.bukkit.entity.Player;
 
 @CollectionName(name = "myhcfplayers")
+@JSONDirectory(name = "players")
 @Getter
 @Setter
 @RequiredArgsConstructor

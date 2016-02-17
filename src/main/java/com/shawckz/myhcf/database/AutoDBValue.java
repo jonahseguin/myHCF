@@ -34,6 +34,8 @@ public class AutoDBValue {
     }
 
     public void updateValues(AutoDBable a) {
+        identifier = null;
+        identifierValue = null;
         for (Field field : a.getClass().getDeclaredFields()) {
             field.setAccessible(true);
             DBColumn column = field.getAnnotation(DBColumn.class);
@@ -42,7 +44,7 @@ public class AutoDBValue {
                 if (columnName.equals("")) {
                     columnName = field.getName();
                 }
-                if (column.identifier()) {
+                if (column.identifier() && identifier == null) {
                     identifier = columnName;
                     identifierValue = getValue(field, a);
                 }

@@ -1,9 +1,9 @@
 package com.shawckz.myhcf.player.cache;
 
 import com.shawckz.myhcf.Factions;
-import com.shawckz.myhcf.database.AutoDBer;
 import com.shawckz.myhcf.database.annotations.DBColumn;
 import com.shawckz.myhcf.database.search.SearchText;
+import com.shawckz.myhcf.faction.FDataMode;
 import com.shawckz.myhcf.util.HCFException;
 
 import java.lang.reflect.Field;
@@ -17,6 +17,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -34,13 +35,11 @@ public abstract class AbstractCache implements Listener {
     private final static ConcurrentMap<String, CachePlayer> playersUUID = new ConcurrentHashMap<>();
     private final Plugin plugin;
     private final Class<? extends CachePlayer> aClass;
-    private final AutoDBer db;
 
     public AbstractCache(Plugin plugin, Class<? extends CachePlayer> aClass) {
         this.plugin = plugin;
         this.aClass = aClass;
         Bukkit.getServer().getPluginManager().registerEvents(this, plugin);
-        this.db = new AutoDBer(Factions.getInstance().getFactionsConfig().getDataMode());
     }
 
     public ConcurrentMap<String, CachePlayer> getPlayersMap() {
@@ -100,9 +99,13 @@ public abstract class AbstractCache implements Listener {
 
         try{
             CachePlayer cachePlayer = aClass.newInstance();
-            db.getAutoDB().fetch(cachePlayer, new SearchText(key, name));
+            if(Factions.getInstance().getDbHandler().fetch(cachePlayer, new SearchText(key, name))) {
+                return cachePlayer;
+            }
+            else{
+                return null;
+            }
 
-            return cachePlayer;
         }
         catch (InstantiationException | IllegalAccessException ex) {
             throw new HCFException("Could not instantiate CachePlayer");
@@ -125,7 +128,7 @@ public abstract class AbstractCache implements Listener {
 
         try{
             CachePlayer cachePlayer = aClass.newInstance();
-            db.getAutoDB().fetch(cachePlayer, new SearchText(key, uuid));
+            Factions.getInstance().getDbHandler().fetch(cachePlayer, new SearchText(key, uuid));
 
             return cachePlayer;
         }
@@ -154,6 +157,7 @@ public abstract class AbstractCache implements Listener {
      * @param cachePlayer The CachePlayer to add to the local cache
      */
     public void put(CachePlayer cachePlayer) {
+        Factions.getInstance().getLogger().info("[Cache] Adding " + cachePlayer.getName() + " : " + cachePlayer.getUniqueId());
         players.put(cachePlayer.getName(), cachePlayer);
         playersUUID.put(cachePlayer.getUniqueId(), cachePlayer);
     }
@@ -168,6 +172,7 @@ public abstract class AbstractCache implements Listener {
 
     @EventHandler(priority = EventPriority.LOW)
     public void onCache(final AsyncPlayerPreLoginEvent e) {
+        if(Factions.getDataMode() != FDataMode.MONGO) return;
         final String name = e.getName();
         final String uuid = e.getUniqueId().toString();
         CachePlayer cp = loadCachePlayer(e.getName());
@@ -176,7 +181,22 @@ public abstract class AbstractCache implements Listener {
         } else {
             cp = create(name, uuid);
             put(cp);
-            db.getAutoDB().push(cp);
+            Factions.getInstance().getDbHandler().push(cp);
+        }
+    }
+
+    @EventHandler
+    public void onLogin(PlayerLoginEvent e) {
+        if(Factions.getDataMode() != FDataMode.JSON) return;
+        final String name = e.getPlayer().getName();
+        final String uuid = e.getPlayer().getUniqueId().toString();
+        CachePlayer cp = loadCachePlayer(e.getPlayer().getName());
+        if (cp != null) {
+            put(cp);
+        } else {
+            cp = create(name, uuid);
+            put(cp);
+            Factions.getInstance().getDbHandler().push(cp);
         }
     }
 
@@ -205,7 +225,7 @@ public abstract class AbstractCache implements Listener {
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    db.getAutoDB().push(cachePlayer);
+                    Factions.getInstance().getDbHandler().push(cachePlayer);
                 }
             }.runTaskAsynchronously(plugin);
         }

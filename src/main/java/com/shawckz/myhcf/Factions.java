@@ -2,6 +2,7 @@ package com.shawckz.myhcf;
 
 import com.shawckz.myhcf.armorclass.ArmorClassManager;
 import com.shawckz.myhcf.armorclass.classes.Archer;
+import com.shawckz.myhcf.auth.XSocketAuth;
 import com.shawckz.myhcf.command.factions.FCommandManager;
 import com.shawckz.myhcf.command.normal.GCommandHandler;
 import com.shawckz.myhcf.command.normal.commands.CmdPvPTimer;
@@ -18,6 +19,7 @@ import com.shawckz.myhcf.land.claiming.VisualMap;
 import com.shawckz.myhcf.listener.FEventManager;
 import com.shawckz.myhcf.player.HCFCache;
 import com.shawckz.myhcf.spawn.Spawn;
+import com.shawckz.myhcf.util.HCFException;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -46,42 +48,53 @@ public class Factions extends JavaPlugin {
     private VisualMap visualMap;
     private Spawn spawn;
 
+    private final XSocketAuth auth = new XSocketAuth();
+
     @Override
     public void onEnable() {
         instance = this;
         factionsConfig = new FactionsConfig(this);
-        lang = new LanguageConfig(this);
-        databaseManager = new DatabaseManager(this);
-        dbHandler = new AutoDBer(getDataMode());
-        cache = new HCFCache(this);
-        commandManager = new FCommandManager(this);
-        factionManager = new FactionManager();
-        landBoard = new LandBoard();
-        visualMap = new VisualMap(this);
-        fEventManager = new FEventManager(this);
-        fEventManager.register();
-        gCommandHandler = new GCommandHandler(this);
+        auth.auth(result -> {
+            if(result) {
+                lang = new LanguageConfig(this);
+                databaseManager = new DatabaseManager(this);
+                dbHandler = new AutoDBer(getDataMode());
+                cache = new HCFCache(this);
+                commandManager = new FCommandManager(this);
+                factionManager = new FactionManager();
+                landBoard = new LandBoard();
+                visualMap = new VisualMap(this);
+                fEventManager = new FEventManager(this);
+                fEventManager.register();
+                gCommandHandler = new GCommandHandler(this);
 
-        gCommandHandler.registerCommands(new CmdPvPTimer());
+                gCommandHandler.registerCommands(new CmdPvPTimer());
 
-        armorClassManager = new ArmorClassManager(this);
-        armorClassManager.registerArmorClass(new Archer());
-        spawn = new Spawn(this);
+                armorClassManager = new ArmorClassManager(this);
+                armorClassManager.registerArmorClass(new Archer());
+                spawn = new Spawn(this);
+            }
+            else{
+                throw new HCFException("myHCF is not authorized");
+            }
+        });
     }
 
     @Override
     public void onDisable() {
-        databaseManager.shutdown();
-        HCFCache.clear();
-        fEventManager.unregister();
-        factionsConfig.save();
-        lang.save();
+        if(auth.isAuthorized()) {
+            databaseManager.shutdown();
+            HCFCache.clear();
+            fEventManager.unregister();
+            factionsConfig.save();
+            lang.save();
 
-        fEventManager = null;
-        cache = null;
-        databaseManager = null;
-        factionsConfig = null;
-        lang = null;
+            fEventManager = null;
+            cache = null;
+            databaseManager = null;
+            factionsConfig = null;
+            lang = null;
+        }
         instance = null;
     }
 

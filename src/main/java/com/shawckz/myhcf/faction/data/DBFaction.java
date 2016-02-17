@@ -7,6 +7,7 @@ import com.shawckz.myhcf.database.AutoDBable;
 import com.shawckz.myhcf.database.annotations.CollectionName;
 import com.shawckz.myhcf.database.annotations.DBColumn;
 import com.shawckz.myhcf.database.annotations.DatabaseSerializer;
+import com.shawckz.myhcf.database.annotations.JSONDirectory;
 import com.shawckz.myhcf.database.serial.LocationSerializer;
 import com.shawckz.myhcf.faction.Faction;
 import com.shawckz.myhcf.faction.FactionRole;
@@ -30,17 +31,18 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 @CollectionName(name = "myhcffactions")
+@JSONDirectory(name = "factions")
 @Getter
 @Setter
 @RequiredArgsConstructor
 public class DBFaction implements AutoDBable, Faction {
 
     @NonNull
-    @DBColumn(name = "_id", identifier = true)
+    @DBColumn(name = "_id", identifier = false)
     private String id;
 
     @NonNull
-    @DBColumn
+    @DBColumn(identifier = true)
     private String name;
 
     @NonNull

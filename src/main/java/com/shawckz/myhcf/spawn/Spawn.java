@@ -7,6 +7,8 @@ package com.shawckz.myhcf.spawn;
 
 import com.mongodb.client.MongoCursor;
 import com.shawckz.myhcf.Factions;
+import com.shawckz.myhcf.database.search.SearchText;
+import com.shawckz.myhcf.faction.FDataMode;
 import com.shawckz.myhcf.faction.Faction;
 import com.shawckz.myhcf.faction.FactionType;
 import com.shawckz.myhcf.faction.data.DBFaction;
@@ -41,22 +43,38 @@ public class Spawn implements Listener {
 
     public Spawn(Factions instance) {
         boolean foundFac = false;
-        MongoCursor<Document> it = Factions.getInstance().getDatabaseManager().getDatabase().getCollection("myhcffactions").find(new Document("factionType", FactionType.SPAWN.toString())).iterator();
 
-        while(it.hasNext()) {
-            Document doc = it.next();
+        if(Factions.getDataMode() == FDataMode.MONGO) {
+            MongoCursor<Document> it = Factions.getInstance().getDatabaseManager().getDatabase().getCollection("myhcffactions").find(new Document("factionType", FactionType.SPAWN.toString())).iterator();
+
+            while (it.hasNext()) {
+                Document doc = it.next();
+                DBFaction fac = new DBFaction();
+                Factions.getInstance().getDbHandler().fromDocument(fac, doc);
+                if (fac.getFactionType() == FactionType.SPAWN) {
+                    this.spawnFaction = fac;
+                    foundFac = true;
+                    break;
+                }
+            }
+        }
+        else if (Factions.getDataMode() == FDataMode.JSON) {
+            Factions.getInstance().getLogger().info("Trying to load Spawn Faction [JSON]");
             DBFaction fac = new DBFaction();
-            Factions.getInstance().getDbHandler().fromDocument(fac, doc);
-            if(fac.getFactionType() == FactionType.SPAWN) {
-                this.spawnFaction = fac;
+            if(Factions.getInstance().getDbHandler().fetch(fac, new SearchText("name", "Spawn"))) {
                 foundFac = true;
-                break;
+                this.spawnFaction = fac;
+                Factions.getInstance().getLogger().info("Loaded Spawn Faction");
+            }
+            else{
+                Factions.getInstance().getLogger().info("Failed to fetch Spawn Faction [JSON]");
             }
         }
 
         if (!foundFac) {
             this.spawnFaction = Factions.getInstance().getFactionManager().createFaction("Spawn", FactionType.SPAWN);
             Factions.getInstance().getDbHandler().push(spawnFaction);
+            Factions.getInstance().getLogger().info("Created Spawn Faction");
         }
 
         instance.getFactionManager().addToCache(spawnFaction);

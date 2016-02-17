@@ -70,9 +70,12 @@ public class FactionsConfig extends Configuration {
 
     //No final variables (if they are in the config)
 
+    @ConfigData("auth.key")
+    private String authKey = "xxx";
+
     @ConfigData("datamode")
     @ConfigSerializer(serializer = DataModeSerializer.class)
-    private FDataMode dataMode;
+    private FDataMode dataMode = FDataMode.JSON;
 
     @ConfigData("debug")
     private boolean debug = false;
