@@ -118,9 +118,10 @@
                                 <includes>
                                     <include>com.google.code.gson:gson</include>
                                     <include>org.mongodb:*</include>
-                                    <include>net.techcable.npclib:*</include>
-                                    <include>mkremins.fanciful:*</include>
+                                    <include>net.techcable:npclib</include>
+                                    <include>mkremins:fanciful</include>
                                     <include>io.socket:*</include>
+                                    <include>org.json:*</include>
                                 </includes>
                             </artifactSet>
                         </configuration>
