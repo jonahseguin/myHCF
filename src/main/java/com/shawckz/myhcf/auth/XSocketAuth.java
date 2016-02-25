@@ -5,10 +5,14 @@
 package com.shawckz.myhcf.auth;
 
 import com.shawckz.myhcf.Factions;
+import com.shawckz.myhcf.auth.listen.XListenAuth;
 import com.shawckz.myhcf.util.HCFException;
 import io.socket.client.IO;
 import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
 import net.minecraft.util.org.apache.commons.io.FilenameUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.net.URISyntaxException;
@@ -19,7 +23,7 @@ import org.bukkit.plugin.PluginDescriptionFile;
 
 public class XSocketAuth {
 
-    private final String uri = "http://xauth.shawckz.com";
+    private final String uri = "http://localhost:3000";
 
     private final Socket socket;
     private final XAutheer autheer;
@@ -63,40 +67,38 @@ public class XSocketAuth {
     }
 
     public final void auth(AuthResult r) {
-        r.auth(true);
-        autheer.authorize(this);
-        autheer.onAuth(true);
-        /*
-        TODO: Disabled for development purposes.  Re-enable for production
+        Factions.log("Attempting to authenticate");
         socket.connect();
         socket.on(XAuthEvent.AUTHORIZE_RESULT.getName(), new XListenAuth(autheer, this));
-        String[] args = new String[] {
-                Bukkit.getServer().getIp(),
-                Bukkit.getServer().getPort() + "",
-                Bukkit.getServer().getServerName(),
-                Factions.getInstance().getFactionsConfig().getAuthKey()
-        };
-        socket.emit(XAuthEvent.AUTHORIZE_REQUEST.getName(), args);
-        socket.once(XAuthEvent.AUTHORIZE_RESULT.getName(), new Emitter.Listener() {
-            @Override
-            public void call(Object... objects) {
-                if(objects != null && objects.length > 0) {
-                    String result = (String) objects[0];
-                    if(result.equalsIgnoreCase("true")) {
-                        r.auth(true);
-                    }
-                    else{
-                        r.auth(false);
+        try {
+            JSONObject args = new JSONObject()
+                    .append("ip", Bukkit.getServer().getIp())
+                    .append("port", Bukkit.getServer().getPort())
+                    .append("servername", Bukkit.getServer().getServerName())
+                    .append("key", Factions.getInstance().getFactionsConfig().getAuthKey());
+            socket.emit(XAuthEvent.AUTHORIZE_REQUEST.getName(), args);
+            socket.once(XAuthEvent.AUTHORIZE_RESULT.getName(), new Emitter.Listener() {
+                @Override
+                public void call(Object... objects) {
+                    if(objects != null && objects.length > 0) {
+                        String result = (String) objects[0];
+                        if(result.equalsIgnoreCase("true")) {
+                            r.auth(true);
+                        }
+                        else{
+                            r.auth(false);
+                        }
                     }
                 }
-            }
-        });
-        */
+            });
+        }
+        catch (JSONException ex){
+            throw new HCFException("JsonException", ex);
+        }
     }
 
     public final boolean isValid() {
-        //TODO Change return socket.connected();
-        return true;
+        return socket.connected();
     }
 
     public final boolean isAuthorized() {

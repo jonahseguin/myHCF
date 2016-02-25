@@ -19,7 +19,6 @@ import com.shawckz.myhcf.land.claiming.VisualMap;
 import com.shawckz.myhcf.listener.FEventManager;
 import com.shawckz.myhcf.player.HCFCache;
 import com.shawckz.myhcf.spawn.Spawn;
-import com.shawckz.myhcf.util.HCFException;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -75,7 +74,7 @@ public class Factions extends JavaPlugin {
                 spawn = new Spawn(this);
             }
             else{
-                throw new HCFException("myHCF is not authorized");
+                log("myHCF is not authorized.  If you believe this is in error, please properly configure your server IP in the server.properties and auth key in the config.");
             }
         });
     }

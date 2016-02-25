@@ -9,11 +9,11 @@ import org.bson.Document;
 
 public interface AutoDB {
 
-    void push(AutoDBable a);
+    boolean push(AutoDBable a);
 
-    void fetch(AutoDBable a, DBSearch search);
+    boolean fetch(AutoDBable a, DBSearch search);
 
-    void delete(AutoDBable a);
+    boolean delete(AutoDBable a);
 
     void fromDocument(AutoDBable a, Document document);
 
