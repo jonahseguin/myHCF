@@ -60,6 +60,11 @@ public class DBFaction implements AutoDBable, Faction {
     @DBColumn
     @DatabaseSerializer(serializer = LocationSerializer.class)
     private Location home = null;
+
+    @DBColumn
+    @DatabaseSerializer(serializer = LocationSerializer.class)
+    private Location rally = null;
+
     @DBColumn
     private double deathsUntilRaidable = Factions.getInstance().getFactionsConfig().getBaseDtr();
 
@@ -101,9 +106,15 @@ public class DBFaction implements AutoDBable, Faction {
             if (!allies.contains(target.getId())) {
                 allies.add(target.getId());
             }
+            if(!target.getAllies().contains(this.getId())) {
+                target.getAllies().add(this.getId());
+            }
         } else {
             if (allies.contains(target.getId())) {
                 allies.remove(target.getId());
+            }
+            if(target.getAllies().contains(this.getId())) {
+                target.getAllies().remove(this.getId());
             }
         }
     }
@@ -150,6 +161,7 @@ public class DBFaction implements AutoDBable, Faction {
         if(player.getBukkitPlayer() != null) {
             player.getBukkitPlayer().sendMessage(FLang.format(FactionLang.FACTION_LEAVE_PLAYER, this.getName()));
         }
+        player.setFactionId(null);
     }
 
     @Override
@@ -173,6 +185,7 @@ public class DBFaction implements AutoDBable, Faction {
         if(player.getBukkitPlayer() != null) {
             FLang.send(player.getBukkitPlayer(), FactionLang.FACTION_KICK_PLAYER, this.getName(), kickedBy.getName());
         }
+        player.setFactionId(null);
     }
 
     @Override

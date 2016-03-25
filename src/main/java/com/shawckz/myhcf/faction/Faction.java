@@ -40,6 +40,8 @@ public interface Faction extends AutoDBable {
 
     void setHome(Location home);
 
+    void setDescription(String description);
+
     double getDeathsUntilRaidable();
 
     void setDeathsUntilRaidable(double dtr);
@@ -85,5 +87,9 @@ public interface Faction extends AutoDBable {
     String getDescription();
 
     double getMaxDTR();
+
+    Location getRally();
+
+    void setRally(Location rally);
 
 }

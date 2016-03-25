@@ -37,11 +37,23 @@ import org.bukkit.scheduler.BukkitRunnable;
 @FCommand(name = "create", flags = {"special"}, desc = "Create a faction", usage = "/f create <name>", perm = "myhcf.cmd.faction.create", minArgs = 1)
 public class CmdFactionCreate implements HCFCommand {
 
-    private static final Pattern ALPHA_NUMERIC = Pattern.compile("[^a-zA-Z0-9]");
+    public static final Pattern ALPHA_NUMERIC = Pattern.compile("[^a-zA-Z0-9]");
 
-    private final FactionsConfig config = Factions.getInstance().getFactionsConfig();
+    private static final FactionsConfig config = Factions.getInstance().getFactionsConfig();
 
     private final FactionTypeSerializer factionTypeSerializer = new FactionTypeSerializer();
+
+    public static boolean validName(String name, Player sender) {
+        if (name.length() > config.getMaxFactionNameLength()) {
+            sender.sendMessage(ChatColor.RED + "The faction name cannot be longer than " + config.getMaxFactionNameLength() + " characters.");
+            return false;
+        }
+        if (ALPHA_NUMERIC.matcher(name).find()) {
+            sender.sendMessage(ChatColor.RED + "The faction name must be alphanumeric.");
+            return false;
+        }
+        return true;
+    }
 
     @Override
     public void onCommand(FCmdArgs args) {

@@ -14,6 +14,7 @@ import com.shawckz.myhcf.database.DatabaseManager;
 import com.shawckz.myhcf.deathban.DeathbanRankManager;
 import com.shawckz.myhcf.faction.FDataMode;
 import com.shawckz.myhcf.faction.FactionManager;
+import com.shawckz.myhcf.koth.KothManager;
 import com.shawckz.myhcf.land.LandBoard;
 import com.shawckz.myhcf.land.claiming.VisualMap;
 import com.shawckz.myhcf.listener.FEventManager;
@@ -46,6 +47,7 @@ public class Factions extends JavaPlugin {
     private ArmorClassManager armorClassManager;
     private VisualMap visualMap;
     private Spawn spawn;
+    private KothManager kothManager;
 
     private final XSocketAuth auth = new XSocketAuth();
 
@@ -68,6 +70,9 @@ public class Factions extends JavaPlugin {
                 gCommandHandler = new GCommandHandler(this);
 
                 gCommandHandler.registerCommands(new CmdPvPTimer());
+
+                kothManager = new KothManager();
+                kothManager.loadKoths();
 
                 armorClassManager = new ArmorClassManager(this);
                 armorClassManager.registerArmorClass(new Archer());
@@ -95,6 +100,10 @@ public class Factions extends JavaPlugin {
             lang = null;
         }
         instance = null;
+    }
+
+    public KothManager getKothManager() {
+        return kothManager;
     }
 
     public AutoDB getDbHandler() {

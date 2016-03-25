@@ -42,6 +42,23 @@ public class FCommandManager implements CommandExecutor {
         registerCommand(new CmdFactionAdminClaim());
         registerCommand(new CmdFactionLeave());
         registerCommand(new CmdFactionKick());
+        registerCommand(new CmdFactionTag());
+        registerCommand(new CmdFactionDescription());
+        registerCommand(new CmdFactionHome());
+        registerCommand(new CmdFactionSetHome());
+        if(Factions.getInstance().getFactionsConfig().isFactionsUseRally()) {
+            //Only register rally commands if rally is enabled
+            registerCommand(new CmdFactionRally());
+            registerCommand(new CmdFactionSetRally());
+        }
+        registerCommand(new CmdFactionInvite());
+        registerCommand(new CmdFactionPromote());
+        registerCommand(new CmdFactionDemote());
+        registerCommand(new CmdFactionLeader());
+        registerCommand(new CmdFactionStuck());
+        registerCommand(new CmdFactionAlly());
+        registerCommand(new CmdFactionEnemy());
+        registerCommand(new CmdFactionHelp());
     }
 
     public void registerCommand(HCFCommand cmd) {

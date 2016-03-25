@@ -22,6 +22,8 @@ public class KothManager {
 
     private final Map<String, Koth> koths = new HashMap<>();
 
+    private final KothSchedule kothSchedule = new KothSchedule();//TODO: Load from db
+
     public void loadKoths() {
         koths.clear();
         MongoCursor<Document> it = Factions.getInstance().getDatabaseManager().getDatabase().getCollection("myhcfkoths").find().iterator();

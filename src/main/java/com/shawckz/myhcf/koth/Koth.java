@@ -10,11 +10,13 @@ import com.shawckz.myhcf.database.AutoDBable;
 import com.shawckz.myhcf.database.annotations.CollectionName;
 import com.shawckz.myhcf.database.annotations.DBColumn;
 import com.shawckz.myhcf.database.annotations.DatabaseSerializer;
+import com.shawckz.myhcf.database.annotations.JSONDirectory;
 import com.shawckz.myhcf.database.serial.LocationSerializer;
 import com.shawckz.myhcf.faction.Faction;
 import com.shawckz.myhcf.faction.FactionType;
 import com.shawckz.myhcf.spawn.WallRadius;
 import lombok.Getter;
+import lombok.Setter;
 
 import org.bukkit.Location;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -26,7 +28,9 @@ import org.bukkit.scheduler.BukkitRunnable;
  *         Shawckz.com
  */
 @Getter
+@Setter
 @CollectionName(name = "myhcfkoths")
+@JSONDirectory(name = "koths")
 public class Koth implements AutoDBable {
 
     @DBColumn
@@ -42,6 +46,8 @@ public class Koth implements AutoDBable {
 
     @DBColumn
     private String factionID;
+
+    private boolean active = false;
 
     private WallRadius wallRadius;
 

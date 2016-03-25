@@ -21,6 +21,8 @@ import org.json.simple.parser.ParseException;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 public class AutoJSON implements AutoDB {
@@ -99,6 +101,40 @@ public class AutoJSON implements AutoDB {
         else{
             throw new HCFException("AutoJSON identifier value must be a String");
         }
+    }
+
+    @Override
+    public Set<AutoDBable> fetchMultiple(AutoDBable type, DBSearch search) {
+        Set<AutoDBable> ret = new HashSet<>();
+        if(fetch(type, search)) {
+            ret.add(type);
+        }
+        return ret;
+    }
+
+    @Override
+    public Set<AutoDBable> fetchAll(AutoDBable type) {
+        Set<AutoDBable> ret = new HashSet<>();
+        String directory = getDirectory(type).name();
+        File dir = new File(Factions.getInstance().getDataFolder().getPath() + File.separator + directory);
+        if(dir != null && dir.exists()) {
+            for(File f : dir.listFiles()) {
+                if(f != null && f.exists()) {
+                    Document document = getDocumentFromFile(f);
+                    if(document != null) {
+                        try {
+                            AutoDBable a = type.getClass().newInstance();
+                            fromDocument(a, document);
+                            ret.add(a);
+                        }
+                        catch (InstantiationException | IllegalAccessException ex) {
+                            throw new HCFException("AutoJSON cannot instantiate AutoDBable");
+                        }
+                    }
+                }
+            }
+        }
+        return ret;
     }
 
     @Override

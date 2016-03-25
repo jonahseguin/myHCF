@@ -101,4 +101,8 @@ public class HCFPlayer extends CachePlayer {
         return getScoreboard().getTimer(FLabel.ENDER_PEARL).getTime();
     }
 
+    public boolean inCombat() {
+        return scoreboard.getTimer(FLabel.SPAWN_TAG).getTime() > 0.1;
+    }
+
 }

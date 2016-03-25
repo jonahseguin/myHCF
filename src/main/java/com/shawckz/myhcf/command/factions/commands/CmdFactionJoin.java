@@ -45,7 +45,12 @@ public class CmdFactionJoin implements HCFCommand {
             Player t = Bukkit.getPlayer(target);
             HCFPlayer thcf = Factions.getInstance().getCache().getHCFPlayer(t);
             if (thcf != null) {
-                join(player, thcf.getFaction());
+                if(thcf.getFaction() != null) {
+                    join(player, thcf.getFaction());
+                }
+                else{
+                    FLang.send(p, FactionLang.FACTION_NONE_OTHER, thcf.getName());
+                }
             }
             else {
                 p.sendMessage(ChatColor.RED + "There is no faction or player by that name.");
@@ -58,7 +63,7 @@ public class CmdFactionJoin implements HCFCommand {
                     join(player, t.getFaction());
                 }
                 else {
-                    FLang.send(p, FactionLang.FACTION_JOIN_PLAYER_NOT_IN_FACTION, target);
+                    FLang.send(p, FactionLang.PLAYER_NOT_IN_FACTION, target);
                 }
             }
             else {

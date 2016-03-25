@@ -80,6 +80,15 @@ public class FactionsConfig extends Configuration {
     @ConfigData("debug")
     private boolean debug = false;
 
+    @ConfigData("factions.stuck.teleport-time")
+    private int factionsStuckTeleportTime = 300;//seconds
+
+    @ConfigData("factions.home.teleport-time")
+    private int factionsHomeTeleportTime = 5;//Seconds
+
+    @ConfigData("factions.rally.teleport-time")
+    private int factionsRallyTeleportTime = 5;//Seconds
+
     @ConfigData("factions.name.max-length")
     private int maxFactionNameLength = 14;
 
@@ -100,6 +109,9 @@ public class FactionsConfig extends Configuration {
 
     @ConfigData("factions.dtr.max-dtr")
     private double maxDtr = 5.51;
+
+    @ConfigData("factions.use-rally")
+    private boolean factionsUseRally = true;
 
     @ConfigData("enderpearl-cooldown")
     private int enderpearlCooldown = 15;
