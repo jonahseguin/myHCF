@@ -30,6 +30,10 @@ public class CmdFactionJoin implements HCFCommand {
     public void onCommand(FCmdArgs args) {
         Player p = (Player) args.getSender();
         HCFPlayer player = Factions.getInstance().getCache().getHCFPlayer(p);
+        if(player.getFaction() != null) {
+            FLang.send(p, FactionLang.FACTION_ALREADY_IN);
+            return;
+        }
         String target = args.getArg(0);
         //Priority 1 for search is faction name
         if (Factions.getInstance().getFactionManager().factionExists(target)) {

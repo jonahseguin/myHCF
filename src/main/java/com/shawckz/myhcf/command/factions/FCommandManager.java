@@ -8,14 +8,15 @@ package com.shawckz.myhcf.command.factions;
 import com.shawckz.myhcf.Factions;
 import com.shawckz.myhcf.command.factions.commands.*;
 import lombok.Getter;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by 360 on 21/07/2015.
@@ -39,6 +40,8 @@ public class FCommandManager implements CommandExecutor {
         registerCommand(new CmdFactionMap());
         registerCommand(new CmdFactionJoin());
         registerCommand(new CmdFactionAdminClaim());
+        registerCommand(new CmdFactionLeave());
+        registerCommand(new CmdFactionKick());
     }
 
     public void registerCommand(HCFCommand cmd) {

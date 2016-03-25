@@ -34,6 +34,10 @@ public interface Faction extends AutoDBable {
 
     void addPlayer(HCFPlayer player);
 
+    void leavePlayer(HCFPlayer player);
+
+    void kickPlayer(HCFPlayer player, HCFPlayer kickedBy);
+
     void setHome(Location home);
 
     double getDeathsUntilRaidable();

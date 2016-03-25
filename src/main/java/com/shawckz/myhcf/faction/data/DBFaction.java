@@ -130,6 +130,52 @@ public class DBFaction implements AutoDBable, Faction {
     }
 
     @Override
+    public void leavePlayer(HCFPlayer player) {
+        if(player == null) {
+            throw new IllegalArgumentException("Cannot leave null player from faction");
+        }
+        if(player.getFactionRole() == FactionRole.LEADER) {
+            throw new IllegalArgumentException("Cannot leave leader from faction");
+        }
+        if(members.contains(player.getUniqueId())) {
+            members.remove(player.getUniqueId());
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    updateMemberCache();
+                }
+            }.runTaskAsynchronously(Factions.getInstance());
+        }
+        sendMessage(FLang.format(FactionLang.FACTION_LEAVE_LOCAL, player.getName()));
+        if(player.getBukkitPlayer() != null) {
+            player.getBukkitPlayer().sendMessage(FLang.format(FactionLang.FACTION_LEAVE_PLAYER, this.getName()));
+        }
+    }
+
+    @Override
+    public void kickPlayer(HCFPlayer player, HCFPlayer kickedBy) {
+        if(player == null) {
+            throw new IllegalArgumentException("Cannot leave null player from faction");
+        }
+        if(player.getFactionRole() == FactionRole.LEADER) {
+            throw new IllegalArgumentException("Cannot kick leader from faction");
+        }
+        if(members.contains(player.getUniqueId())) {
+            members.remove(player.getUniqueId());
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    updateMemberCache();
+                }
+            }.runTaskAsynchronously(Factions.getInstance());
+        }
+        sendMessage(FLang.format(FactionLang.FACTION_KICK_LOCAL, player.getName(), kickedBy.getName()));
+        if(player.getBukkitPlayer() != null) {
+            FLang.send(player.getBukkitPlayer(), FactionLang.FACTION_KICK_PLAYER, this.getName(), kickedBy.getName());
+        }
+    }
+
+    @Override
     public void invitePlayer(HCFPlayer invitedBy, HCFPlayer player) {
         if (!invitations.contains(player.getUniqueId())) {
             invitations.add(player.getUniqueId());
