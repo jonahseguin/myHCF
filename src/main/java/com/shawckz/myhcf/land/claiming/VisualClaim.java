@@ -6,10 +6,11 @@
 package com.shawckz.myhcf.land.claiming;
 
 import lombok.Getter;
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
 
 import java.util.UUID;
+
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
 
 /**
  * Created by Jonah Seguin on 1/24/2016.
@@ -21,29 +22,51 @@ import java.util.UUID;
 public class VisualClaim {
 
     private final String id;
-    private final Location pos1;
-    private final Location pos2;
+    private Location pos1;
+    private Location pos2;
 
-    private final VisualPillar pillar1;
-    private final VisualPillar pillar2;
+    private VisualPillar pillar1 = null;
+    private VisualPillar pillar2 = null;
 
     public VisualClaim(Location pos1, Location pos2) {
         this.id = UUID.randomUUID().toString();
         this.pos1 = pos1;
         this.pos2 = pos2;
 
+        if(pos1 != null) {
+            this.pillar1 = new VisualPillar(pos1);
+        }
+        if(pos2 != null) {
+            this.pillar2 = new VisualPillar(pos2);
+        }
+    }
+
+    public void setPos1(Location pos1) {
+        this.pos1 = pos1;
         this.pillar1 = new VisualPillar(pos1);
+    }
+
+    public void setPos2(Location pos2) {
+        this.pos2 = pos2;
         this.pillar2 = new VisualPillar(pos2);
     }
 
     public void show(Player player) {
-        pillar1.show(player);
-        pillar2.show(player);
+        if(pillar1 != null) {
+            pillar1.show(player);
+        }
+        if(pillar2 != null) {
+            pillar2.show(player);
+        }
     }
 
     public void hide(Player player) {
-        pillar1.hide(player);
-        pillar2.hide(player);
+        if(pillar1 != null) {
+            pillar1.hide(player);
+        }
+        if(pillar2 != null) {
+            pillar2.hide(player);
+        }
     }
 
 }

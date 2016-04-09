@@ -54,7 +54,7 @@ public class CmdFactionEnemy implements HCFCommand {
                     HCFPlayer t = Factions.getInstance().getCache().getHCFPlayer(target);
                     if (t != null) {
                         if (t.getFaction() != null) {
-
+                            enemy(player, t.getFaction());
                         }
                         else {
                             FLang.send(p, FactionLang.PLAYER_NOT_IN_FACTION, target);

@@ -95,7 +95,25 @@ public enum FactionLang {
     FACTION_ENEMY_TARGET("&eThe faction '&9{0}&e' has &cenemied&e your faction."),
     FACTION_ENEMY_ALREADY("&cYour faction is already enemy to the faction '{0}'."),
     FACTION_ALLY_ALREADY("&cYour faction is already allied to the faction '{0}'."),
-    FACTION_LIST("&7{0}. &9{1} &7- &e(&a{2}&e/{3}&e) &7- &bDTR: &a{4}")
+    FACTION_LIST("&7{0}. &9{1} &7- &e(&a{2}&e/{3}&e) &7- &bDTR: &a{4}"),
+    FACTION_UPDATE_DTR("&eYour faction's DTR was updated to &b{0}&e by &9{1}&e."),
+    FACTION_UPDATE_DTR_SENDER("&eYou updated the dtr of faction '&9{0}&e' to &b{1}&e."),
+    FACTION_UNFREEZE("&eYour faction's DTR was unfrozen by &9{0}&e."),
+    FACTION_UNFREEZE_SENDER("&eYou unfroze the DTR of the faction '&9{0}&e'."),
+    FACTION_CLAIM_CANCEL("&eLand claiming cancelled."),
+    FACTION_CLAIM_NOT_ENOUGH_MONEY("&cYour faction does not have enough money to purchase this claim (${0})."),
+    FACTION_CLAIM_PURCHASE("&9{0}&e purchased &a${0}&e worth of land for your faction."),
+    FACTION_DEPOSIT("&9{0}&e has deposited &a${1}&e into the faction balance."),
+    FACTION_DEPOSIT_INSUFFICIENT_FUNDS("&cYou do not have enough money."),
+    FACTION_WITHDRAW_INSUFFICIENT_FUNDS("&cYour faction does not have enough money."),
+    FACTION_WITHDRAW("&9{0}&e has withdrawn &a${1}&e from the faction balance."),
+    FACTION_CLAIM_ID("&eThe ID of this claim is &9{0}"),
+    FACTION_UNCLAIM_ALL("&9{0}&e unclaimed all of the faction's land."),
+    FACTION_UNCLAIM_NOT_FOUND("&cA claim with that ID owned by your faction was not found."),
+    FACTION_UNCLAIM("&9{0}&e has unclaimed claim &a#{1}&e."),
+    SPAWN_TAG("&7You are now &cspawn-tagged&7.  Do not logout."),
+    LIMITER_REMOVED_ENCHANTS("&7We detected you had some illegal enchantments and have removed them."),
+    LIMITER_POTION("&7That potion is not allowed.")
     ;
 
     private final String defaultValue;

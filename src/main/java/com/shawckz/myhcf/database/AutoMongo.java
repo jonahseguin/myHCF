@@ -94,6 +94,66 @@ public class AutoMongo implements AutoDB {
     }
 
     @Override
+    public Set<AutoDBable> fetchMultiple(AutoDBable type, DBSearch search) {
+        if (!type.getClass().isAnnotationPresent(CollectionName.class)) {
+            throw new HCFException("CollectionName not found while using AutoMongo");
+        }
+        CollectionName collectionName = type.getClass().getAnnotation(CollectionName.class);
+        if (collectionName == null) {
+            throw new HCFException("CollectionName not found while using AutoMongo");
+        }
+
+        MongoCollection<Document> col = Factions.getInstance().getDatabaseManager().getDatabase().getCollection(collectionName.name());
+
+        MongoCursor<Document> cursor = col.find(new Document(search.getKey(), search.getValue())).iterator();
+
+        Set<AutoDBable> result = new HashSet<>();
+
+        while(cursor.hasNext()) {
+            try {
+                AutoDBable a = type.getClass().newInstance();
+                fromDocument(a, cursor.next());
+                result.add(a);
+            }
+            catch (InstantiationException | IllegalAccessException ex) {
+                throw new HCFException("AutoMongo cannot instantiate AutoDBable");
+            }
+        }
+
+        return result;
+    }
+
+    @Override
+    public Set<AutoDBable> fetchAll(AutoDBable type) {
+        if (!type.getClass().isAnnotationPresent(CollectionName.class)) {
+            throw new HCFException("CollectionName not found while using AutoMongo");
+        }
+        CollectionName collectionName = type.getClass().getAnnotation(CollectionName.class);
+        if (collectionName == null) {
+            throw new HCFException("CollectionName not found while using AutoMongo");
+        }
+
+        MongoCollection<Document> col = Factions.getInstance().getDatabaseManager().getDatabase().getCollection(collectionName.name());
+
+        MongoCursor<Document> cursor = col.find(new Document()).iterator();
+
+        Set<AutoDBable> result = new HashSet<>();
+
+        while(cursor.hasNext()) {
+            try {
+                AutoDBable a = type.getClass().newInstance();
+                fromDocument(a, cursor.next());
+                result.add(a);
+            }
+            catch (InstantiationException | IllegalAccessException ex) {
+                throw new HCFException("AutoMongo cannot instantiate AutoDBable");
+            }
+        }
+
+        return result;
+    }
+
+    @Override
     public Document toDocument(AutoDBable a) {
         AutoDBValue value = new AutoDBValue(a);
         Document document = new Document(value.getIdentifier(), value.getIdentifierValue());

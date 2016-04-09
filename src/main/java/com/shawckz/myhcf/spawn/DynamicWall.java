@@ -5,11 +5,11 @@
 
 package com.shawckz.myhcf.spawn;
 
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
-
 import java.util.HashSet;
 import java.util.Set;
+
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
 
 /**
  * Created by Jonah Seguin on 1/25/2016.
@@ -24,6 +24,15 @@ public class DynamicWall {
     public DynamicWall(WallRadius wallRadius) {
         this.wallRadius = wallRadius;
 
+    }
+
+    public boolean closeEnough(Player player) {
+        for(Location loc : wallRadius.getCache()) {
+            if(loc.distanceSquared(player.getLocation()) <= 50) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public Set<Location> getNear(Player player, int radius, int max) {
@@ -44,4 +53,7 @@ public class DynamicWall {
         return near;
     }
 
+    public WallRadius getWallRadius() {
+        return wallRadius;
+    }
 }

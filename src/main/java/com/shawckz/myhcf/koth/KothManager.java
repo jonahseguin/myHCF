@@ -5,12 +5,12 @@
 
 package com.shawckz.myhcf.koth;
 
-import com.mongodb.client.MongoCursor;
 import com.shawckz.myhcf.Factions;
-import org.bson.Document;
+import com.shawckz.myhcf.database.AutoDBable;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by Jonah Seguin on 1/24/2016.
@@ -22,21 +22,25 @@ public class KothManager {
 
     private final Map<String, Koth> koths = new HashMap<>();
 
-    private final KothSchedule kothSchedule = new KothSchedule();//TODO: Load from db
+    private final KothSchedule kothSchedule = new KothSchedule();
 
     public void loadKoths() {
         koths.clear();
-        MongoCursor<Document> it = Factions.getInstance().getDatabaseManager().getDatabase().getCollection("myhcfkoths").find().iterator();
-        while(it.hasNext()){
-            Document doc = it.next();
-            Koth koth = new Koth();
-            Factions.getInstance().getDbHandler().fromDocument(koth, doc);
-            koths.put(koth.getName(), koth);
+        Set<AutoDBable> ret = Factions.getInstance().getDbHandler().fetchAll(new Koth());
+        for(AutoDBable r : ret) {
+            if(r instanceof Koth) {
+                Koth koth = (Koth) r;
+                koths.put(koth.getName(), koth);
+            }
         }
+        kothSchedule.loadSchedule();
     }
 
     public Koth getKoth(String name) {
         return koths.get(name);
     }
 
+    public KothSchedule getSchedule() {
+        return kothSchedule;
+    }
 }

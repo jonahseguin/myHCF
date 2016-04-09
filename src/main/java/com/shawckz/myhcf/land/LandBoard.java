@@ -111,4 +111,33 @@ public class LandBoard {
 
     }
 
+    public int unclaim(Faction fac, String claimID) {
+        int deleted = 0;
+        Iterator<Claim> it = land.keySet().iterator();
+        final Set<Claim> delete = new HashSet<>();
+        while (it.hasNext()) {
+            Claim claim = it.next();
+            if (claim.getFactionID().equalsIgnoreCase(fac.getId())) {
+                if(claim.getId().equalsIgnoreCase(claimID)) {
+                    delete.add(claim);
+                }
+            }
+        }
+        for (Claim claim : delete) {
+            land.remove(claim);
+            deleted++;
+        }
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                for (Claim claim : delete) {
+                    db.getAutoDB().delete(claim);
+                }
+            }
+        }.runTaskAsynchronously(Factions.getInstance());
+
+        return deleted;
+    }
+
 }

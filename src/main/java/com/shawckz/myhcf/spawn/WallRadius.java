@@ -1,15 +1,16 @@
 package com.shawckz.myhcf.spawn;
 
 import com.shawckz.myhcf.util.HCFException;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 public class WallRadius {
 
@@ -99,7 +100,7 @@ public class WallRadius {
         playerCache.clear();
     }
 
-    public void send(Player player, Material material, Set<Location> locations) {
+    public void send(Player player, ItemStack block, Set<Location> locations) {
         if (!playerCache.containsKey(player.getName())) {
             playerCache.put(player.getName(), new HashSet<>());
         }
@@ -107,7 +108,7 @@ public class WallRadius {
         if (locations != null) {
             for (Location l : locations) {
                 locs.add(l);
-                sendBlock(player, l, material);
+                sendBlock(player, l, block);
             }
         }
         playerCache.put(player.getName(), locs);
@@ -129,8 +130,8 @@ public class WallRadius {
         playerCache.put(player.getName(), locs);
     }
 
-    private void sendBlock(Player p, Location loc, Material material) {
-        p.sendBlockChange(loc, material, (byte) 0);
+    private void sendBlock(Player p, Location loc, ItemStack stack) {
+        p.sendBlockChange(loc, stack.getType(), stack.getData().getData());
     }
 
     private void resetBlock(Player p, Location loc) {

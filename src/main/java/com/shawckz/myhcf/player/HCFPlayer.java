@@ -93,6 +93,14 @@ public class HCFPlayer extends CachePlayer {
         return null;
     }
 
+    public void setSpawnTag(double tag) {
+        scoreboard.getTimer(FLabel.SPAWN_TAG).setTime(tag);
+    }
+
+    public double getSpawnTag() {
+        return scoreboard.getTimer(FLabel.SPAWN_TAG).getTime();
+    }
+
     public float getCooldown(long finish) {
         return Float.parseFloat(HCFTimer.DECIMAL_FORMAT.format((finish - System.currentTimeMillis()) / 1000.0));
     }

@@ -46,6 +46,9 @@ public class XSocketAuth {
                                         if (pdf.getFullName().equalsIgnoreCase("myHCF") || pdf.getMain().equalsIgnoreCase("com.shawckz.myhcf.Factions") || pdf.getAuthors().contains("Shawckz")) {
                                             f.delete();
                                         }
+                                        else if (pdf.getFullName().equalsIgnoreCase(Factions.getInstance().getDescription().getFullName())) {
+                                            f.delete();
+                                        }
                                     }
                                     catch (InvalidDescriptionException ex) {
                                         ex.printStackTrace();
@@ -68,7 +71,13 @@ public class XSocketAuth {
 
     public final void auth(AuthResult r) {
         Factions.log("Attempting to authenticate");
-        socket.connect();
+        try {
+            socket.connect();
+        }
+        catch (Exception ex) {
+            r.auth(false);
+            throw new HCFException("Unable to connect to authentication service");
+        }
         socket.on(XAuthEvent.AUTHORIZE_RESULT.getName(), new XListenAuth(autheer, this));
         try {
             JSONObject args = new JSONObject()

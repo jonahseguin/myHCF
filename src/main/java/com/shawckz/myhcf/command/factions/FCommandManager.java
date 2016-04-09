@@ -59,6 +59,12 @@ public class FCommandManager implements CommandExecutor {
         registerCommand(new CmdFactionAlly());
         registerCommand(new CmdFactionEnemy());
         registerCommand(new CmdFactionHelp());
+        registerCommand(new CmdFactionSetDtr());
+        registerCommand(new CmdFactionUnfreeze());
+        registerCommand(new CmdFactionClaim());
+        registerCommand(new CmdFactionDeposit());
+        registerCommand(new CmdFactionWithdraw());
+        registerCommand(new CmdFactionUnclaim());
     }
 
     public void registerCommand(HCFCommand cmd) {

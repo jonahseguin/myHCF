@@ -15,6 +15,7 @@ import com.shawckz.myhcf.deathban.DeathbanRankManager;
 import com.shawckz.myhcf.faction.FDataMode;
 import com.shawckz.myhcf.faction.FactionManager;
 import com.shawckz.myhcf.koth.KothManager;
+import com.shawckz.myhcf.land.ClaimSelector;
 import com.shawckz.myhcf.land.LandBoard;
 import com.shawckz.myhcf.land.claiming.VisualMap;
 import com.shawckz.myhcf.listener.FEventManager;
@@ -48,6 +49,7 @@ public class Factions extends JavaPlugin {
     private VisualMap visualMap;
     private Spawn spawn;
     private KothManager kothManager;
+    private ClaimSelector claimSelector;
 
     private final XSocketAuth auth = new XSocketAuth();
 
@@ -55,8 +57,8 @@ public class Factions extends JavaPlugin {
     public void onEnable() {
         instance = this;
         factionsConfig = new FactionsConfig(this);
-        auth.auth(result -> {
-            if(result) {
+      //  auth.auth(result -> {
+     //       if(result) {
                 lang = new LanguageConfig(this);
                 databaseManager = new DatabaseManager(this);
                 dbHandler = new AutoDBer(getDataMode());
@@ -65,6 +67,7 @@ public class Factions extends JavaPlugin {
                 factionManager = new FactionManager();
                 landBoard = new LandBoard();
                 visualMap = new VisualMap(this);
+                claimSelector = new ClaimSelector();
                 fEventManager = new FEventManager(this);
                 fEventManager.register();
                 gCommandHandler = new GCommandHandler(this);
@@ -77,11 +80,11 @@ public class Factions extends JavaPlugin {
                 armorClassManager = new ArmorClassManager(this);
                 armorClassManager.registerArmorClass(new Archer());
                 spawn = new Spawn(this);
-            }
-            else{
-                log("myHCF is not authorized.  If you believe this is in error, please properly configure your server IP in the server.properties and auth key in the config.");
-            }
-        });
+       //     }
+       //     else{
+      //          log("myHCF is not authorized.  If you believe this is in error, please properly configure your server IP in the server.properties and auth key in the config.");
+      //      }
+     //   });
     }
 
     @Override
@@ -100,6 +103,10 @@ public class Factions extends JavaPlugin {
             lang = null;
         }
         instance = null;
+    }
+
+    public ClaimSelector getClaimSelector() {
+        return claimSelector;
     }
 
     public KothManager getKothManager() {

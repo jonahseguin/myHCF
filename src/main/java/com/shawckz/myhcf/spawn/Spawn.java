@@ -21,12 +21,12 @@ import org.bson.Document;
 import java.util.Set;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.inventory.ItemStack;
 
 /**
  * Created by Jonah Seguin on 1/25/2016.
@@ -40,6 +40,7 @@ public class Spawn implements Listener {
     private final DynamicWall wall;
     private final Location spawn;
     private Faction spawnFaction;
+    private Claim claim = null;
 
     public Spawn(Factions instance) {
         boolean foundFac = false;
@@ -91,6 +92,7 @@ public class Spawn implements Listener {
             claim = claims.stream().findFirst().get();
             pos1 = claim.getMinimumPoint();
             pos2 = claim.getMaximumPoint();
+            this.claim = claim;
         }
 
         this.wallRadius = new WallRadius(pos1, pos2);
@@ -121,12 +123,31 @@ public class Spawn implements Listener {
         }
         if (spawnTagged) {
             if (player.getLocation().distanceSquared(spawn) < 150) {
-                wallRadius.send(player, Material.STAINED_GLASS, wall.getNear(player, 10, 10));
+                wallRadius.send(player, new ItemStack(Factions.getInstance().getFactionsConfig().getSpawnTagWallMaterial(), 1, (byte)Factions.getInstance().getFactionsConfig().getSpawnTagWallMaterialData()), wall.getNear(player, 30, 10));
             }
         }
-
-
     }
 
+    public boolean withinSpawn(Location loc) {
+        if(claim != null) {
+            return claim.within(loc);
+        }
+        return false;
+    }
 
+    public WallRadius getWallRadius() {
+        return wallRadius;
+    }
+
+    public DynamicWall getWall() {
+        return wall;
+    }
+
+    public Location getSpawn() {
+        return spawn;
+    }
+
+    public Faction getSpawnFaction() {
+        return spawnFaction;
+    }
 }

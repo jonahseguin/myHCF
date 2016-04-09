@@ -1,10 +1,13 @@
 package com.shawckz.myhcf.faction;
 
 import com.shawckz.myhcf.Factions;
+import com.shawckz.myhcf.configuration.FLang;
+import com.shawckz.myhcf.configuration.FactionLang;
 import com.shawckz.myhcf.database.search.SearchText;
 import com.shawckz.myhcf.event.FactionLoadEvent;
 import com.shawckz.myhcf.event.FactionUnloadEvent;
 import com.shawckz.myhcf.faction.data.DBFaction;
+import com.shawckz.myhcf.player.HCFPlayer;
 import com.shawckz.myhcf.util.HCFException;
 
 import java.util.Collection;
@@ -13,6 +16,10 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class FactionManager {
 
@@ -151,6 +158,47 @@ public class FactionManager {
             }
         }
         return null;
+    }
+
+    public void getFactionFromArg(CommandSender player, String target, FactionGetter getter) {
+        //Priority 1 for search is faction name
+        if (Factions.getInstance().getFactionManager().factionExists(target)) {
+            Factions.getInstance().getFactionManager().getFaction(target, faction -> getter.fetch(faction));
+        }
+        else if (Bukkit.getPlayer(target) != null) {
+            Player t = Bukkit.getPlayer(target);
+            HCFPlayer thcf = Factions.getInstance().getCache().getHCFPlayer(t);
+            if (thcf != null) {
+                if(thcf.getFaction() != null) {
+                    getter.fetch(thcf.getFaction());
+                }
+                else{
+                    FLang.send(player, FactionLang.FACTION_NONE_OTHER, thcf.getName());
+                }
+            }
+            else {
+                player.sendMessage(ChatColor.RED + "There is no faction or player by that name.");
+            }
+        }
+        else {
+            new BukkitRunnable(){
+                @Override
+                public void run() {
+                    HCFPlayer t = Factions.getInstance().getCache().getHCFPlayer(target);
+                    if (t != null) {
+                        if (t.getFaction() != null) {
+                            getter.fetch(t.getFaction());
+                        }
+                        else {
+                            FLang.send(player, FactionLang.PLAYER_NOT_IN_FACTION, target);
+                        }
+                    }
+                    else {
+                        player.sendMessage(ChatColor.RED + "There is no faction or player by that name.");
+                    }
+                }
+            }.runTaskAsynchronously(Factions.getInstance());
+        }
     }
 
 }

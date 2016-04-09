@@ -35,7 +35,7 @@ public class ArmorClassManager {
         new BukkitRunnable() {
             @Override
             public void run() {
-                for (Player pl : Bukkit.getServer().getOnlinePlayers()) {
+                for (Player pl : Bukkit.getOnlinePlayers()) {
                     HCFPlayer player = Factions.getInstance().getCache().getHCFPlayer(pl);
                     if (player.getArmorClassType() != null) {
                         ArmorClass armorClass = getArmorClass(player.getArmorClassType());

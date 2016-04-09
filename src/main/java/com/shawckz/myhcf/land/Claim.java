@@ -4,12 +4,14 @@ import com.shawckz.myhcf.Factions;
 import com.shawckz.myhcf.database.AutoDBable;
 import com.shawckz.myhcf.database.annotations.CollectionName;
 import com.shawckz.myhcf.database.annotations.DBColumn;
+import com.shawckz.myhcf.faction.Faction;
 import com.shawckz.myhcf.util.HCFException;
 import lombok.*;
 
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -17,45 +19,65 @@ import org.bukkit.Location;
 /**
  * Created by 360 on 21/07/2015.
  */
-@AllArgsConstructor
-@RequiredArgsConstructor
 @Getter
 @Setter
 @CollectionName(name = "myhcfclaims")
 public class Claim implements AutoDBable, Iterable<Coordinate> {
 
-    @NonNull
     @DBColumn
     private String factionID;
 
-    @NonNull
+    @DBColumn
+    private String id;
+
     @DBColumn
     private String world;
-    @NonNull
     @DBColumn
     private int minX;
-    @NonNull
     @DBColumn
     private int minY;
-    @NonNull
     @DBColumn
     private int minZ;
-    @NonNull
     @DBColumn
     private int maxX;
-    @NonNull
     @DBColumn
     private int maxY;
-    @NonNull
     @DBColumn
     private int maxZ;
 
     private ClaimType claimType = ClaimType.NORMAL;
 
+    public Claim(String factionID, String world, int minX, int minY, int minZ, int maxX, int maxY, int maxZ) {
+        this.id = UUID.randomUUID().toString().substring(0,6);
+        this.factionID = factionID;
+        this.world = world;
+        this.minX = minX;
+        this.minY = minY;
+        this.minZ = minZ;
+        this.maxX = maxX;
+        this.maxY = maxY;
+        this.maxZ = maxZ;
+    }
+
+    public Claim(String factionID, String world, int minX, int minY, int minZ, int maxX, int maxY, int maxZ, ClaimType claimType) {
+        this.id = UUID.randomUUID().toString().substring(0,6);
+        this.factionID = factionID;
+        this.world = world;
+        this.minX = minX;
+        this.minY = minY;
+        this.minZ = minZ;
+        this.maxX = maxX;
+        this.maxY = maxY;
+        this.maxZ = maxZ;
+        this.claimType = claimType;
+    }
+
+
     public Claim(final Location p1, final Location p2) {
         if (!p1.getWorld().getName().equals(p2.getWorld().getName())) {
             throw new HCFException("Claim location 1 must be in the same world as location 2");
         }
+        this.id = UUID.randomUUID().toString().substring(0,6);
         this.world = p1.getWorld().getName();
         this.minX = Math.min(p1.getBlockX(), p2.getBlockX());
         this.maxX = Math.max(p1.getBlockX(), p2.getBlockX());
@@ -63,6 +85,21 @@ public class Claim implements AutoDBable, Iterable<Coordinate> {
         this.maxY = Math.max(p1.getBlockY(), p2.getBlockY());
         this.minZ = Math.min(p1.getBlockZ(), p2.getBlockZ());
         this.maxZ = Math.max(p1.getBlockZ(), p2.getBlockZ());
+    }
+
+    public Claim(final Location p1, final Location p2, Faction faction) {
+        if (!p1.getWorld().getName().equals(p2.getWorld().getName())) {
+            throw new HCFException("Claim location 1 must be in the same world as location 2");
+        }
+        this.id = UUID.randomUUID().toString().substring(0,6);
+        this.world = p1.getWorld().getName();
+        this.minX = Math.min(p1.getBlockX(), p2.getBlockX());
+        this.maxX = Math.max(p1.getBlockX(), p2.getBlockX());
+        this.minY = Math.min(p1.getBlockY(), p2.getBlockY());
+        this.maxY = Math.max(p1.getBlockY(), p2.getBlockY());
+        this.minZ = Math.min(p1.getBlockZ(), p2.getBlockZ());
+        this.maxZ = Math.max(p1.getBlockZ(), p2.getBlockZ());
+        this.factionID = faction.getId();
     }
 
     public boolean within(final Location loc) {
@@ -165,6 +202,43 @@ public class Claim implements AutoDBable, Iterable<Coordinate> {
         return new Claim(factionID, world, minX, minY, minZ, maxX, maxY, maxZ, claimType);
     }
 
+    public boolean isNearEnemy() {
+        for(Claim t : touchingClaims()) {
+            if(!t.getFactionID().equals(factionID)) {
+                return false;
+            }
+        }
+        Claim outset = outset(CuboidDirection.Horizontal, Factions.getInstance().getFactionsConfig().getFactionsClaimDistance());
+        for(Claim t : outset.touchingClaims()) {
+            if(!t.getFactionID().equals(factionID)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static double getPrice(Claim claim, Faction faction, boolean buying) {
+        final int x = Math.abs(claim.minX - claim.maxX);
+        final int z = Math.abs(claim.minZ - claim.maxZ);
+        int blocks = x * z;
+        int done = 0;
+        double mod = 0.4;
+        double curPrice = 0.0;
+        while (blocks > 0) {
+            --blocks;
+            ++done;
+            curPrice += mod;
+            if (done == 250) {
+                done = 0;
+                mod += 0.4;
+            }
+        }
+        curPrice /= 2.0;
+        if (buying && faction != null) {
+            curPrice += 500 * Factions.getInstance().getLandBoard().getClaims(faction).size();
+        }
+        return (int)curPrice;
+    }
 
     public enum CuboidDirection {
         North,

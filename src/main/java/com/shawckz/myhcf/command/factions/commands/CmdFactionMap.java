@@ -25,13 +25,11 @@ public class CmdFactionMap implements HCFCommand {
     @Override
     public void onCommand(FCmdArgs args) {
         Player player = (Player) args.getSender();
+        VisualMap visualMap = Factions.getInstance().getVisualMap();
         if (args.getArgs().length == 0) {
-            //Send image of nearby faction map
-            //TODO
-            player.sendMessage(ChatColor.RED + "//TODO: Send map");
+            player.sendMessage(ChatColor.YELLOW + "Your visual map is currently " + ChatColor.BLUE + (visualMap.isMapEnabled(player) ? "on" : "off") + ChatColor.YELLOW + ".");
         }
         else {
-            VisualMap visualMap = Factions.getInstance().getVisualMap();
             if (args.getArg(0).equalsIgnoreCase("on")) {
                 if (!visualMap.isMapEnabled(player)) {
                     visualMap.enableMap(player);

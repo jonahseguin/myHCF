@@ -21,9 +21,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.bukkit.Bukkit;
+import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.potion.PotionType;
 
 
 @Getter
@@ -66,6 +69,16 @@ public class FactionsConfig extends Configuration {
         for(String key : scoreboardKeys.keySet()){
             scoreboardKeys.put(key, ChatColor.translateAlternateColorCodes('&', scoreboardKeys.get(key)));
         }
+        for(Enchantment key : Enchantment.values()) {
+            if(!enchantLimits.containsKey(key.getName().toUpperCase())) {
+                enchantLimits.put(key.getName().toUpperCase(), key.getMaxLevel());
+            }
+        }
+        for(PotionType key : PotionType.values()) {
+            if(!potionLimits.containsKey(key.toString().toUpperCase())) {
+                potionLimits.put(key.toString().toUpperCase(), key.getMaxLevel());
+            }
+        }
     }
 
     //No final variables (if they are in the config)
@@ -88,6 +101,9 @@ public class FactionsConfig extends Configuration {
 
     @ConfigData("factions.rally.teleport-time")
     private int factionsRallyTeleportTime = 5;//Seconds
+
+    @ConfigData("factions.claim.distance")
+    private int factionsClaimDistance = 5;
 
     @ConfigData("factions.name.max-length")
     private int maxFactionNameLength = 14;
@@ -168,6 +184,13 @@ public class FactionsConfig extends Configuration {
     @ConfigData("spawntag.time.damager")
     private int spawnTagTimeDamager = 60;
 
+    @ConfigData("spawntag.wall.material.type")
+    @ConfigSerializer(serializer = MaterialSerializer.class)
+    private Material spawnTagWallMaterial = Material.STAINED_GLASS;
+
+    @ConfigData("spawntag.wall.material.data")
+    private int spawnTagWallMaterialData = DyeColor.RED.getWoolData();
+
     @ConfigData("magicitem.speed.name")
     private String magicItemSpeedName = "Speed";
 
@@ -218,6 +241,22 @@ public class FactionsConfig extends Configuration {
 
     @ConfigData("wrench.uses")
     private int wrenchUses = 1;
+
+    @ConfigData("limiter.enchants")
+    @ConfigSerializer(serializer = MapSerializer.class)
+    private Map<String, Integer> enchantLimits = new HashMap<>();
+
+    @ConfigData("limiter.potions")
+    @ConfigSerializer(serializer = MapSerializer.class)
+    private Map<String, Integer> potionLimits = new HashMap<>();
+
+    public int getEnchantLimit(Enchantment enchantment){
+        return enchantLimits.get(enchantment.getName().toUpperCase());
+    }
+
+    public int getPotionLimit(PotionType potion) {
+        return potionLimits.get(potion.toString().toUpperCase());
+    }
 
     public String getScoreboardKey(FLabel label) {
         if (!scoreboardKeys.containsKey(label.toString())) {

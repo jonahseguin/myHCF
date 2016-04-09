@@ -27,6 +27,8 @@ public class FEventManager {
         listeners.add(new ExpMultiplierListener());
         listeners.add(new WrenchListener());
         listeners.add(new DeathMessageListener());
+        listeners.add(instance.getClaimSelector());
+        listeners.add(new LimiterListener());
     }
 
     public void add(Listener listener) {
