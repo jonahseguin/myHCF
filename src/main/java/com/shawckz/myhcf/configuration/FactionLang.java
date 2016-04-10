@@ -102,6 +102,7 @@ public enum FactionLang {
     FACTION_UNFREEZE_SENDER("&eYou unfroze the DTR of the faction '&9{0}&e'."),
     FACTION_CLAIM_CANCEL("&eLand claiming cancelled."),
     FACTION_CLAIM_NOT_ENOUGH_MONEY("&cYour faction does not have enough money to purchase this claim (${0})."),
+    FACTION_CLAIM_TOO_SMALL("&cThat claim is too small.  Must be at least {0} by {0}."),
     FACTION_CLAIM_PURCHASE("&9{0}&e purchased &a${0}&e worth of land for your faction."),
     FACTION_DEPOSIT("&9{0}&e has deposited &a${1}&e into the faction balance."),
     FACTION_DEPOSIT_INSUFFICIENT_FUNDS("&cYou do not have enough money."),

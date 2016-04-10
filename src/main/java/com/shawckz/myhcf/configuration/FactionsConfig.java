@@ -88,7 +88,7 @@ public class FactionsConfig extends Configuration {
 
     @ConfigData("datamode")
     @ConfigSerializer(serializer = DataModeSerializer.class)
-    private FDataMode dataMode = FDataMode.JSON;
+    private FDataMode dataMode = FDataMode.MONGO;
 
     @ConfigData("debug")
     private boolean debug = false;
@@ -104,6 +104,9 @@ public class FactionsConfig extends Configuration {
 
     @ConfigData("factions.claim.distance")
     private int factionsClaimDistance = 5;
+
+    @ConfigData("factions.claim.minsize")
+    private int factionsClaimMinSize = 16;
 
     @ConfigData("factions.name.max-length")
     private int maxFactionNameLength = 14;

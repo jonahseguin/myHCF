@@ -202,6 +202,9 @@ public class AutoMongo implements AutoDB {
             else if (type.equals(String.class)) {
                 field.set(a, String.valueOf(value));
             }
+            else if(type.equals(Set.class)) {
+
+            }
             else if (!Primitives.isWrapperType(type) && !type.equals(String.class) && !type.equals(Long.class) && !type.isPrimitive()) {
                 field.set(a, type.getDeclaredMethod("valueOf", String.class).invoke(null, value.toString()));
             }

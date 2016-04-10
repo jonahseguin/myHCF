@@ -88,6 +88,7 @@ public class DBFaction implements AutoDBable, Faction {
     private Set<String> invitations = new HashSet<>();//(Set<Player UUID>)
 
     public DBFaction() {
+
     } //Leave empty constructor so that AutoMongo can instantiate.
 
     @Override

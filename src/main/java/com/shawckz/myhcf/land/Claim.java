@@ -5,6 +5,8 @@ import com.shawckz.myhcf.database.AutoDBable;
 import com.shawckz.myhcf.database.annotations.CollectionName;
 import com.shawckz.myhcf.database.annotations.DBColumn;
 import com.shawckz.myhcf.faction.Faction;
+import com.shawckz.myhcf.spawn.DynamicWall;
+import com.shawckz.myhcf.spawn.WallRadius;
 import com.shawckz.myhcf.util.HCFException;
 import lombok.*;
 
@@ -45,6 +47,8 @@ public class Claim implements AutoDBable, Iterable<Coordinate> {
     @DBColumn
     private int maxZ;
 
+    private DynamicWall dynamicWall;
+
     private ClaimType claimType = ClaimType.NORMAL;
 
     public Claim(String factionID, String world, int minX, int minY, int minZ, int maxX, int maxY, int maxZ) {
@@ -57,6 +61,7 @@ public class Claim implements AutoDBable, Iterable<Coordinate> {
         this.maxX = maxX;
         this.maxY = maxY;
         this.maxZ = maxZ;
+        this.dynamicWall = new DynamicWall(new WallRadius(world, maxX, minX, maxY, minY, maxZ, minZ));
     }
 
     public Claim(String factionID, String world, int minX, int minY, int minZ, int maxX, int maxY, int maxZ, ClaimType claimType) {
@@ -70,6 +75,7 @@ public class Claim implements AutoDBable, Iterable<Coordinate> {
         this.maxY = maxY;
         this.maxZ = maxZ;
         this.claimType = claimType;
+        this.dynamicWall = new DynamicWall(new WallRadius(world, maxX, minX, maxY, minY, maxZ, minZ));
     }
 
 
@@ -85,6 +91,7 @@ public class Claim implements AutoDBable, Iterable<Coordinate> {
         this.maxY = Math.max(p1.getBlockY(), p2.getBlockY());
         this.minZ = Math.min(p1.getBlockZ(), p2.getBlockZ());
         this.maxZ = Math.max(p1.getBlockZ(), p2.getBlockZ());
+        this.dynamicWall = new DynamicWall(new WallRadius(world, maxX, minX, maxY, minY, maxZ, minZ));
     }
 
     public Claim(final Location p1, final Location p2, Faction faction) {
@@ -100,6 +107,7 @@ public class Claim implements AutoDBable, Iterable<Coordinate> {
         this.minZ = Math.min(p1.getBlockZ(), p2.getBlockZ());
         this.maxZ = Math.max(p1.getBlockZ(), p2.getBlockZ());
         this.factionID = faction.getId();
+        this.dynamicWall = new DynamicWall(new WallRadius(world, maxX, minX, maxY, minY, maxZ, minZ));
     }
 
     public boolean within(final Location loc) {

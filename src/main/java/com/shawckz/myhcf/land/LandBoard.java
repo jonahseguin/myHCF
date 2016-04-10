@@ -74,6 +74,22 @@ public class LandBoard {
         return null;
     }
 
+    public Set<Claim> getClaimsInRadius(Location loc, int radius) {
+        Set<Claim> claims = new HashSet<>();
+        for (int x = loc.getBlockX() - radius; x < loc.getBlockX() + radius; x++) {
+            for (int y = loc.getBlockY() - radius; y < loc.getBlockY() + radius; y++) {
+                for (int z = loc.getBlockZ() - radius; z < loc.getBlockZ() + radius; z++) {
+                    Location target = new Location(loc.getWorld(), x, y, z);
+                    Claim c = getClaim(target);
+                    if(c != null) {
+                        claims.add(c);
+                    }
+                }
+            }
+        }
+        return claims;
+    }
+
     public void claim(Claim claim, Faction fac) {
         land.put(claim, fac.getId());
     }
@@ -118,7 +134,7 @@ public class LandBoard {
         while (it.hasNext()) {
             Claim claim = it.next();
             if (claim.getFactionID().equalsIgnoreCase(fac.getId())) {
-                if(claim.getId().equalsIgnoreCase(claimID)) {
+                if (claim.getId().equalsIgnoreCase(claimID)) {
                     delete.add(claim);
                 }
             }

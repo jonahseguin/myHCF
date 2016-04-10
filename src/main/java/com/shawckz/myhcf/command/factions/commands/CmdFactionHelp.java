@@ -31,7 +31,7 @@ public class CmdFactionHelp implements HCFCommand {
 
         sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7*** &9Commands &7***"));
         for(HCFCmdData cmd : Factions.getInstance().getCommandManager().getCmds().values()) {
-            sender.sendMessage("&e/f " + cmd.getName() + " &8- " + cmd.getDescription());
+            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&e/f " + cmd.getName() + " &8- " + cmd.getDescription()));
         }
 
         FLang.send(sender, FactionLang.FACTION_INFO_HEADER_FOOTER);

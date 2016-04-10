@@ -44,10 +44,15 @@ public class CmdFactionClaim implements HCFCommand {
                     if(claim != null && claim.getPos1() != null && claim.getPos2() != null) {
                         double price = Claim.getPrice(new Claim(claim.getPos1(), claim.getPos2()), player.getFaction(), true);
                         if(player.getFaction().getBalance() >= price) {
-                            Claim buyClaim = new Claim(claim.getPos1(), claim.getPos2(), player.getFaction());
-                            player.getFaction().setBalance(player.getFaction().getBalance() - price);
-                            Factions.getInstance().getLandBoard().claim(buyClaim, player.getFaction());
-                            player.getFaction().sendMessage(FLang.format(FactionLang.FACTION_CLAIM_PURCHASE, player.getName(), price+""));
+                            if(claim.getPos1().distanceSquared(claim.getPos2()) >= Factions.getInstance().getFactionsConfig().getFactionsClaimMinSize()) {
+                                Claim buyClaim = new Claim(claim.getPos1(), claim.getPos2(), player.getFaction());
+                                player.getFaction().setBalance(player.getFaction().getBalance() - price);
+                                Factions.getInstance().getLandBoard().claim(buyClaim, player.getFaction());
+                                player.getFaction().sendMessage(FLang.format(FactionLang.FACTION_CLAIM_PURCHASE, player.getName(), price + ""));
+                            }
+                            else{
+                                FLang.send(p, FactionLang.FACTION_CLAIM_TOO_SMALL, Factions.getInstance().getFactionsConfig().getFactionsClaimMinSize()+"");
+                            }
                         }
                         else{
                             FLang.send(p, FactionLang.FACTION_CLAIM_NOT_ENOUGH_MONEY, price+"");

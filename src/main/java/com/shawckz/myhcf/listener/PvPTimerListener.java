@@ -8,9 +8,17 @@ package com.shawckz.myhcf.listener;
 import com.shawckz.myhcf.Factions;
 import com.shawckz.myhcf.configuration.FLang;
 import com.shawckz.myhcf.configuration.FactionLang;
+import com.shawckz.myhcf.faction.Faction;
+import com.shawckz.myhcf.faction.FactionType;
+import com.shawckz.myhcf.land.Claim;
+import com.shawckz.myhcf.land.LandBoard;
 import com.shawckz.myhcf.player.HCFPlayer;
 import com.shawckz.myhcf.scoreboard.hcf.FLabel;
 import com.shawckz.myhcf.scoreboard.hcf.timer.HCFTimerFormat;
+
+import java.util.Set;
+
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
@@ -18,8 +26,10 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.inventory.ItemStack;
 
 /**
  * Created by Jonah Seguin on 1/23/2016.
@@ -101,6 +111,37 @@ public class PvPTimerListener implements Listener {
             }
         }
 
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onMove(PlayerMoveEvent e) {
+        if (e.isCancelled()) return;
+        if (e.getTo().getBlockX() == e.getFrom().getBlockX() && e.getTo().getBlockZ() == e.getFrom().getBlockZ()) {
+            return;
+        }
+        Player player = e.getPlayer();
+        if(!hasPvPTimer(player)) return;
+        HCFPlayer hcfPlayer = Factions.getInstance().getCache().getHCFPlayer(player);
+        LandBoard landBoard = Factions.getInstance().getLandBoard();
+        boolean spawnTagged = hcfPlayer.getScoreboard().getTimer(FLabel.SPAWN_TAG).getTime() > 0.1;
+        if (landBoard.isClaimed(e.getTo())) {
+            Faction claim = landBoard.getFactionAt(e.getTo());
+            if (claim.getFactionType() == FactionType.NORMAL || claim.getFactionType() == FactionType.KOTH) {
+                if (!spawnTagged) {
+                    player.setFoodLevel(20);
+                }
+                else {
+                    e.setTo(e.getFrom());
+                }
+            }
+        }
+
+        for(Claim c : Factions.getInstance().getLandBoard().getClaimsInRadius(e.getTo(), 25)) {
+            Set<Location> toSend = c.getDynamicWall().getNear(e.getPlayer(), 25, 10);
+            if(!toSend.isEmpty()) {
+                c.getDynamicWall().getWallRadius().send(player, new ItemStack(Factions.getInstance().getFactionsConfig().getSpawnTagWallMaterial(), 1, (byte)Factions.getInstance().getFactionsConfig().getSpawnTagWallMaterialData()), toSend);
+            }
+        }
     }
 
 }
