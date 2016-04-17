@@ -51,10 +51,7 @@ public class FCmdArgs {
      */
 
     public String[] getArgs() {
-        if (filteredArgs == null) {
-            filteredArgs = filterFlags(args);
-        }
-        return filteredArgs;
+        return args;
     }
 
     /**
@@ -205,6 +202,13 @@ public class FCmdArgs {
      */
     public String getArg(int index) {
         return getArgs()[index];
+    }
+
+    public String getArgNoFlags(int index) {
+        if (filteredArgs == null) {
+            filteredArgs = filterFlags(args);
+        }
+        return filteredArgs[index];
     }
 
     /**
