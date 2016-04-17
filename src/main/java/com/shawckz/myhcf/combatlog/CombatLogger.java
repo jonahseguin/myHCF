@@ -31,10 +31,11 @@ public class CombatLogger {
     private boolean spawned = false;
     private final NPCRegistry registry = NPCLib.getNPCRegistry("myHCF", Factions.getInstance());
     private CombatLogTimer timer;
+    private boolean dead = false;
 
     public CombatLogger(Player player) {
         this.player = player;
-        this.name = player.getName();
+        this.name = "Logger-"+player.getName();
         this.uuid = player.getUniqueId().toString();
         for(ItemStack i : player.getInventory().getContents()) {
             items.add(i);
@@ -50,7 +51,6 @@ public class CombatLogger {
                 }
             }
         };
-        //todo listen for when the NPC dies so we can drop the items
     }
 
     public void spawn(Location loc){
@@ -78,6 +78,10 @@ public class CombatLogger {
         else{
             throw new HCFException("Cannot despawn CombatLogger that has not been spawned");
         }
+    }
+
+    public void setDead() {
+        dead = true;
     }
 
 }

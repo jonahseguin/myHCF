@@ -26,7 +26,7 @@ public class CmdFactionSetHome implements HCFCommand {
 
         if(player.getFaction() != null) {
             Faction land = Factions.getInstance().getLandBoard().getFactionAt(p.getLocation());
-            if(land.getId().equals(player.getFaction().getId())) {
+            if(land != null && land.getId().equals(player.getFaction().getId())) {
                 if(player.getFactionRole() != FactionRole.MEMBER) {
                     player.getFaction().setHome(p.getLocation());
                     player.getFaction().sendMessage(FLang.format(FactionLang.FACTION_SETHOME_LOCAL, player.getName()));

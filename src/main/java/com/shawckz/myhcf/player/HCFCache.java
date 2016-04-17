@@ -7,6 +7,7 @@ import com.shawckz.myhcf.scoreboard.hcf.HCFScoreboard;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class HCFCache extends AbstractCache {
 
@@ -37,6 +38,15 @@ public class HCFCache extends AbstractCache {
             return (HCFPlayer) cachePlayer;
         }
         return null;
+    }
+
+    public void saveHCFPlayer(HCFPlayer player) {
+        new BukkitRunnable(){
+            @Override
+            public void run() {
+                Factions.getInstance().getDbHandler().push(player);
+            }
+        }.runTaskAsynchronously(Factions.getInstance());
     }
 
     @Override

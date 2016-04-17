@@ -10,6 +10,7 @@ import com.shawckz.myhcf.command.factions.FCommand;
 import com.shawckz.myhcf.command.factions.HCFCommand;
 import com.shawckz.myhcf.configuration.FLang;
 import com.shawckz.myhcf.configuration.FactionLang;
+import com.shawckz.myhcf.faction.Faction;
 import com.shawckz.myhcf.faction.FactionRole;
 import com.shawckz.myhcf.player.HCFPlayer;
 
@@ -39,9 +40,11 @@ public class CmdFactionTag implements HCFCommand {
                         p.sendMessage(ChatColor.RED + "The new faction name must be different than your current name.");
                         return;
                     }
-                    Bukkit.broadcastMessage(FLang.format(FactionLang.FACTION_TAG_BROADCAST, player.getFaction().getDisplayName(), name));
-                    player.getFaction().sendMessage(FLang.format(FactionLang.FACTION_TAG_LOCAL, p.getName(), name));
-                    player.getFaction().setDisplayName(name);
+                    Faction f = player.getFaction();
+                    Bukkit.broadcastMessage(FLang.format(FactionLang.FACTION_TAG_BROADCAST, f.getDisplayName(), name));
+                    f.sendMessage(FLang.format(FactionLang.FACTION_TAG_LOCAL, p.getName(), name));
+                    f.setDisplayName(name);
+                    Factions.getInstance().getDbHandler().push(f);
                 }
             }
             else{

@@ -103,7 +103,7 @@ public enum FactionLang {
     FACTION_CLAIM_CANCEL("&eLand claiming cancelled."),
     FACTION_CLAIM_NOT_ENOUGH_MONEY("&cYour faction does not have enough money to purchase this claim (${0})."),
     FACTION_CLAIM_TOO_SMALL("&cThat claim is too small.  Must be at least {0} by {0}."),
-    FACTION_CLAIM_PURCHASE("&9{0}&e purchased &a${0}&e worth of land for your faction."),
+    FACTION_CLAIM_PURCHASE("&9{0}&e purchased &a${1}&e worth of land for your faction."),
     FACTION_DEPOSIT("&9{0}&e has deposited &a${1}&e into the faction balance."),
     FACTION_DEPOSIT_INSUFFICIENT_FUNDS("&cYou do not have enough money."),
     FACTION_WITHDRAW_INSUFFICIENT_FUNDS("&cYour faction does not have enough money."),
@@ -115,7 +115,9 @@ public enum FactionLang {
     SPAWN_TAG("&7You are now &cspawn-tagged&7.  Do not logout."),
     LIMITER_REMOVED_ENCHANTS("&7We detected you had some illegal enchantments and have removed them."),
     LIMITER_POTION("&7That potion is not allowed."),
-    PVP_TIMER_NOT_ALLOWED("&cYou cannot do this with an active PvPTimer.  Type /pvp enable to remove your PvPTimer.")
+    PVP_TIMER_NOT_ALLOWED("&cYou cannot do this with an active PvPTimer.  Type /pvp enable to remove your PvPTimer."),
+    ECO_BALANCE("&eYou have &9${0}&e."),
+    ECO_BALANCE_OTHER("&b{0}&e has &9${0}&e.")
     ;
 
     private final String defaultValue;

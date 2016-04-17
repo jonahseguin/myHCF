@@ -1,6 +1,7 @@
 package com.shawckz.myhcf.listener;
 
 import com.shawckz.myhcf.Factions;
+import com.shawckz.myhcf.combatlog.CombatLogListener;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -29,6 +30,7 @@ public class FEventManager {
         listeners.add(new DeathMessageListener());
         listeners.add(instance.getClaimSelector());
         listeners.add(new LimiterListener());
+        listeners.add(new CombatLogListener());
     }
 
     public void add(Listener listener) {

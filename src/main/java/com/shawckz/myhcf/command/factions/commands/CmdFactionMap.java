@@ -42,7 +42,7 @@ public class CmdFactionMap implements HCFCommand {
             else if (args.getArg(0).equalsIgnoreCase("off")) {
                 if (visualMap.isMapEnabled(player)) {
                     visualMap.disableMap(player);
-                    player.sendMessage(ChatColor.YELLOW + "Your faction map has been " + ChatColor.GREEN + "enabled" + ChatColor.YELLOW + ".");
+                    player.sendMessage(ChatColor.YELLOW + "Your faction map has been " + ChatColor.RED + "disabled" + ChatColor.YELLOW + ".");
                 }
                 else {
                     player.sendMessage(ChatColor.RED + "Your faction map is not enabled.");

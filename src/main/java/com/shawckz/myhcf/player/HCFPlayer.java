@@ -57,6 +57,9 @@ public class HCFPlayer extends CachePlayer {
     @DBColumn
     private double balance = 0.0D;
 
+    @DBColumn
+    private boolean combatLogged = false;
+
     private Player bukkitPlayer;
     private HCFScoreboard scoreboard;
     private ChatMode chatMode = ChatMode.PUBLIC;

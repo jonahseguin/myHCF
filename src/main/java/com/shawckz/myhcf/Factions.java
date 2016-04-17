@@ -3,8 +3,10 @@ package com.shawckz.myhcf;
 import com.shawckz.myhcf.armorclass.ArmorClassManager;
 import com.shawckz.myhcf.armorclass.classes.Archer;
 import com.shawckz.myhcf.auth.XSocketAuth;
+import com.shawckz.myhcf.combatlog.CombatLogManager;
 import com.shawckz.myhcf.command.factions.FCommandManager;
 import com.shawckz.myhcf.command.normal.GCommandHandler;
+import com.shawckz.myhcf.command.normal.commands.CmdEconomy;
 import com.shawckz.myhcf.command.normal.commands.CmdPvPTimer;
 import com.shawckz.myhcf.configuration.FactionsConfig;
 import com.shawckz.myhcf.configuration.LanguageConfig;
@@ -50,6 +52,7 @@ public class Factions extends JavaPlugin {
     private Spawn spawn;
     private KothManager kothManager;
     private ClaimSelector claimSelector;
+    private CombatLogManager combatLogManager;
 
     private final XSocketAuth auth = new XSocketAuth();
 
@@ -73,6 +76,7 @@ public class Factions extends JavaPlugin {
                 gCommandHandler = new GCommandHandler(this);
 
                 gCommandHandler.registerCommands(new CmdPvPTimer());
+                gCommandHandler.registerCommands(new CmdEconomy());
 
                 kothManager = new KothManager();
                 kothManager.loadKoths();
@@ -80,6 +84,7 @@ public class Factions extends JavaPlugin {
                 armorClassManager = new ArmorClassManager(this);
                 armorClassManager.registerArmorClass(new Archer());
                 spawn = new Spawn(this);
+                combatLogManager = new CombatLogManager();
        //     }
        //     else{
       //          log("myHCF is not authorized.  If you believe this is in error, please properly configure your server IP in the server.properties and auth key in the config.");
@@ -103,6 +108,10 @@ public class Factions extends JavaPlugin {
             lang = null;
         }
         instance = null;
+    }
+
+    public CombatLogManager getCombatLogManager() {
+        return combatLogManager;
     }
 
     public ClaimSelector getClaimSelector() {
