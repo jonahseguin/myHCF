@@ -7,11 +7,12 @@ import com.shawckz.myhcf.scoreboard.hcf.timer.HCFTimerFormat;
 import com.shawckz.myhcf.scoreboard.internal.XScoreboard;
 import com.shawckz.myhcf.scoreboard.internal.timer.TimerPool;
 import lombok.Getter;
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 
 @Getter
 public class HCFScoreboard extends XScoreboard {
@@ -41,7 +42,7 @@ public class HCFScoreboard extends XScoreboard {
     }
 
     public HCFTimer getTimer(FLabel key) {
-        return getTimer(key, HCFTimerFormat.TENTH_OF_SECOND);
+        return getTimer(key, key.getFormat());
     }
 
     public boolean hasTimer(FLabel key) {

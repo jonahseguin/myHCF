@@ -10,6 +10,7 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.result.DeleteResult;
+import com.mongodb.client.result.UpdateResult;
 import com.shawckz.myhcf.Factions;
 import com.shawckz.myhcf.configuration.AbstractSerializer;
 import com.shawckz.myhcf.database.annotations.CollectionName;
@@ -47,7 +48,8 @@ public class AutoMongo implements AutoDB {
         doc.putAll(value.getValues());
 
         if (documentExists(searchQuery, col)) {
-            col.updateOne(searchQuery, new Document("$set", doc));
+            UpdateResult result = col.updateOne(searchQuery, new Document("$set", doc));
+            return result.wasAcknowledged() && result.getModifiedCount() > 0;
         }
         else {
             col.insertOne(doc);

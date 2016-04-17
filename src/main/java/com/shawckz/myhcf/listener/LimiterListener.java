@@ -121,9 +121,11 @@ public class LimiterListener implements Listener {
     }
 
     public ItemStack getCleanItem(ItemStack itemStack) {
-        for (Enchantment enchantment : itemStack.getEnchantments().keySet()) {
-            if (Factions.getInstance().getFactionsConfig().getEnchantLimit(enchantment) < itemStack.getEnchantmentLevel(enchantment)) {
-                itemStack.removeEnchantment(enchantment);
+        if(itemStack != null && itemStack.getEnchantments() != null) {
+            for (Enchantment enchantment : itemStack.getEnchantments().keySet()) {
+                if (Factions.getInstance().getFactionsConfig().getEnchantLimit(enchantment) < itemStack.getEnchantmentLevel(enchantment)) {
+                    itemStack.removeEnchantment(enchantment);
+                }
             }
         }
         return itemStack;
@@ -131,10 +133,12 @@ public class LimiterListener implements Listener {
 
     public int removeIllegalEnchants(ItemStack itemStack) {
         int x = 0;
-        for (Enchantment enchantment : itemStack.getEnchantments().keySet()) {
-            if (Factions.getInstance().getFactionsConfig().getEnchantLimit(enchantment) < itemStack.getEnchantmentLevel(enchantment)) {
-                x++;
-                itemStack.removeEnchantment(enchantment);
+        if(itemStack != null && itemStack.getEnchantments() != null) {
+            for (Enchantment enchantment : itemStack.getEnchantments().keySet()) {
+                if (Factions.getInstance().getFactionsConfig().getEnchantLimit(enchantment) < itemStack.getEnchantmentLevel(enchantment)) {
+                    x++;
+                    itemStack.removeEnchantment(enchantment);
+                }
             }
         }
         return x;

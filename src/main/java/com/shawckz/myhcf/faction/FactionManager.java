@@ -114,7 +114,7 @@ public class FactionManager {
             getter.fetch(getLocalFaction(name));
         }
         else {
-            new FactionFetch(name, getter);
+            new FactionFetch(name, getter).requestFetch();
         }
     }
 
@@ -141,6 +141,7 @@ public class FactionManager {
     }
 
     public Faction getFactionFromDatabase(String name) {
+        Factions.log("Getting faction from database '"+name+"'");
         DBFaction dbFaction = new DBFaction();
         if(Factions.getInstance().getDbHandler().fetch(dbFaction, new SearchText("name", name))) {
             if (dbFaction.getName().equalsIgnoreCase(name)) {
@@ -163,9 +164,13 @@ public class FactionManager {
     public void getFactionFromArg(CommandSender player, String target, FactionGetter getter) {
         //Priority 1 for search is faction name
         if (Factions.getInstance().getFactionManager().factionExists(target)) {
-            Factions.getInstance().getFactionManager().getFaction(target, faction -> getter.fetch(faction));
+            player.sendMessage("Searching by faction name");
+            Factions.getInstance().getFactionManager().getFaction(target, faction -> {
+                getter.fetch(faction);
+            });
         }
         else if (Bukkit.getPlayer(target) != null) {
+            player.sendMessage("Searching by online player name");
             Player t = Bukkit.getPlayer(target);
             HCFPlayer thcf = Factions.getInstance().getCache().getHCFPlayer(t);
             if (thcf != null) {
@@ -181,6 +186,7 @@ public class FactionManager {
             }
         }
         else {
+            player.sendMessage("Searching by offline player name");
             new BukkitRunnable(){
                 @Override
                 public void run() {

@@ -15,7 +15,8 @@ public class AutoDBer {
     public AutoDBer(FDataMode dataMode) {
         this.dataMode = dataMode;
         if(dataMode == FDataMode.JSON) {
-            this.autoDB = new AutoJSON();
+            throw new HCFException("JSON DataMode is not currently supported.  Please change your DataMode to MONGO");
+            //this.autoDB = new AutoJSON();
         }
         else if (dataMode == FDataMode.MONGO) {
             this.autoDB = new AutoMongo();

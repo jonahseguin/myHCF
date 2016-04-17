@@ -43,9 +43,13 @@ public class CmdFactionCreate implements HCFCommand {
 
     private final FactionTypeSerializer factionTypeSerializer = new FactionTypeSerializer();
 
-    public static boolean validName(String name, Player sender) {
+    public static boolean validName(String name, CommandSender sender) {
         if (name.length() > config.getMaxFactionNameLength()) {
             sender.sendMessage(ChatColor.RED + "The faction name cannot be longer than " + config.getMaxFactionNameLength() + " characters.");
+            return false;
+        }
+        if(name.length() < config.getMinFactionNameLength()) {
+            sender.sendMessage(ChatColor.RED + "The faction name must be longer than " + config.getMinFactionNameLength() + " characters.");
             return false;
         }
         if (ALPHA_NUMERIC.matcher(name).find()) {
@@ -60,14 +64,8 @@ public class CmdFactionCreate implements HCFCommand {
         CommandSender sender = args.getSender();
         String name = args.getArg(0);
 
-        if (name.length() > config.getMaxFactionNameLength()) {
-            sender.sendMessage(ChatColor.RED + "The faction name cannot be longer than " + config.getMaxFactionNameLength() + " characters.");
-            return;
-        }
-        if (ALPHA_NUMERIC.matcher(name).find()) {
-            sender.sendMessage(ChatColor.RED + "The faction name must be alphanumeric.");
-            return;
-        }
+        if(!validName(name, sender)) return;
+
 
         if (args.hasFlag("special")) {
             if (sender.hasPermission("myhcf.admin.cmd.create.special")) {
@@ -123,6 +121,7 @@ public class CmdFactionCreate implements HCFCommand {
                         faction.setLeader(hcfPlayer);
                         hcfPlayer.setFactionId(faction.getId());
                         hcfPlayer.setFactionRole(FactionRole.LEADER);
+                        Factions.getInstance().getDbHandler().push(hcfPlayer);
 
                         Factions.getInstance().getFactionManager().addToCache(faction);
 

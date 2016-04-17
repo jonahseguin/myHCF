@@ -1,12 +1,10 @@
 package com.shawckz.myhcf.player.cache;
 
 import com.shawckz.myhcf.Factions;
-import com.shawckz.myhcf.database.annotations.DBColumn;
 import com.shawckz.myhcf.database.search.SearchText;
 import com.shawckz.myhcf.faction.FDataMode;
 import com.shawckz.myhcf.util.HCFException;
 
-import java.lang.reflect.Field;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -84,18 +82,7 @@ public abstract class AbstractCache implements Listener {
     }
 
     public CachePlayer loadCachePlayer(String name) {
-        String key = "username";
-        for (Field f : aClass.getDeclaredFields()) {
-            DBColumn row = f.getAnnotation(DBColumn.class);
-            if (row != null) {
-                if (row.identifier()) {
-                    if (row.name().equalsIgnoreCase("name") || f.getName().equalsIgnoreCase("username")) {
-                        key = row.name();
-                        break;
-                    }
-                }
-            }
-        }
+        String key = "name";
 
         try{
             CachePlayer cachePlayer = aClass.newInstance();
@@ -114,23 +101,15 @@ public abstract class AbstractCache implements Listener {
 
     public CachePlayer loadCachePlayerByid(String uuid) {
         String key = "uniqueId";
-        for (Field f : aClass.getDeclaredFields()) {
-            DBColumn row = f.getAnnotation(DBColumn.class);
-            if (row != null) {
-                if (row.identifier()) {
-                    if (row.name().equalsIgnoreCase("uuid") || f.getName().equalsIgnoreCase("id") || f.getName().equalsIgnoreCase("uniqueId")) {
-                        key = row.name();
-                        break;
-                    }
-                }
-            }
-        }
 
         try{
             CachePlayer cachePlayer = aClass.newInstance();
-            Factions.getInstance().getDbHandler().fetch(cachePlayer, new SearchText(key, uuid));
-
-            return cachePlayer;
+            if(Factions.getInstance().getDbHandler().fetch(cachePlayer, new SearchText(key, uuid))) {
+                return cachePlayer;
+            }
+            else{
+                return null;
+            }
         }
         catch (InstantiationException | IllegalAccessException ex) {
             throw new HCFException("Could not instantiate CachePlayer");
@@ -170,27 +149,37 @@ public abstract class AbstractCache implements Listener {
         players.clear();
     }
 
+    //MongoDB caching
     @EventHandler(priority = EventPriority.LOW)
     public void onCache(final AsyncPlayerPreLoginEvent e) {
         if(Factions.getDataMode() != FDataMode.MONGO) return;
+        if(players.containsKey(e.getName())) {
+            players.remove(e.getName());
+        }
+        if(playersUUID.containsKey(e.getUniqueId().toString())){
+            playersUUID.remove(e.getUniqueId().toString());
+        }
         final String name = e.getName();
         final String uuid = e.getUniqueId().toString();
-        CachePlayer cp = loadCachePlayer(e.getName());
+        CachePlayer cp = loadCachePlayerByid(uuid);
         if (cp != null) {
             put(cp);
+            Factions.log("[Cache] Put non-null " + name);
         } else {
+            Factions.log("[Cache] Created (was null) " + name);
             cp = create(name, uuid);
             put(cp);
             Factions.getInstance().getDbHandler().push(cp);
         }
     }
 
+    //JSON Caching
     @EventHandler
     public void onLogin(PlayerLoginEvent e) {
         if(Factions.getDataMode() != FDataMode.JSON) return;
         final String name = e.getPlayer().getName();
         final String uuid = e.getPlayer().getUniqueId().toString();
-        CachePlayer cp = loadCachePlayer(e.getPlayer().getName());
+        CachePlayer cp = loadCachePlayerByid(e.getPlayer().getUniqueId().toString());
         if (cp != null) {
             put(cp);
         } else {
@@ -221,7 +210,7 @@ public abstract class AbstractCache implements Listener {
 
     public void save(Player p) {
         if (contains(p.getName())) {
-            final CachePlayer cachePlayer = (aClass.cast(getBasePlayer(p)));
+            final CachePlayer cachePlayer = getBasePlayer(p);
             new BukkitRunnable() {
                 @Override
                 public void run() {

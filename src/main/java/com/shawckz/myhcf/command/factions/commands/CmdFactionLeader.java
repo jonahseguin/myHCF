@@ -43,6 +43,7 @@ public class CmdFactionLeader implements HCFCommand {
                                 player.getFaction().setLeader(target);
                                 target.setFactionRole(FactionRole.LEADER);
                                 player.setFactionRole(FactionRole.MEMBER);
+                                Factions.getInstance().getDbHandler().push(player);
                                 player.getFaction().sendMessage(FLang.format(FactionLang.FACTION_LEADER_LOCAL, target.getName(), player.getName()));
                             }
                             else{

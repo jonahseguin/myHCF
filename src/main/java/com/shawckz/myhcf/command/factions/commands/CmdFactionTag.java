@@ -14,6 +14,7 @@ import com.shawckz.myhcf.faction.FactionRole;
 import com.shawckz.myhcf.player.HCFPlayer;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 /**
@@ -34,12 +35,14 @@ public class CmdFactionTag implements HCFCommand {
         if(player.getFaction() != null) {
             if(player.getFactionRole() != FactionRole.MEMBER) {
                 if(CmdFactionCreate.validName(name, p)) {
+                    if(player.getFaction().getDisplayName().equals(name)) {
+                        p.sendMessage(ChatColor.RED + "The new faction name must be different than your current name.");
+                        return;
+                    }
                     Bukkit.broadcastMessage(FLang.format(FactionLang.FACTION_TAG_BROADCAST, player.getFaction().getDisplayName(), name));
                     player.getFaction().sendMessage(FLang.format(FactionLang.FACTION_TAG_LOCAL, p.getName(), name));
                     player.getFaction().setDisplayName(name);
                 }
-                // else :
-                // sends msg if not valid
             }
             else{
                 FLang.send(p, FactionLang.FACTION_CMD_MOD_ONLY);

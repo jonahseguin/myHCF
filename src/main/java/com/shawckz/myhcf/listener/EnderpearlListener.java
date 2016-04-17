@@ -6,6 +6,8 @@ import com.shawckz.myhcf.configuration.FactionLang;
 import com.shawckz.myhcf.player.HCFPlayer;
 import com.shawckz.myhcf.scoreboard.hcf.FLabel;
 import com.shawckz.myhcf.scoreboard.hcf.timer.HCFTimer;
+import com.shawckz.myhcf.scoreboard.hcf.timer.HCFTimerFormat;
+
 import org.bukkit.Material;
 import org.bukkit.entity.EnderPearl;
 import org.bukkit.entity.Player;
@@ -53,6 +55,10 @@ public class EnderpearlListener implements Listener {
 
     public boolean checkIfCanThrow(Player player){
         HCFPlayer hcfPlayer = Factions.getInstance().getCache().getHCFPlayer(player);
+        if(hcfPlayer.getScoreboard().getTimer(FLabel.PVP_TIMER, HCFTimerFormat.HH_MM_SS).getTime() > 0.1) {
+            FLang.send(player, FactionLang.PVP_TIMER_NOT_ALLOWED);
+            return false;
+        }
         if(canThrowPearl(hcfPlayer)){
             return true;
         }

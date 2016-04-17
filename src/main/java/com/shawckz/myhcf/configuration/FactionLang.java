@@ -27,7 +27,7 @@ public enum FactionLang {
     FACTION_ALREADY_IN_OTHER("&cPlayer '{0}' is already in a faction."),
     FACTION_INVITED_ALREADY("&cPlayer '{0}' has already been invited to the faction."),
     FACTION_NOT_SAME("&cPlayer '{0}' is not in your faction."),
-    FACTION_NONE_OTHER("&That player is not in a faction."),
+    FACTION_NONE_OTHER("&cThat player is not in a faction."),
     FACTION_INFO_HEADER_FOOTER("&7&m------------------------"),
     FACTION_INFO_DESCRIPTION("&9{0}&7 - &6${1} &7- \"&e{2}&7\""),
     FACTION_INFO_DTR("&eDTR&7: {0} &7[{1}&7] - &7[{2}&7]"),
@@ -114,7 +114,8 @@ public enum FactionLang {
     FACTION_UNCLAIM("&9{0}&e has unclaimed claim &a#{1}&e."),
     SPAWN_TAG("&7You are now &cspawn-tagged&7.  Do not logout."),
     LIMITER_REMOVED_ENCHANTS("&7We detected you had some illegal enchantments and have removed them."),
-    LIMITER_POTION("&7That potion is not allowed.")
+    LIMITER_POTION("&7That potion is not allowed."),
+    PVP_TIMER_NOT_ALLOWED("&cYou cannot do this with an active PvPTimer.  Type /pvp enable to remove your PvPTimer.")
     ;
 
     private final String defaultValue;

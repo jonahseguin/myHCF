@@ -59,39 +59,14 @@ public class CmdFactionInfo implements HCFCommand {
                     }
                 }
                 else {
-                    Faction faction = Factions.getInstance().getFactionManager().getFaction(args.getArg(0));
-                    if(faction != null){
-                        sendInfo(sender, faction);
-                    }
-                    else{
-                        //View another players' faction
-                        Player target = Bukkit.getPlayer(args.getArg(0));
-                        if (target != null) {
-                            HCFPlayer player = Factions.getInstance().getCache().getHCFPlayer(target);
-                            Faction fac = player.getFaction();
-                            if (fac != null) {
-                                sendInfo(sender, fac);
-                            }
-                            else {
-                                sender.sendMessage(FLang.format(FactionLang.FACTION_NONE_OTHER));
-                            }
+                    Factions.getInstance().getFactionManager().getFactionFromArg(sender, args.getArg(0).toLowerCase(), faction -> {
+                        if(faction != null) {
+                            sendInfo(sender, faction);
                         }
-                        else {
-                            HCFPlayer player = Factions.getInstance().getCache().getHCFPlayer(args.getArg(0));
-                            if(player != null){
-                                Faction fac = player.getFaction();
-                                if (fac != null) {
-                                    sendInfo(sender, fac);
-                                }
-                                else {
-                                    sender.sendMessage(FLang.format(FactionLang.FACTION_NONE_OTHER));
-                                }
-                            }
-                            else{
-                                sender.sendMessage(FLang.format(FactionLang.PLAYER_FACTION_NOT_FOUND, args.getArg(0)));
-                            }
+                        else{
+                            sender.sendMessage(ChatColor.RED + "There is no faction or player by that name. (null)");
                         }
-                    }
+                    });
                 }
             }
         }.runTaskAsynchronously(Factions.getInstance());
@@ -217,7 +192,7 @@ public class CmdFactionInfo implements HCFCommand {
                 else if (player.getFactionRole() == FactionRole.MODERATOR) {
                     s += ChatColor.DARK_GRAY + "*";
                 }
-                s += ChatColor.GOLD + player.getName();
+                s += ChatColor.GREEN + player.getName();
                 s += ChatColor.GRAY + ", ";
             }
             else {

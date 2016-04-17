@@ -25,13 +25,19 @@ public class CmdFactionClaim implements HCFCommand {
         Player p = (Player) cmdArgs.getSender();
         HCFPlayer player = Factions.getInstance().getCache().getHCFPlayer(p);
 
+        if(player.getSpawnTag() > 0.1) {
+            p.sendMessage(ChatColor.RED + "You cannot do this while in combat.");
+            return;
+        }
+
         if(cmdArgs.getArgs().length == 0) {
             p.sendMessage(ChatColor.GOLD + "To claim land for your faction, you must be faction moderator and use a stick.");
-            p.sendMessage(ChatColor.YELLOW + "To begin claiming, select two points:");
-            p.sendMessage(ChatColor.YELLOW + "For the first point, right-click with your stick on a block.");
-            p.sendMessage(ChatColor.YELLOW + "For the second point, left-click with your stick on a block.");
-            p.sendMessage(ChatColor.YELLOW + "To cancel claiming, type /f claim cancel.");
-            p.sendMessage(ChatColor.YELLOW + "To purchase your claim, type /f claim purchase.");
+            p.sendMessage(ChatColor.AQUA + "To begin claiming, select two points:");
+            p.sendMessage(ChatColor.YELLOW + ChatColor.translateAlternateColorCodes('&', "For the &afirst&e point, &aright-click &ewith your stick on a block."));
+            p.sendMessage(ChatColor.YELLOW + ChatColor.translateAlternateColorCodes('&', "For the &csecond&e point, &cleft-click &ewith your stick on a block."));
+            p.sendMessage(ChatColor.DARK_RED + "To cancel claiming, type /f claim cancel.");
+            p.sendMessage(ChatColor.GREEN + "To purchase your claim, type /f claim purchase.");
+            p.sendMessage(ChatColor.RED + "" + ChatColor.ITALIC + "Claiming will not work while in combat.");
         }
         else {
             if(cmdArgs.getArg(0).equalsIgnoreCase("cancel")) {

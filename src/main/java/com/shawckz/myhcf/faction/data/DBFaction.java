@@ -217,16 +217,16 @@ public class DBFaction implements AutoDBable, Faction {
 
     @Override
     public boolean hasMember(HCFPlayer player) {
-        return members.contains(player.getUniqueId());
+        return members.contains(player.getUniqueId()) || (leader != null && player.getUniqueId().equalsIgnoreCase(leader.getUniqueId()));
     }
 
     @Override
     public Set<HCFPlayer> getOnlineMembers() {
         Set<HCFPlayer> onlineMembers = new HashSet<>();
-        for (String memberUUID : this.members) {
-            Player p = Bukkit.getPlayer(UUID.fromString(memberUUID));
-            if (p != null) {
-                onlineMembers.add(Factions.getInstance().getCache().getHCFPlayer(p));
+        for(Player pl : Bukkit.getOnlinePlayers()) {
+            HCFPlayer p = Factions.getInstance().getCache().getHCFPlayer(pl);
+            if(hasMember(p)) {
+                onlineMembers.add(p);
             }
         }
         return onlineMembers;
@@ -281,11 +281,15 @@ public class DBFaction implements AutoDBable, Faction {
 
     @Override
     public double getMaxDTR() {
+        double minDTR = Factions.getInstance().getFactionsConfig().getBaseDtr();
         double dtrPerPlayer = Factions.getInstance().getFactionsConfig().getDtrPerPlayer();
         double max = Factions.getInstance().getFactionsConfig().getMaxDtr();
         double maxDTR = dtrPerPlayer * getMembers().size();
         if (maxDTR > max) {
             maxDTR = max;
+        }
+        if(maxDTR < minDTR) {
+            maxDTR = minDTR;
         }
         return maxDTR;
     }

@@ -47,15 +47,17 @@ public class HCFCache extends AbstractCache {
             hcfPlayer.setScoreboard(new HCFScoreboard(player));
             hcfPlayer.getScoreboard().sendToPlayer(player);
 
+            player.sendMessage(ChatColor.GRAY + "Loading your faction from the database...");
             if (hcfPlayer.getFactionId() != null) {
                 if (!Factions.getInstance().getFactionManager().isInCacheById(hcfPlayer.getFactionId())) {
                     //Load from database
-                    player.sendMessage(ChatColor.GRAY + "Loading your faction from the database...");
                     Factions.getInstance().getFactionManager().getFactionById(hcfPlayer.getFactionId(), faction -> {
                         if (faction != null) {
                             Factions.getInstance().getFactionManager().addToCache(faction);
+                            player.sendMessage(ChatColor.GRAY + "Your faction was loaded.");
                         }
                         else {
+                            player.sendMessage(ChatColor.GRAY + "Your faction was deleted.  Updated.");
                             //Their faction no longer exists
                             hcfPlayer.setFactionId(null);
                         }
@@ -63,7 +65,10 @@ public class HCFCache extends AbstractCache {
                     });
                 }
             }
-
+            else{
+                player.sendMessage(ChatColor.GRAY + "You are not in a faction.");
+                player.sendMessage(ChatColor.GREEN + "Done.");
+            }
         }
     }
 }

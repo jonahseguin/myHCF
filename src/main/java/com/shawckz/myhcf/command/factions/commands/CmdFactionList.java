@@ -28,7 +28,7 @@ public class CmdFactionList implements HCFCommand {
         List<Faction> list = new ArrayList<>();
 
         for(Faction f : Factions.getInstance().getFactionManager().getFactions()) {
-            if(f.getOnlineMembers().size() > 0) {
+            if(f.isNormal() && f.getOnlineMembers().size() > 0) {
                 list.add(f);
             }
         }
@@ -46,12 +46,19 @@ public class CmdFactionList implements HCFCommand {
             }
             catch (NumberFormatException expected) {
                 sender.sendMessage(ChatColor.RED + "Page must be a number");
+                return;
             }
         }
 
         FLang.send(sender, FactionLang.FACTION_INFO_HEADER_FOOTER);
 
         sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7*** &9Factions List &7- &ePage " + page + " &7***"));
+
+        if(list.size() == 0 || list.isEmpty()) {
+            sender.sendMessage(ChatColor.GRAY + "There are no factions with players online.");
+            FLang.send(sender, FactionLang.FACTION_INFO_HEADER_FOOTER);
+            return;
+        }
 
         while (list.size() < page * 10) {
             page -= 1;
@@ -61,7 +68,21 @@ public class CmdFactionList implements HCFCommand {
             }
         }
 
-        List<Faction> pgList = list.subList(((page * 10) - 10), page * 10);
+        int start = ((page * 10) - 10);
+        int max = page * 10;
+        while (start > list.size()) {
+            start -= 10;
+            if(start < 0) {
+                start = 0;
+                break;
+            }
+        }
+        if(max > list.size()) {
+            max = list.size();
+        }
+
+        List<Faction> pgList = list.subList(start, max);
+
 
         for(int i = 0; i < pgList.size(); i++) {
             Faction entry = pgList.get(i);

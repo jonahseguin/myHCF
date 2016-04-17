@@ -5,14 +5,6 @@
 
 package com.shawckz.myhcf.command.normal;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandMap;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.defaults.BukkitCommand;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.SimplePluginManager;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -20,6 +12,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandMap;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.defaults.BukkitCommand;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.SimplePluginManager;
 
 /**
  * Created by Jonah Seguin on 12/13/2015.
@@ -84,15 +85,20 @@ public class GCommandHandler {
         };
 
         GCmdWrapper wrapper = new GCmdWrapper(command, caller, data.name(), data.aliases(), data.usage(), data.description(), data.permission(), data.playerOnly(), data.minArgs());
-        String commandName = wrapper.getName();
+        String commandName = wrapper.getName().replace(" ", ".");
         commandMap.put(commandName, wrapper);
         commandMap.put(plugin.getName() + ":" + commandName, wrapper);//Add support for /<pluginName>:command format
         String bukkitCommandName = commandName.replace(" ", "$split").split("$split")[0].toLowerCase();
         if (map.getCommand(bukkitCommandName) == null) {
-            org.bukkit.command.Command cmd = new BukkitCommand(bukkitCommandName) {
+            List<String> alList = new ArrayList<>();
+            for(String s : wrapper.getAliases()) {
+                String alias = s.replace(" ", "$split").split("$split")[0].toLowerCase();
+                alList.add(alias);
+            }
+            org.bukkit.command.Command cmd = new BukkitCommand(bukkitCommandName, wrapper.getDescription(), wrapper.getUsage(), alList) {
                 @Override
                 public boolean execute(CommandSender commandSender, String s, String[] args) {
-                    handleCommand(commandSender, s, args);
+                    handleCommand(commandSender, bukkitCommandName, args);
                     return true;
                 }
             };
@@ -123,9 +129,16 @@ public class GCommandHandler {
             for (int x = 0; x < i; x++) {
                 buffer.append("." + args[x].toLowerCase());
             }
+
             String cmdLabel = buffer.toString();
+
             if (commandMap.containsKey(cmdLabel)) {
                 GCmdWrapper wrapper = commandMap.get(cmdLabel);
+
+                if(wrapper.isPlayerOnly() && (!(sender instanceof Player))) {
+                    sender.sendMessage(ChatColor.RED + "This is a player only command.");
+                    return;
+                }
 
                 if (!wrapper.getPermission().equals("") && !sender.hasPermission(wrapper.getPermission())) {
                     sender.sendMessage(ChatColor.RED + "No permission.");

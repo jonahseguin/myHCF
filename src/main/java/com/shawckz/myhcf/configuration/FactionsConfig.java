@@ -111,6 +111,9 @@ public class FactionsConfig extends Configuration {
     @ConfigData("factions.name.max-length")
     private int maxFactionNameLength = 14;
 
+    @ConfigData("factions.name.min-length")
+    private int minFactionNameLength = 5;
+
     @ConfigData("factions.name.alphanumeric")
     private boolean factionNameAlphanumeric = true;
 
@@ -214,7 +217,7 @@ public class FactionsConfig extends Configuration {
     private double maxEnergy = 50D;
 
     @ConfigData("armorclass.archer.speed.time")
-    private int archerSpeedTime = 120;
+    private int archerSpeedTime = 200;
 
     @ConfigData("armorclass.archer.speed.amplifier")
     private int archerSpeedAmplifier = 2;

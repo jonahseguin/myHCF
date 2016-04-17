@@ -18,8 +18,12 @@ public class HCFLabel extends XScoreboardLabel {
     public HCFLabel setEndValue(String endValue) {
         if (!this.endValue.equals("")) {
             setValue(getValue().getFullValue().replaceAll(this.endValue, endValue));
+            this.endValue = endValue;
         }
-        this.endValue = endValue;
+        else{
+            this.endValue = endValue;
+            updateLabel();
+        }
         return this;
     }
 

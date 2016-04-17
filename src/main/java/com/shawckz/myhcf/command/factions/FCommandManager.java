@@ -65,6 +65,8 @@ public class FCommandManager implements CommandExecutor {
         registerCommand(new CmdFactionDeposit());
         registerCommand(new CmdFactionWithdraw());
         registerCommand(new CmdFactionUnclaim());
+        registerCommand(new CmdFactionSave());
+        registerCommand(new CmdFactionList());
     }
 
     public void registerCommand(HCFCommand cmd) {

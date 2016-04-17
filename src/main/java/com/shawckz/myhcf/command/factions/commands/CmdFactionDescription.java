@@ -28,13 +28,14 @@ public class CmdFactionDescription implements HCFCommand {
     public void onCommand(FCmdArgs args) {
         Player p = (Player) args.getSender();
         HCFPlayer player = Factions.getInstance().getCache().getHCFPlayer(p);
-        String description = args.getArg(0);
+        String description = args.getJoinedArgs(0);
 
         if(player.getFaction() != null) {
             if(player.getFactionRole() != FactionRole.MEMBER) {
                 if(description.length() <= 32) {
                     player.getFaction().setDescription(description);
                     player.getFaction().sendMessage(FLang.format(FactionLang.FACTION_DESC_LOCAL, player.getName(), description));
+                    Factions.getInstance().getDbHandler().push(player.getFaction());
                 }
                 else{
                     FLang.send(p, FactionLang.FACTION_DESC_LENGTH);

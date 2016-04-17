@@ -14,12 +14,13 @@ import com.shawckz.myhcf.configuration.FactionLang;
 import com.shawckz.myhcf.player.HCFPlayer;
 import com.shawckz.myhcf.scoreboard.hcf.FLabel;
 import com.shawckz.myhcf.scoreboard.hcf.timer.HCFTimerFormat;
+
+import java.util.concurrent.TimeUnit;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Jonah Seguin on 1/24/2016.
@@ -29,7 +30,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class CmdPvPTimer implements GCommand {
 
-    @GCmd(name = "pvptimer", aliases = {"pvp"}, playerOnly = true)
+    @GCmd(name = "pvptimer", aliases = {"pvp"}, playerOnly = false)
     public void onCommand(GCmdArgs args) {
         args.getSender().getCommandSender().sendMessage(ChatColor.GRAY + "*** PvPTimer Commands ***");
         args.getSender().getCommandSender().sendMessage(ChatColor.AQUA + "/pvp enable - Enable pvp");
@@ -46,8 +47,8 @@ public class CmdPvPTimer implements GCommand {
     public void onCommandEnable(GCmdArgs args) {
         Player pl = args.getSender().getPlayer();
         HCFPlayer player = Factions.getInstance().getCache().getHCFPlayer(pl);
-        if (player.getScoreboard().getTimer(FLabel.PVP_TIMER).getTime() > 0.1) {
-            player.getScoreboard().getTimer(FLabel.PVP_TIMER).setTime(0).pauseTimer().hide();
+        if (player.getScoreboard().getTimer(FLabel.PVP_TIMER, HCFTimerFormat.HH_MM_SS).getTime() > 0.1) {
+            player.getScoreboard().getTimer(FLabel.PVP_TIMER, HCFTimerFormat.HH_MM_SS).setTime(0).pauseTimer().hide();
             player.getBukkitPlayer().sendMessage(FLang.format(FactionLang.PVP_TIMER_REMOVE));
         }
         else {
@@ -60,14 +61,15 @@ public class CmdPvPTimer implements GCommand {
         Player pl = args.getSender().getPlayer();
         HCFPlayer player = Factions.getInstance().getCache().getHCFPlayer(pl);
         if (player.getScoreboard().getTimer(FLabel.PVP_TIMER, HCFTimerFormat.HH_MM_SS).getTime() > 0.1) {
-            int seconds = (int) Math.round(player.getScoreboard().getTimer(FLabel.PVP_TIMER).getTime());
+            int seconds = (int) Math.round(player.getScoreboard().getTimer(FLabel.PVP_TIMER, HCFTimerFormat.HH_MM_SS).getTime());
             long millis = seconds * 1000;
             String time = String.format("%02d:%02d:%02d",
-                    TimeUnit.SECONDS.toHours(millis),
-                    TimeUnit.SECONDS.toMinutes(millis) -
-                            TimeUnit.HOURS.toMinutes(TimeUnit.SECONDS.toHours(millis)),
-                    TimeUnit.SECONDS.toSeconds(millis) -
-                            TimeUnit.MINUTES.toSeconds(TimeUnit.SECONDS.toMinutes(millis)));
+                    TimeUnit.MILLISECONDS.toHours(millis),
+                    TimeUnit.MILLISECONDS.toMinutes(millis) -
+                            TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis)),
+                    TimeUnit.MILLISECONDS.toSeconds(millis) -
+                            TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)));
+
             pl.sendMessage(FLang.format(FactionLang.PVP_TIMER_TIME_REMAINING, time));
         }
         else {
@@ -91,15 +93,15 @@ public class CmdPvPTimer implements GCommand {
 
             int seconds = minutes * 60;
             HCFPlayer tHCF = Factions.getInstance().getCache().getHCFPlayer(target);
-            tHCF.getScoreboard().getTimer(FLabel.PVP_TIMER, HCFTimerFormat.HH_MM_SS).setTime(seconds);
+            tHCF.getScoreboard().getTimer(FLabel.PVP_TIMER, HCFTimerFormat.HH_MM_SS).setTime(seconds).show();
 
             long millis = seconds * 1000;
             String time = String.format("%02d:%02d:%02d",
-                    TimeUnit.SECONDS.toHours(millis),
-                    TimeUnit.SECONDS.toMinutes(millis) -
-                            TimeUnit.HOURS.toMinutes(TimeUnit.SECONDS.toHours(millis)),
-                    TimeUnit.SECONDS.toSeconds(millis) -
-                            TimeUnit.MINUTES.toSeconds(TimeUnit.SECONDS.toMinutes(millis)));
+                    TimeUnit.MILLISECONDS.toHours(millis),
+                    TimeUnit.MILLISECONDS.toMinutes(millis) -
+                            TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis)),
+                    TimeUnit.MILLISECONDS.toSeconds(millis) -
+                            TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)));
 
             target.sendMessage(ChatColor.YELLOW + "Your PVPTimer was set to " + ChatColor.BLUE + time + ChatColor.YELLOW + ".");
             sender.sendMessage(ChatColor.YELLOW + "You set " + ChatColor.BLUE + target.getName() +
@@ -117,14 +119,14 @@ public class CmdPvPTimer implements GCommand {
         if (target != null) {
             HCFPlayer player = Factions.getInstance().getCache().getHCFPlayer(target);
             if (player.getScoreboard().getTimer(FLabel.PVP_TIMER, HCFTimerFormat.HH_MM_SS).getTime() > 0.1) {
-                int seconds = (int) Math.round(player.getScoreboard().getTimer(FLabel.PVP_TIMER).getTime());
+                int seconds = (int) Math.round(player.getScoreboard().getTimer(FLabel.PVP_TIMER, HCFTimerFormat.HH_MM_SS).getTime());
                 long millis = seconds * 1000;
                 String time = String.format("%02d:%02d:%02d",
-                        TimeUnit.SECONDS.toHours(millis),
-                        TimeUnit.SECONDS.toMinutes(millis) -
-                                TimeUnit.HOURS.toMinutes(TimeUnit.SECONDS.toHours(millis)),
-                        TimeUnit.SECONDS.toSeconds(millis) -
-                                TimeUnit.MINUTES.toSeconds(TimeUnit.SECONDS.toMinutes(millis)));
+                        TimeUnit.MILLISECONDS.toHours(millis),
+                        TimeUnit.MILLISECONDS.toMinutes(millis) -
+                                TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis)),
+                        TimeUnit.MILLISECONDS.toSeconds(millis) -
+                                TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)));
                 sender.sendMessage(ChatColor.BLUE + target.getName() + ChatColor.YELLOW + "'s PvPTimer has " +
                         ChatColor.BLUE + time + ChatColor.YELLOW + " remaining.");
             }
@@ -143,8 +145,8 @@ public class CmdPvPTimer implements GCommand {
         Player target = Bukkit.getPlayer(args.getArg(0));
         if (target != null) {
             HCFPlayer tHCF = Factions.getInstance().getCache().getHCFPlayer(target);
-            if (tHCF.getScoreboard().getTimer(FLabel.PVP_TIMER).getTime() > 0.1) {
-                tHCF.getScoreboard().getTimer(FLabel.PVP_TIMER).setTime(0).pauseTimer().hide();
+            if (tHCF.getScoreboard().getTimer(FLabel.PVP_TIMER, HCFTimerFormat.HH_MM_SS).getTime() > 0.1) {
+                tHCF.getScoreboard().getTimer(FLabel.PVP_TIMER, HCFTimerFormat.HH_MM_SS).setTime(0).pauseTimer().hide();
                 sender.sendMessage(FLang.format(FactionLang.PVP_TIMER_FORCE_ENABLE, target.getName()));
                 target.sendMessage(FLang.format(FactionLang.PVP_TIMER_REMOVE));
             }
