@@ -1,9 +1,11 @@
 package com.shawckz.myhcf.player;
 
 import com.shawckz.myhcf.Factions;
+import com.shawckz.myhcf.faction.Faction;
 import com.shawckz.myhcf.player.cache.AbstractCache;
 import com.shawckz.myhcf.player.cache.CachePlayer;
 import com.shawckz.myhcf.scoreboard.hcf.HCFScoreboard;
+
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -64,7 +66,7 @@ public class HCFCache extends AbstractCache {
                     Factions.getInstance().getFactionManager().getFactionById(hcfPlayer.getFactionId(), faction -> {
                         if (faction != null) {
                             Factions.getInstance().getFactionManager().addToCache(faction);
-                            player.sendMessage(ChatColor.GRAY + "Your faction was loaded.");
+                            player.sendMessage(ChatColor.GRAY + "Your faction '"+faction.getDisplayName()+"' was loaded.");
                         }
                         else {
                             player.sendMessage(ChatColor.GRAY + "Your faction was deleted.  Updated.");
@@ -73,6 +75,10 @@ public class HCFCache extends AbstractCache {
                         }
                         player.sendMessage(ChatColor.GREEN + "Done.");
                     });
+                }
+                else{
+                    Faction faction = Factions.getInstance().getFactionManager().getLocalFactionById(hcfPlayer.getFactionId());
+                    player.sendMessage(ChatColor.GRAY + "Your faction '"+faction.getDisplayName()+"' was loaded.");
                 }
             }
             else{

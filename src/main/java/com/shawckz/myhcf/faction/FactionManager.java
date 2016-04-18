@@ -23,6 +23,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class FactionManager {
 
+    //Name.toLowerCase, Faction
     private final Map<String, Faction> factions = new HashMap<>();
 
     public Collection<Faction> getFactions() {
@@ -45,7 +46,12 @@ public class FactionManager {
     }
 
     public boolean isInCacheById(String id) {
-        return factions.containsKey(id);
+        for (Faction faction : factions.values()) {
+            if (faction.getId().equalsIgnoreCase(id)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public Faction createFaction(String name, FactionType type) {
@@ -76,35 +82,37 @@ public class FactionManager {
     }
 
     public boolean isInCache(String name) {
-        for (Faction faction : factions.values()) {
-            if (faction.getName().equalsIgnoreCase(name)) {
-                return true;
-            }
-        }
-        return false;
+        return factions.containsKey(name.toLowerCase());
     }
 
     public Faction getLocalFaction(String name) {
-        for (Faction faction : factions.values()) {
-            if (faction.getName().equalsIgnoreCase(name)) {
-                return faction;
-            }
+        if(factions.containsKey(name.toLowerCase())) {
+            return factions.get(name.toLowerCase());
         }
-        throw new HCFException("Could not find faction in cache by name '" + name + "'");
+        return null;
     }
 
     public Faction getLocalFactionById(String id) {//gets only from cache
-        if (factions.containsKey(id)) {
-            return factions.get(id);
+        id = id.toLowerCase();
+        for (Faction faction : factions.values()) {
+            if (faction.getId().equalsIgnoreCase(id)) {
+                return faction;
+            }
         }
-        throw new HCFException("Could not find faction in cache by id '" + id + "'");
+        return null;
     }
 
     public void getFactionById(String id, FactionGetter getter) {
-        if (factions.containsKey(id)) {
-            getter.fetch(factions.get(id));
+        id = id.toLowerCase();
+        boolean a = false;
+        for (Faction faction : factions.values()) {
+            if (faction.getId().equalsIgnoreCase(id)) {
+                getter.fetch(faction);
+                a = true;
+                break;
+            }
         }
-        else {
+        if(!a) {
             new FactionFetch(id, FactionFetch.Type.ID, getter).requestFetch();
         }
     }
@@ -129,9 +137,11 @@ public class FactionManager {
 
     public Faction getFactionById(String id) {
         if (isInCacheById(id)) {
+            Factions.log("Getting faction by id -- in cache");
             return getLocalFactionById(id);
         }
         else {
+            Factions.log("Getting faction by id -- calling database");
             return getFactionFromDatabaseById(id);
         }
     }
@@ -163,14 +173,18 @@ public class FactionManager {
 
     public void getFactionFromArg(CommandSender player, String target, FactionGetter getter) {
         //Priority 1 for search is faction name
+        Faction local = getLocalFaction(target);
+        if(local != null) {
+            getter.fetch(local);
+            return;
+        }
+
         if (Factions.getInstance().getFactionManager().factionExists(target)) {
-            player.sendMessage("Searching by faction name");
             Factions.getInstance().getFactionManager().getFaction(target, faction -> {
                 getter.fetch(faction);
             });
         }
         else if (Bukkit.getPlayer(target) != null) {
-            player.sendMessage("Searching by online player name");
             Player t = Bukkit.getPlayer(target);
             HCFPlayer thcf = Factions.getInstance().getCache().getHCFPlayer(t);
             if (thcf != null) {
@@ -186,7 +200,6 @@ public class FactionManager {
             }
         }
         else {
-            player.sendMessage("Searching by offline player name");
             new BukkitRunnable(){
                 @Override
                 public void run() {

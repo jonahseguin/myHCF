@@ -11,10 +11,11 @@ import com.shawckz.myhcf.configuration.FactionLang;
 import com.shawckz.myhcf.player.HCFPlayer;
 import com.shawckz.myhcf.scoreboard.hcf.FLabel;
 import lombok.Getter;
-import org.bukkit.potion.PotionEffect;
 
 import java.util.HashSet;
 import java.util.Set;
+
+import org.bukkit.potion.PotionEffect;
 
 /**
  * Created by Jonah Seguin on 1/24/2016.
@@ -45,15 +46,15 @@ public abstract class ArmorClass {
                     new EnergyTimer(
                             player.getScoreboard(),
                             player.getScoreboard().getKey(FLabel.ENERGY),
-                            player.getScoreboard().getNewScoreIndex(),
-                            EnergyTimer.getEnergyTimerPool()
+                            player.getScoreboard().getNewScoreIndex()
                     );
             player.getScoreboard().registerTimer(FLabel.ENERGY, energyTimer);
-            energyTimer.show();
+            energyTimer.setTime(10.0);
             energyTimer.unpauseTimer();
+            energyTimer.show();
         }
         else {
-            player.getScoreboard().getTimer(FLabel.ENERGY).show().unpauseTimer();
+            player.getScoreboard().getTimer(FLabel.ENERGY).show();//shows & unpauses
         }
     }
 
@@ -70,7 +71,7 @@ public abstract class ArmorClass {
         FLang.send(player.getBukkitPlayer(), FactionLang.ARMOR_CLASS_REMOVE, name);
 
         if (player.getScoreboard().hasTimer(FLabel.ENERGY)) {
-            player.getScoreboard().getTimer(FLabel.ENERGY).pauseTimer().hide();
+            player.getScoreboard().getTimer(FLabel.ENERGY).setTime(10.0).pauseTimer().hide();
         }
 
     }

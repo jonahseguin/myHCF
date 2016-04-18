@@ -23,7 +23,7 @@ public abstract class HCFTimerTask implements XTimerTask {
 
     @Override
     public boolean isComplete() {
-        return interval <= 0.1;
+        return false;
     }
 
     @Override

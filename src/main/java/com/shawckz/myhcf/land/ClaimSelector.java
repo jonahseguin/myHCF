@@ -7,10 +7,12 @@ package com.shawckz.myhcf.land;
 import com.shawckz.myhcf.Factions;
 import com.shawckz.myhcf.land.claiming.VisualClaim;
 import com.shawckz.myhcf.player.HCFPlayer;
+import com.shawckz.myhcf.util.FSelection;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -39,6 +41,36 @@ public class ClaimSelector implements Listener {
         if(selections.containsKey(player.getName())) {
             selections.get(player.getName()).hide(player);
             selections.remove(player.getName());
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onSelect(PlayerInteractEvent e) {
+        Player p = e.getPlayer();
+        HCFPlayer player = Factions.getInstance().getCache().getHCFPlayer(p);
+        if(p.hasPermission("myhcf.cmd.admin.adminclaim")) {
+            if(p.getItemInHand().getType() == Material.GOLD_AXE) {
+                if(e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+                    if(player.getSelection() == null) {
+                        player.setSelection(new FSelection(e.getClickedBlock().getLocation(), null));
+                    }
+                    else{
+                        player.setSelection(new FSelection(e.getClickedBlock().getLocation(), player.getSelection().getMax()));
+                    }
+                    p.sendMessage(ChatColor.YELLOW + "Set minimum selection point");
+                    e.setCancelled(true);
+                }
+                else if (e.getAction() == Action.LEFT_CLICK_BLOCK) {
+                    if(player.getSelection() == null) {
+                        player.setSelection(new FSelection(null, e.getClickedBlock().getLocation()));
+                    }
+                    else{
+                        player.setSelection(new FSelection(player.getSelection().getMin(), e.getClickedBlock().getLocation()));
+                    }
+                    p.sendMessage(ChatColor.YELLOW + "Set maximum selection point");
+                    e.setCancelled(true);
+                }
+            }
         }
     }
 

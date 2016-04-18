@@ -10,6 +10,7 @@ import com.shawckz.myhcf.command.factions.FCommand;
 import com.shawckz.myhcf.command.factions.HCFCommand;
 import com.shawckz.myhcf.configuration.FLang;
 import com.shawckz.myhcf.configuration.FactionLang;
+import com.shawckz.myhcf.faction.Faction;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -32,6 +33,11 @@ public class CmdFactionSetDtr implements HCFCommand {
             faction.setDeathsUntilRaidable(dtr);
             faction.sendMessage(FLang.format(FactionLang.FACTION_UPDATE_DTR, dtr+"", sender.getName()));
             FLang.send(sender, FactionLang.FACTION_UPDATE_DTR_SENDER, faction.getDisplayName(), dtr+"");
+            faction.sendMessage("DTR: " + faction.getDeathsUntilRaidable());
+
+            Faction f = Factions.getInstance().getFactionManager().getFactionById(faction.getId());
+            faction.sendMessage("(2)DTR: " + f.getDeathsUntilRaidable());
+
         });
     }
 

@@ -21,6 +21,7 @@ public class HCFLabel extends XScoreboardLabel {
             this.endValue = endValue;
         }
         else{
+            setValue(getValue().getFullValue() + endValue);
             this.endValue = endValue;
             updateLabel();
         }

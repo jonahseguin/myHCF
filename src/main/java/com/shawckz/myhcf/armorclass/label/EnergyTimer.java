@@ -24,18 +24,30 @@ public class EnergyTimer extends HCFTimer {
 
     private static final TimerPool energyTimerPool = new TimerPool(5L);
 
-    public EnergyTimer(XScoreboard scoreboard, String key, int score, TimerPool timerPool) {
-        super(scoreboard, key, score, timerPool, HCFTimerFormat.TENTH_OF_SECOND);
+    public EnergyTimer(XScoreboard scoreboard, String key, int score) {
+        super(scoreboard, key, score, energyTimerPool, HCFTimerFormat.TENTH_OF_SECOND, false);
         final double regen = Factions.getInstance().getFactionsConfig().getEnergyPerQuarterSecond();
-        energyTimerPool.registerTimer(new HCFTimerTask(this, timerPool.getInterval()) {
+        getTimerPool().registerTimer(new HCFTimerTask(this, energyTimerPool.getInterval()) {
             @Override
             public void run() {
+                if(getTime() < 0 || getTime() > maxEnergy) {
+                    setTime(0);
+                   // Factions.log("RESET: " + getTime());
+                }
                 if (getTime() + regen <= maxEnergy) {
                     setTime(getTime() + regen);
+                  //  Factions.log("Time: " + getTime());
                 }
                 else {
+                 //   Factions.log("COMPLETE");
+                    if(getTime() != maxEnergy) {
+                        setTime(maxEnergy);
+                    }
                     onComplete();
                 }
+            //    getValue().update();
+            //    updateLabel();
+              //  Factions.log("Value: " + getValue().getFullValue());
             }
 
             @Override
@@ -45,9 +57,15 @@ public class EnergyTimer extends HCFTimer {
                 timer.updateLabel();
             }
 
+            @Override
+            public boolean isComplete() {
+                return false;
+            }
+
         });
 
         if (!energyTimerPool.isRunning()) {
+            Factions.log("Started energyTimerPool");
             energyTimerPool.startTimerPool(Factions.getInstance(), true);
         }
 

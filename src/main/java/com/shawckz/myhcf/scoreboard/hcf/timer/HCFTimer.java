@@ -16,28 +16,37 @@ public class HCFTimer extends XScoreboardTimer {
     private final String key;
     private final HCFTimerFormat format;
     private double time = 0.0D;
-    public static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("##.#");
+    public static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.#");
 
-    public HCFTimer(XScoreboard scoreboard, String key, int score, TimerPool timerPool, HCFTimerFormat format) {
-        super(scoreboard, key + "0.0", score, timerPool);
+    public HCFTimer(XScoreboard scoreboard, String key, int score, TimerPool timerPool, HCFTimerFormat format, boolean registerTimer) {
+        super(scoreboard, key, score, timerPool);
         this.key = key;
         this.format = format;
-        getTimerPool().registerTimer(new HCFTimerTask(this, timerPool.getInterval()) {
-            @Override
-            public void run() {
-                if (time - 0.1D > 0) {
-                    setTime(time - 0.1D);
+
+        if(registerTimer) {
+            getTimerPool().registerTimer(new HCFTimerTask(this, timerPool.getInterval()) {
+                @Override
+                public void run() {
+                    if (time - 0.1D > 0) {
+                        setTime(time - 0.1D);
+                    }
+                    else {
+                        onComplete();
+                    }
                 }
-                else {
-                    onComplete();
-                }
-            }
-        });
+            });
+        }
+    }
+
+    public HCFTimer(XScoreboard scoreboard, String key, int score, TimerPool timerPool, HCFTimerFormat format) {
+        this(scoreboard, key, score, timerPool, format, true);
     }
 
     public HCFTimer(XScoreboard scoreboard, String key, int score, TimerPool timerPool) {
-        this(scoreboard, key + "0.0", score, timerPool, HCFTimerFormat.TENTH_OF_SECOND);
+        this(scoreboard, key, score, timerPool, HCFTimerFormat.TENTH_OF_SECOND);
     }
+
+
 
     public HCFTimer setTime(double time) {
         this.time = time;

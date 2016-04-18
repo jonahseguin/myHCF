@@ -45,21 +45,27 @@ public class PvPTimerListener implements Listener {
             HCFPlayer player = Factions.getInstance().getCache().getHCFPlayer(e.getPlayer());
             player.getScoreboard().getTimer(FLabel.PVP_TIMER, HCFTimerFormat.HH_MM_SS)
                     .setTime(Factions.getInstance().getFactionsConfig().getPvpTimerFirstJoin())
-                    .show()
-                    .unpauseTimer();
+                    .show();
             player.getBukkitPlayer().sendMessage(FLang.format(FactionLang.PVP_TIMER_START,
                     player.getScoreboard().getTimer(FLabel.PVP_TIMER).getValue().getFullValue()
                             .split(player.getScoreboard().getTimer(FLabel.PVP_TIMER).getKey())[1]));
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onRespawnFixScoreboard(PlayerRespawnEvent e) {
+        HCFPlayer player = Factions.getInstance().getCache().getHCFPlayer(e.getPlayer());
+        player.getScoreboard().sendToPlayer(e.getPlayer());
+
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onRespawn(PlayerRespawnEvent e) {
         HCFPlayer player = Factions.getInstance().getCache().getHCFPlayer(e.getPlayer());
+        player.getScoreboard().getTimer(FLabel.PVP_TIMER).updateLabel();
         player.getScoreboard().getTimer(FLabel.PVP_TIMER, HCFTimerFormat.HH_MM_SS)
-                .unpauseTimer()
-                .show()
-                .setTime(Factions.getInstance().getFactionsConfig().getPvpTimerRespawn());
+                .setTime(Factions.getInstance().getFactionsConfig().getPvpTimerRespawn())
+                .show();
         player.getBukkitPlayer().sendMessage(FLang.format(FactionLang.PVP_TIMER_START,
                 player.getScoreboard().getTimer(FLabel.PVP_TIMER).getValue().getFullValue()
                         .split(player.getScoreboard().getTimer(FLabel.PVP_TIMER).getKey())[1]));
@@ -68,7 +74,7 @@ public class PvPTimerListener implements Listener {
     @EventHandler
     public void onQuit(PlayerQuitEvent e) {
         HCFPlayer player = Factions.getInstance().getCache().getHCFPlayer(e.getPlayer());
-        player.getScoreboard().getTimer(FLabel.PVP_TIMER).hide().pauseTimer();
+        player.getScoreboard().getTimer(FLabel.PVP_TIMER).pauseTimer();
     }
 
     public boolean hasPvPTimer(Player pl) {

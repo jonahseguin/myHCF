@@ -24,12 +24,12 @@ public class CmdFactionRally implements HCFCommand {
         HCFPlayer player = Factions.getInstance().getCache().getHCFPlayer(p);
 
         if(player.getFaction() != null) {
-            if(player.getFaction().getHome() != null) {
+            if(player.getFaction().getRally() != null) {
                 new TeleportTimer(p, player.getFaction().getRally(), Factions.getInstance().getFactionsConfig().getFactionsRallyTeleportTime())
                         .run();
             }
             else {
-                FLang.send(p, FactionLang.FACTION_HOME_NONE);
+                FLang.send(p, FactionLang.FACTION_RALLY_NONE);
             }
         }
         else{

@@ -117,7 +117,8 @@ public enum FactionLang {
     LIMITER_POTION("&7That potion is not allowed."),
     PVP_TIMER_NOT_ALLOWED("&cYou cannot do this with an active PvPTimer.  Type /pvp enable to remove your PvPTimer."),
     ECO_BALANCE("&eYou have &9${0}&e."),
-    ECO_BALANCE_OTHER("&b{0}&e has &9${0}&e.")
+    ECO_BALANCE_OTHER("&b{0}&e has &9${0}&e."),
+    FACTION_CHAT_MODE("&eYou are now chatting in {0}&e chat mode.")
     ;
 
     private final String defaultValue;

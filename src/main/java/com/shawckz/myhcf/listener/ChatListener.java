@@ -27,7 +27,7 @@ public class ChatListener implements Listener {
         HCFPlayer hcfPlayer = Factions.getInstance().getCache().getHCFPlayer(p);
         String pFaction = "-";
         if (hcfPlayer.getFaction() != null) {
-            pFaction = hcfPlayer.getFaction().getName();
+            pFaction = hcfPlayer.getFaction().getDisplayName();
         }
         e.setCancelled(true);
         if (hcfPlayer.getChatMode() == ChatMode.PUBLIC) {
@@ -59,7 +59,7 @@ public class ChatListener implements Listener {
                     if (thcfPlayer.getFaction().getRelationTo(hcfPlayer.getFaction()) == Relation.ALLY ||
                             thcfPlayer.getFaction().getRelationTo(hcfPlayer.getFaction()) == Relation.FACTION) {
                         //They are allies or in the same faction
-                        pl.sendMessage(FLang.format(FactionLang.CHAT_FORMAT_ALLY, hcfPlayer.getFaction().getName(), hcfPlayer.getName(), e.getMessage()));
+                        pl.sendMessage(FLang.format(FactionLang.CHAT_FORMAT_ALLY, hcfPlayer.getFaction().getDisplayName(), hcfPlayer.getName(), e.getMessage()));
                     }
                 }
             }

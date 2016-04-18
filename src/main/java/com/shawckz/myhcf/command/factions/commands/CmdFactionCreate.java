@@ -93,7 +93,6 @@ public class CmdFactionCreate implements HCFCommand {
                             Factions.getInstance().getDbHandler().push(faction);
                         }
                     }.runTaskAsynchronously(Factions.getInstance());
-
                 }
                 else {
                     sender.sendMessage(ChatColor.RED + "Please also specify the type of special for flag '-special'");

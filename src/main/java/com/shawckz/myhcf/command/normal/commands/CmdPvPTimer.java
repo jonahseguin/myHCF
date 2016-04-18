@@ -48,7 +48,7 @@ public class CmdPvPTimer implements GCommand {
         Player pl = args.getSender().getPlayer();
         HCFPlayer player = Factions.getInstance().getCache().getHCFPlayer(pl);
         if (player.getScoreboard().getTimer(FLabel.PVP_TIMER, HCFTimerFormat.HH_MM_SS).getTime() > 0.1) {
-            player.getScoreboard().getTimer(FLabel.PVP_TIMER, HCFTimerFormat.HH_MM_SS).setTime(0).pauseTimer().hide();
+            player.getScoreboard().getTimer(FLabel.PVP_TIMER, HCFTimerFormat.HH_MM_SS).setTime(0).hide();
             player.getBukkitPlayer().sendMessage(FLang.format(FactionLang.PVP_TIMER_REMOVE));
         }
         else {

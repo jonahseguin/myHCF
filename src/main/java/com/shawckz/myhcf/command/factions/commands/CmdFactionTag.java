@@ -44,6 +44,7 @@ public class CmdFactionTag implements HCFCommand {
                     Bukkit.broadcastMessage(FLang.format(FactionLang.FACTION_TAG_BROADCAST, f.getDisplayName(), name));
                     f.sendMessage(FLang.format(FactionLang.FACTION_TAG_LOCAL, p.getName(), name));
                     f.setDisplayName(name);
+                    f.setName(name.toLowerCase());
                     Factions.getInstance().getDbHandler().push(f);
                 }
             }
