@@ -75,6 +75,7 @@ public class FactionsConfig extends Configuration {
                 potionLimits.put(key.toString().toUpperCase(), key.getMaxLevel());
             }
         }
+        save();
     }
 
     //No final variables (if they are in the config)

@@ -5,11 +5,11 @@
 
 package com.shawckz.myhcf.land.claiming;
 
+import java.util.*;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-
-import java.util.*;
 
 /**
  * Created by Jonah Seguin on 1/24/2016.
@@ -37,7 +37,15 @@ public class VisualPillar {
         this.location = location;
     }
 
-    public void show(Player player) {
+    public static Material randomMaterial() {
+        return MATERIALS[RANDOM.nextInt(MATERIALS.length)];
+    }
+
+    public void show(Player player){
+        show(player, randomMaterial());
+    }
+
+    public void show(Player player, Material material) {
         if (!players.containsKey(player.getName())) {
             players.put(player.getName(), new HashSet<>());
         }
@@ -55,8 +63,6 @@ public class VisualPillar {
         Set<Location> locations = players.get(player.getName());
 
         boolean glass = false;
-
-        Material material = MATERIALS[RANDOM.nextInt(MATERIALS.length)];
 
         for (int i = minY; i < maxY; i++) {
             Location l = new Location(location.getWorld(), location.getBlockX(), i, location.getBlockZ());

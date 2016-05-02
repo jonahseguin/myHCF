@@ -29,7 +29,7 @@ public class Claim implements AutoDBable, Iterable<Coordinate> {
     @DBColumn
     private String factionID;
 
-    @DBColumn
+    @DBColumn(identifier = true)
     private String id;
 
     @DBColumn
@@ -50,6 +50,10 @@ public class Claim implements AutoDBable, Iterable<Coordinate> {
     private DynamicWall dynamicWall;
 
     private ClaimType claimType = ClaimType.NORMAL;
+
+    public Claim() {
+
+    }
 
     public Claim(String factionID, String world, int minX, int minY, int minZ, int maxX, int maxY, int maxZ) {
         this.id = UUID.randomUUID().toString().substring(0,6);
@@ -79,7 +83,7 @@ public class Claim implements AutoDBable, Iterable<Coordinate> {
     }
 
 
-    public Claim(final Location p1, final Location p2) {
+    public Claim(final Location p1, final Location p2, final String factionID) {
         if (!p1.getWorld().getName().equals(p2.getWorld().getName())) {
             throw new HCFException("Claim location 1 must be in the same world as location 2");
         }
@@ -91,6 +95,7 @@ public class Claim implements AutoDBable, Iterable<Coordinate> {
         this.maxY = Math.max(p1.getBlockY(), p2.getBlockY());
         this.minZ = Math.min(p1.getBlockZ(), p2.getBlockZ());
         this.maxZ = Math.max(p1.getBlockZ(), p2.getBlockZ());
+        this.factionID = factionID;
         this.dynamicWall = new DynamicWall(new WallRadius(world, maxX, minX, maxY, minY, maxZ, minZ));
     }
 

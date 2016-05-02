@@ -7,6 +7,8 @@ package com.shawckz.myhcf.spawn;
 
 import com.mongodb.client.MongoCursor;
 import com.shawckz.myhcf.Factions;
+import com.shawckz.myhcf.configuration.FLang;
+import com.shawckz.myhcf.configuration.FactionLang;
 import com.shawckz.myhcf.database.search.SearchText;
 import com.shawckz.myhcf.faction.FDataMode;
 import com.shawckz.myhcf.faction.Faction;
@@ -16,6 +18,8 @@ import com.shawckz.myhcf.land.Claim;
 import com.shawckz.myhcf.land.LandBoard;
 import com.shawckz.myhcf.player.HCFPlayer;
 import com.shawckz.myhcf.scoreboard.hcf.FLabel;
+import com.shawckz.myhcf.util.Relation;
+import net.md_5.bungee.api.ChatColor;
 import org.bson.Document;
 
 import java.util.Set;
@@ -25,6 +29,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -38,7 +45,7 @@ public class Spawn implements Listener {
 
     private final WallRadius wallRadius;
     private final DynamicWall wall;
-    private final Location spawn;
+    private Location spawn;
     private Faction spawnFaction;
     private Claim claim = null;
 
@@ -112,20 +119,124 @@ public class Spawn implements Listener {
         boolean spawnTagged = hcfPlayer.getScoreboard().getTimer(FLabel.SPAWN_TAG).getTime() > 0.1;
         if (landBoard.isClaimed(e.getTo())) {
             Faction claim = landBoard.getFactionAt(e.getTo());
-            if (claim.getFactionType() == FactionType.SPAWN) {
-                if (!spawnTagged) {
-                    player.setFoodLevel(20);
-                }
-                else {
-                    e.setTo(e.getFrom());
+            if(claim != null) {
+                if (claim.getFactionType() == FactionType.SPAWN) {
+                    if (!spawnTagged) {
+                        player.setFoodLevel(20);
+                    }
+                    else {
+                        e.setTo(e.getFrom());
+                    }
                 }
             }
         }
         if (spawnTagged) {
-            if (player.getLocation().distanceSquared(spawn) < 150) {
-                wallRadius.send(player, new ItemStack(Factions.getInstance().getFactionsConfig().getSpawnTagWallMaterial(), 1, (byte)Factions.getInstance().getFactionsConfig().getSpawnTagWallMaterialData()), wall.getNear(player, 30, 10));
+            if (spawn != null && player.getLocation().distanceSquared(spawn) < 150) {
+                wallRadius.send(
+                        player,
+                        new ItemStack(Factions.getInstance().getFactionsConfig().getSpawnTagWallMaterial(), 1, (byte)Factions.getInstance().getFactionsConfig().getSpawnTagWallMaterialData()),
+                        wall.getNear(player, 30, 10)
+                );
             }
         }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onBreak(BlockBreakEvent e) {
+        if(e.isCancelled()) return;
+        Player p = e.getPlayer();
+        Location loc = e.getBlock().getLocation();
+        if(withinSpawn(loc)) {
+            e.setCancelled(true);
+            p.sendMessage(ChatColor.RED + "You cannot build in spawn.");
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onPlace(BlockPlaceEvent e) {
+        if(e.isCancelled()) return;
+        Player p = e.getPlayer();
+        Location loc = e.getBlock().getLocation();
+        if(withinSpawn(loc)) {
+            e.setCancelled(true);
+            p.sendMessage(ChatColor.RED + "You cannot build in spawn.");
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onDamage(EntityDamageEvent e){
+        if(e.isCancelled()) return;
+        if(e.getEntity() instanceof Player) {
+            Player player = (Player) e.getEntity();
+            Location loc = player.getLocation();
+            if(withinSpawn(loc)) {
+                e.setCancelled(true);
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onMoveMessages(PlayerMoveEvent e) {
+        if (e.isCancelled()) return;
+        if (e.getTo().getBlockX() == e.getFrom().getBlockX() && e.getTo().getBlockZ() == e.getFrom().getBlockZ()) {
+            return;
+        }
+        Player player = e.getPlayer();
+        HCFPlayer hcfPlayer = Factions.getInstance().getCache().getHCFPlayer(player);
+        LandBoard landBoard = Factions.getInstance().getLandBoard();
+
+        if(landBoard.isClaimed(e.getTo()) && landBoard.isClaimed(e.getFrom())) {
+            //Entering to, leaving from
+            Faction to = landBoard.getFactionAt(e.getTo());
+            Faction from = landBoard.getFactionAt(e.getFrom());
+            if(to != null && from != null) {
+                if(!to.getId().equalsIgnoreCase(from.getId())) {
+                    FLang.send(player, FactionLang.LAND_MOVE_MESSAGE, coloredFactionName(hcfPlayer, to), coloredFactionName(hcfPlayer, from));
+                }
+            }
+
+        }
+        else if (landBoard.isClaimed(e.getTo()) && !landBoard.isClaimed(e.getFrom())) {
+            //Entering to, leaving wild
+            Faction to = landBoard.getFactionAt(e.getTo());
+            FLang.send(player, FactionLang.LAND_MOVE_MESSAGE, coloredFactionName(hcfPlayer, to), ChatColor.DARK_GREEN  + "Wilderness");
+        }
+        else if (!landBoard.isClaimed(e.getTo()) && landBoard.isClaimed(e.getFrom())) {
+            //Entering wild, leaving from
+            Faction from = landBoard.getFactionAt(e.getFrom());
+            FLang.send(player, FactionLang.LAND_MOVE_MESSAGE, ChatColor.DARK_GREEN  + "Wilderness", coloredFactionName(hcfPlayer, from));
+        }
+
+    }
+
+    private String coloredFactionName(HCFPlayer p, Faction f) {
+        if(f.isNormal()) {
+            Relation relation = f.getRelationTo(p.getFaction());
+            if (relation == Relation.ALLY) {
+                return ChatColor.translateAlternateColorCodes('&', Factions.getInstance().getFactionsConfig().getRelationAlly() + f.getDisplayName());
+            }
+            else if (relation == Relation.FACTION) {
+                return ChatColor.translateAlternateColorCodes('&', Factions.getInstance().getFactionsConfig().getRelationFaction() + f.getDisplayName());
+            }
+            else {
+                return ChatColor.translateAlternateColorCodes('&', Factions.getInstance().getFactionsConfig().getRelationNeutral() + f.getDisplayName());
+            }
+        }
+        else{
+            if(f.getFactionType() == FactionType.SPAWN) {
+                return ChatColor.GREEN + f.getDisplayName();
+            }
+            else if (f.getFactionType() == FactionType.ROAD) {
+                return ChatColor.AQUA + f.getDisplayName();
+            }
+            else if (f.getFactionType() == FactionType.SPECIAL) {
+                return ChatColor.DARK_PURPLE + f.getDisplayName();
+            }
+            else if (f.getFactionType() == FactionType.KOTH) {
+                return ChatColor.GOLD + f.getDisplayName();
+            }
+        }
+        return ChatColor.translateAlternateColorCodes('&', Factions.getInstance().getFactionsConfig().getRelationNeutral() + f.getDisplayName());
     }
 
     public boolean withinSpawn(Location loc) {
@@ -133,6 +244,10 @@ public class Spawn implements Listener {
             return claim.within(loc);
         }
         return false;
+    }
+
+    public void setSpawn(Location spawn) {
+        this.spawn = spawn;
     }
 
     public WallRadius getWallRadius() {

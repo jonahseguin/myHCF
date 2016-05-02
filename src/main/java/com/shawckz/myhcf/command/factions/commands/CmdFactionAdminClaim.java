@@ -35,12 +35,15 @@ public class CmdFactionAdminClaim implements HCFCommand {
                 if(player.getSelection() != null
                         && player.getSelection().getMax() != null && player.getSelection().getMin() != null){
                     if(faction.getFactionType() != FactionType.NORMAL) {
-                        final Claim claim = new Claim(player.getSelection().getMin(), player.getSelection().getMax());
+                        if(faction.getFactionType() == FactionType.SPAWN) {
+                            Factions.getInstance().getLandBoard().unclaimAll(faction);
+                        }
+                        final Claim claim = new Claim(player.getSelection().getMin(), player.getSelection().getMax(), faction);
                         Factions.getInstance().getLandBoard().claim(claim, faction);
                         new BukkitRunnable() {
                             @Override
                             public void run() {
-                                Factions.getInstance().getLandBoard().getDbHandler().getAutoDB().push(claim);
+                                Factions.getInstance().getDbHandler().push(claim);
                             }
                         }.runTaskAsynchronously(Factions.getInstance());
                         p.sendMessage(ChatColor.YELLOW + "Successfully admin-claimed for faction '" + faction.getDisplayName() + "'.");

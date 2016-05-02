@@ -8,6 +8,7 @@ import com.shawckz.myhcf.command.factions.FCommandManager;
 import com.shawckz.myhcf.command.normal.GCommandHandler;
 import com.shawckz.myhcf.command.normal.commands.CmdEconomy;
 import com.shawckz.myhcf.command.normal.commands.CmdPvPTimer;
+import com.shawckz.myhcf.command.normal.commands.CmdSetSpawn;
 import com.shawckz.myhcf.configuration.FactionsConfig;
 import com.shawckz.myhcf.configuration.LanguageConfig;
 import com.shawckz.myhcf.database.AutoDB;
@@ -69,6 +70,7 @@ public class Factions extends JavaPlugin {
                 commandManager = new FCommandManager(this);
                 factionManager = new FactionManager();
                 landBoard = new LandBoard();
+                landBoard.loadClaims();
                 visualMap = new VisualMap(this);
                 claimSelector = new ClaimSelector();
                 fEventManager = new FEventManager(this);
@@ -77,6 +79,7 @@ public class Factions extends JavaPlugin {
 
                 gCommandHandler.registerCommands(new CmdPvPTimer());
                 gCommandHandler.registerCommands(new CmdEconomy());
+                gCommandHandler.registerCommands(new CmdSetSpawn());
 
                 kothManager = new KothManager();
                 kothManager.loadKoths();

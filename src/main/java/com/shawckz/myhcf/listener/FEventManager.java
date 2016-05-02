@@ -31,6 +31,8 @@ public class FEventManager {
         listeners.add(instance.getClaimSelector());
         listeners.add(new LimiterListener());
         listeners.add(new CombatLogListener());
+        listeners.add(new SpawnTagListener());
+        listeners.add(new BasicListener());
     }
 
     public void add(Listener listener) {

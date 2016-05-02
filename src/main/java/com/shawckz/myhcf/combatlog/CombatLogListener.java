@@ -9,11 +9,13 @@ import com.shawckz.myhcf.player.HCFPlayer;
 import com.shawckz.myhcf.util.HCFException;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
@@ -23,9 +25,9 @@ public class CombatLogListener implements Listener {
     public void onCombatLog(PlayerQuitEvent e) {
         Player p = e.getPlayer();
         HCFPlayer player = Factions.getInstance().getCache().getHCFPlayer(p);
-        if(player.getSpawnTag() > 0.1) {
-            Factions.getInstance().getCombatLogManager().spawnLogger(p);
-        }
+       // if(player.getSpawnTag() > 0.1) {
+            Factions.getInstance().getCombatLogManager().spawnLogger(p);//We want to always spawn it
+     //   }
     }
 
     @EventHandler
@@ -36,7 +38,7 @@ public class CombatLogListener implements Listener {
                 CombatLogger logger = Factions.getInstance().getCombatLogManager().getLogger(p.getName().split("-")[1]);
                 if(logger != null) {
                     logger.setDead();
-                    logger.getItems().stream().forEach(itemStack -> e.getEntity().getWorld().dropItemNaturally(e.getEntity().getLocation(), itemStack));
+                    logger.getItems().stream().filter(itemStack1 -> itemStack1 != null && itemStack1.getType() != Material.AIR).forEach(itemStack -> e.getEntity().getWorld().dropItemNaturally(e.getEntity().getLocation(), itemStack));
                     HCFPlayer player = Factions.getInstance().getCache().getHCFPlayerByUUID(logger.getUuid());
                     if(player != null) {
                         if(!player.isCombatLogged()) {
@@ -76,12 +78,24 @@ public class CombatLogListener implements Listener {
     }
 
     private void killPlayer(Player p) {
-        p.sendMessage(ChatColor.RED + "Your Combat-Logger NPC was killed.");
-        p.setLevel(0);
-        p.setExp(0);
-        p.getInventory().clear();
-        p.getInventory().setArmorContents(null);
-        //TODO: 'Kill' the player
+        p.sendMessage(ChatColor.RED + "Your Combat-Logger was killed.");
+        HCFPlayer player = Factions.getInstance().getCache().getHCFPlayer(p);
+        player.setLogKilled(true);
+        p.setHealth(0.0);//kill
     }
+
+    //Respawn them automatically
+    @EventHandler
+    public void onDeath(PlayerDeathEvent e) {
+        Player p = e.getEntity();
+        HCFPlayer player = Factions.getInstance().getCache().getHCFPlayer(p);
+        if(player.isLogKilled()) {
+            player.setLogKilled(false);
+            p.spigot().respawn();
+        }
+    }
+
+
+
 
 }

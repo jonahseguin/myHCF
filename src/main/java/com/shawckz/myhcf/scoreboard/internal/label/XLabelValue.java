@@ -4,9 +4,9 @@ import com.shawckz.myhcf.scoreboard.internal.XScoreboard;
 import com.shawckz.myhcf.scoreboard.internal.util.FakeOfflinePlayer;
 import lombok.Getter;
 
-import org.bukkit.scoreboard.Team;
-
 import java.util.UUID;
+
+import org.bukkit.scoreboard.Team;
 
 
 @Getter
@@ -59,16 +59,27 @@ public class XLabelValue {
 
     private Team tryCreateTeam() {
         if (team == null) {
-            team = scoreboard.getScoreboard().registerNewTeam(UUID.randomUUID().toString().substring(0, 10));
+            team = createTeam();
         }
         return team;
     }
 
+    private Team createTeam() {
+        return scoreboard.getScoreboard().registerNewTeam(UUID.randomUUID().toString().substring(0, 10));
+    }
+
     private void addValue() {
         if (fakeOfflinePlayer == null) {
+            if(!scoreboard.getScoreboard().getTeams().contains(team)) {
+                team.unregister();
+                team = null;
+                tryCreateTeam();
+            }
             scoreboard.getScoreboard().resetScores(value);
             fakeOfflinePlayer = new FakeOfflinePlayer(value);
-            team.addPlayer(fakeOfflinePlayer);
+            if(!team.hasPlayer(fakeOfflinePlayer)) {
+                team.addPlayer(fakeOfflinePlayer);
+            }
             scoreboard.getScoreboard().resetScores(value);
             team.setPrefix(preValue);
             team.setSuffix(postValue);

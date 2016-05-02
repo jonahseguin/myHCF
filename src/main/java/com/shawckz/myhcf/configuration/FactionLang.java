@@ -118,7 +118,12 @@ public enum FactionLang {
     PVP_TIMER_NOT_ALLOWED("&cYou cannot do this with an active PvPTimer.  Type /pvp enable to remove your PvPTimer."),
     ECO_BALANCE("&eYou have &9${0}&e."),
     ECO_BALANCE_OTHER("&b{0}&e has &9${0}&e."),
-    FACTION_CHAT_MODE("&eYou are now chatting in {0}&e chat mode.")
+    FACTION_CHAT_MODE("&eYou are now chatting in {0}&e chat mode."),
+    LAND_MOVE_MESSAGE("&eEntering: {0}, &eLeaving: {1}"),
+    CMD_ECONOMY_UPDATE("&9{0}&e's balance is now &a{1}&e."),
+    CMD_ECONOMY_UPDATE_TARGET("&eYour balance was set to &9{0}&e."),
+    FACTION_DAMAGE_MEMBER("&a{0}&e is in your faction."),
+    FACTION_DAMAGE_ALLY("&7[&9{1}&7] &9{0}&e is allied to your faction.")
     ;
 
     private final String defaultValue;

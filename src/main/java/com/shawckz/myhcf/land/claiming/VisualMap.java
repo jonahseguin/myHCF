@@ -8,18 +8,19 @@ package com.shawckz.myhcf.land.claiming;
 import com.shawckz.myhcf.Factions;
 import com.shawckz.myhcf.land.Claim;
 import com.shawckz.myhcf.land.LandBoard;
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
+
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 
 /**
  * Created by Jonah Seguin on 1/24/2016.
@@ -29,7 +30,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  */
 public class VisualMap implements Listener {
 
-    private final Map<Claim, VisualClaim> visualClaims = new HashMap<>();
+    private final Map<String, VisualClaim> visualClaims = new HashMap<>();
     private final Map<String, Set<String>> playerClaims = new HashMap<>();
     private final Set<String> players = new HashSet<>();
 
@@ -109,7 +110,7 @@ public class VisualMap implements Listener {
     }
 
     public VisualClaim convertClaim(Claim claim) {
-        return new VisualClaim(claim.getMaximumPoint(), claim.getMinimumPoint());
+        return new VisualClaim(claim.getId(), claim.getMaximumPoint(), claim.getMinimumPoint());
     }
 
     public void drawNearClaims(Player player, Location location) {
@@ -154,6 +155,11 @@ public class VisualMap implements Listener {
     }
 
     public void drawClaim(Player player, Claim claim) {
+        if(playerClaims.containsKey(player.getName())) {
+            if(playerClaims.get(player.getName()).contains(claim.getId())) {
+                return;
+            }
+        }
         VisualClaim visualClaim = getOrConvertVisualClaim(claim);
         visualClaim.show(player);
         if (!playerClaims.containsKey(player.getName())) {
@@ -163,11 +169,11 @@ public class VisualMap implements Listener {
     }
 
     public VisualClaim getOrConvertVisualClaim(Claim claim) {
-        if (visualClaims.containsKey(claim)) {
-            return visualClaims.get(claim);
+        if (visualClaims.containsKey(claim.getId())) {
+            return visualClaims.get(claim.getId());
         }
         VisualClaim c = convertClaim(claim);
-        visualClaims.put(claim, c);
+        visualClaims.put(c.getId(), c);
         return c;
     }
 

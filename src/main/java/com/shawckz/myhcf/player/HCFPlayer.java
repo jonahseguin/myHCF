@@ -65,6 +65,8 @@ public class HCFPlayer extends CachePlayer {
     private ChatMode chatMode = ChatMode.PUBLIC;
     private ArmorClassType armorClassType = null;
 
+    private boolean logKilled = false;
+
     private FSelection selection = null;
 
     public DeathbanRank getDeathbanRank() {

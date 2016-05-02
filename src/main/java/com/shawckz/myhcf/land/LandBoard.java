@@ -1,8 +1,10 @@
 package com.shawckz.myhcf.land;
 
 import com.shawckz.myhcf.Factions;
-import com.shawckz.myhcf.database.AutoDBer;
+import com.shawckz.myhcf.database.AutoDBable;
 import com.shawckz.myhcf.faction.Faction;
+import com.shawckz.myhcf.spawn.DynamicWall;
+import com.shawckz.myhcf.spawn.WallRadius;
 
 import java.util.*;
 
@@ -16,10 +18,16 @@ public class LandBoard {
 
     private final Map<Claim, String> land = new HashMap<>();
 
-    private final AutoDBer db = new AutoDBer(Factions.getDataMode());
 
-    public AutoDBer getDbHandler() {
-        return db;
+    public void loadClaims() {
+        Set<AutoDBable> ret = Factions.getInstance().getDbHandler().fetchAll(new Claim());
+        for(AutoDBable r : ret) {
+            if(r instanceof Claim) {
+                Claim c = (Claim) r;
+                land.put(c, c.getFactionID().toLowerCase());
+                c.setDynamicWall(new DynamicWall(new WallRadius(c.getWorld(), c.getMaxX(), c.getMinX(), c.getMaxY(), c.getMinY(), c.getMaxZ(), c.getMinZ())));
+            }
+        }
     }
 
     public boolean isProtected(Location loc) {
@@ -91,7 +99,7 @@ public class LandBoard {
     }
 
     public void claim(Claim claim, Faction fac) {
-        land.put(claim, fac.getId());
+        land.put(claim, fac.getId().toLowerCase());
     }
 
     public boolean isClaimed(Location loc) {
@@ -120,7 +128,7 @@ public class LandBoard {
             @Override
             public void run() {
                 for (Claim claim : delete) {
-                    db.getAutoDB().delete(claim);
+                    Factions.getInstance().getDbHandler().delete(claim);
                 }
             }
         }.runTaskAsynchronously(Factions.getInstance());
@@ -148,7 +156,7 @@ public class LandBoard {
             @Override
             public void run() {
                 for (Claim claim : delete) {
-                    db.getAutoDB().delete(claim);
+                    Factions.getInstance().getDbHandler().delete(claim);
                 }
             }
         }.runTaskAsynchronously(Factions.getInstance());

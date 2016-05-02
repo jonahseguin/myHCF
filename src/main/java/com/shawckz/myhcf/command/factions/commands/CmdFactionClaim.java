@@ -48,13 +48,14 @@ public class CmdFactionClaim implements HCFCommand {
                 if(player.getFaction() != null){
                     VisualClaim claim = Factions.getInstance().getClaimSelector().getSelection(p);
                     if(claim != null && claim.getPos1() != null && claim.getPos2() != null) {
-                        double price = Claim.getPrice(new Claim(claim.getPos1(), claim.getPos2()), player.getFaction(), true);
+                        double price = Claim.getPrice(new Claim(claim.getPos1(), claim.getPos2(), player.getFaction()), player.getFaction(), true);
                         if(player.getFaction().getBalance() >= price) {
                             if(price > 5 && claim.getPos1().distanceSquared(claim.getPos2()) >= Factions.getInstance().getFactionsConfig().getFactionsClaimMinSize()) {
                                 Claim buyClaim = new Claim(claim.getPos1(), claim.getPos2(), player.getFaction());
                                 player.getFaction().setBalance(player.getFaction().getBalance() - price);
                                 Factions.getInstance().getLandBoard().claim(buyClaim, player.getFaction());
                                 player.getFaction().sendMessage(FLang.format(FactionLang.FACTION_CLAIM_PURCHASE, player.getName(), price + ""));
+                                Factions.getInstance().getClaimSelector().cancelSelection(p);
                             }
                             else{
                                 FLang.send(p, FactionLang.FACTION_CLAIM_TOO_SMALL, Factions.getInstance().getFactionsConfig().getFactionsClaimMinSize()+"");

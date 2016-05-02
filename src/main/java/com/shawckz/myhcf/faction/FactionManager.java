@@ -137,11 +137,9 @@ public class FactionManager {
 
     public Faction getFactionById(String id) {
         if (isInCacheById(id)) {
-            Factions.log("Getting faction by id -- in cache");
             return getLocalFactionById(id);
         }
         else {
-            Factions.log("Getting faction by id -- calling database");
             return getFactionFromDatabaseById(id);
         }
     }

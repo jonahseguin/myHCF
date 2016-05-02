@@ -264,6 +264,7 @@ public class DBFaction implements AutoDBable, Faction {
 
     @Override
     public Relation getRelationTo(Faction faction) {
+        if(faction == null) return Relation.NEUTRAL;
         if (faction.getId().equals(this.getId())) {
             return Relation.FACTION;
         }

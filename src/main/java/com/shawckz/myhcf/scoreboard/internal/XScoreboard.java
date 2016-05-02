@@ -3,15 +3,15 @@ package com.shawckz.myhcf.scoreboard.internal;
 import com.shawckz.myhcf.Factions;
 import com.shawckz.myhcf.scoreboard.internal.label.XLabel;
 
+import java.util.Iterator;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
-
-import java.util.Iterator;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 public abstract class XScoreboard {
 

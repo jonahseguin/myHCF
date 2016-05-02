@@ -166,8 +166,8 @@ public class CmdFactionInfo implements HCFCommand {
             }
             else if (f.getFactionType() == FactionType.SPAWN) {
                 FLang.send(p, FactionLang.FACTION_INFO_SPAWN_NAME, f.getDisplayName());
-                if (f.getHome() != null) {
-                    FLang.send(p, FactionLang.FACTION_INFO_SPAWN_LOCATION, convertLocation(f.getHome()));
+                if (Factions.getInstance().getSpawn().getSpawn() != null) {
+                    FLang.send(p, FactionLang.FACTION_INFO_SPAWN_LOCATION, convertLocation(Factions.getInstance().getSpawn().getSpawn()));
                 }
                 else {
                     FLang.send(p, FactionLang.FACTION_INFO_SPAWN_LOCATION, "Not set");

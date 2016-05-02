@@ -8,6 +8,7 @@ import com.shawckz.myhcf.scoreboard.hcf.FLabel;
 import com.shawckz.myhcf.scoreboard.hcf.timer.HCFTimer;
 import com.shawckz.myhcf.scoreboard.hcf.timer.HCFTimerFormat;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.EnderPearl;
 import org.bukkit.entity.Player;
@@ -17,6 +18,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 
 public class EnderpearlListener implements Listener {
 
@@ -46,6 +48,21 @@ public class EnderpearlListener implements Listener {
                 }
             }
         }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onPearl(PlayerTeleportEvent e){
+        Player p = e.getPlayer();
+        HCFPlayer player = Factions.getInstance().getCache().getHCFPlayer(p);
+
+        if(e.getCause() == PlayerTeleportEvent.TeleportCause.ENDER_PEARL) {
+            if(Factions.getInstance().getSpawn().withinSpawn(e.getTo())) {
+                e.setCancelled(true);
+                player.getScoreboard().getTimer(FLabel.ENDER_PEARL).setTime(0).hide();//reset time because the pearl was cancelled
+                p.sendMessage(ChatColor.RED + "You cannot enderpearl into spawn.");
+            }
+        }
+
     }
 
     public void updateTime(Player player){

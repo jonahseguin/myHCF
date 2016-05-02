@@ -9,7 +9,6 @@ import com.shawckz.myhcf.Factions;
 import com.shawckz.myhcf.configuration.FLang;
 import com.shawckz.myhcf.configuration.FactionLang;
 import com.shawckz.myhcf.player.HCFPlayer;
-import com.shawckz.myhcf.spawn.DynamicWall;
 
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -25,12 +24,6 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
  *         Shawckz.com
  */
 public class SpawnTagListener implements Listener {
-
-    private final DynamicWall wall;
-
-    public SpawnTagListener() {
-        this.wall = Factions.getInstance().getSpawn().getWall();
-    }
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onTag(EntityDamageByEntityEvent e) {
@@ -57,8 +50,11 @@ public class SpawnTagListener implements Listener {
     }
 
     public void tag(HCFPlayer p, HCFPlayer d) {
+        if(p == null || d == null) return;
         if(Factions.getInstance().getFactionsConfig().isSpawnTagOnDamaged()) {
-            p.setSpawnTag(Factions.getInstance().getFactionsConfig().getSpawnTagTimeDamaged());
+            if(p.getSpawnTag() < Factions.getInstance().getFactionsConfig().getSpawnTagTimeDamaged()) {
+                p.setSpawnTag(Factions.getInstance().getFactionsConfig().getSpawnTagTimeDamaged());
+            }
             if(p.getSpawnTag() <= 0.1) {
                 //Send spawn tag message
                 FLang.send(p.getBukkitPlayer(), FactionLang.SPAWN_TAG);

@@ -6,6 +6,11 @@ import com.shawckz.myhcf.configuration.FactionLang;
 import com.shawckz.myhcf.faction.Faction;
 import com.shawckz.myhcf.faction.FactionType;
 import com.shawckz.myhcf.land.LandBoard;
+import com.shawckz.myhcf.player.HCFPlayer;
+import com.shawckz.myhcf.util.Relation;
+
+import java.util.List;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.CreatureSpawner;
@@ -18,15 +23,36 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-import java.util.List;
-
 public class PreventionListener implements Listener {
 
     private final LandBoard landBoard = Factions.getInstance().getLandBoard();
+
+    @EventHandler
+    public void onDamage(EntityDamageByEntityEvent e) {
+        if(e.getDamager() instanceof Player && e.getEntity() instanceof Player) {
+            Player p = (Player) e.getEntity();
+            Player d = (Player) e.getDamager();
+            HCFPlayer player = Factions.getInstance().getCache().getHCFPlayer(p);
+            HCFPlayer damager = Factions.getInstance().getCache().getHCFPlayer(d);
+
+            if(player.getFaction() != null && damager.getFaction() != null) {
+                if(player.getFaction().getId().equalsIgnoreCase(damager.getFaction().getId())) {
+                    e.setCancelled(true);
+                    FLang.send(d, FactionLang.FACTION_DAMAGE_MEMBER, p.getName());
+                }
+                else if (player.getFaction().getRelationTo(damager.getFaction()) == Relation.ALLY) {
+                    e.setCancelled(true);
+                    FLang.send(d, FactionLang.FACTION_DAMAGE_ALLY, p.getName(), player.getFaction().getDisplayName());
+                }
+            }
+
+        }
+    }
 
     @EventHandler
     public void onMineBlazeSpawner(BlockBreakEvent e) {

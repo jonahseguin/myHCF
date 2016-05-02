@@ -10,6 +10,7 @@ import lombok.Getter;
 import java.util.UUID;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 /**
@@ -28,10 +29,29 @@ public class VisualClaim {
     private VisualPillar pillar1 = null;
     private VisualPillar pillar2 = null;
 
+    private Material material;
+
+    public VisualClaim(String id,Location pos1, Location pos2) {
+        this.id = id;
+        this.pos1 = pos1;
+        this.pos2 = pos2;
+
+        this.material = VisualPillar.randomMaterial();
+
+        if(pos1 != null) {
+            this.pillar1 = new VisualPillar(pos1);
+        }
+        if(pos2 != null) {
+            this.pillar2 = new VisualPillar(pos2);
+        }
+    }
+
     public VisualClaim(Location pos1, Location pos2) {
         this.id = UUID.randomUUID().toString();
         this.pos1 = pos1;
         this.pos2 = pos2;
+
+        this.material = VisualPillar.randomMaterial();
 
         if(pos1 != null) {
             this.pillar1 = new VisualPillar(pos1);
@@ -53,10 +73,10 @@ public class VisualClaim {
 
     public void show(Player player) {
         if(pillar1 != null) {
-            pillar1.show(player);
+            pillar1.show(player, material);
         }
         if(pillar2 != null) {
-            pillar2.show(player);
+            pillar2.show(player, material);
         }
     }
 

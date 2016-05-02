@@ -15,6 +15,7 @@ import com.shawckz.myhcf.land.LandBoard;
 import com.shawckz.myhcf.player.HCFPlayer;
 import com.shawckz.myhcf.scoreboard.hcf.FLabel;
 import com.shawckz.myhcf.scoreboard.hcf.timer.HCFTimerFormat;
+import com.shawckz.myhcf.scoreboard.internal.label.XLabel;
 
 import java.util.Set;
 
@@ -30,6 +31,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 /**
  * Created by Jonah Seguin on 1/23/2016.
@@ -55,20 +57,26 @@ public class PvPTimerListener implements Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onRespawnFixScoreboard(PlayerRespawnEvent e) {
         HCFPlayer player = Factions.getInstance().getCache().getHCFPlayer(e.getPlayer());
+        for(XLabel label : player.getScoreboard().getScores().values()) {
+            player.getScoreboard().removeLabel(label);
+        }
+        player.getScoreboard().getTimers().clear();
+        player.getScoreboard().getLabels().clear();
         player.getScoreboard().sendToPlayer(e.getPlayer());
-
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
-    public void onRespawn(PlayerRespawnEvent e) {
-        HCFPlayer player = Factions.getInstance().getCache().getHCFPlayer(e.getPlayer());
-        player.getScoreboard().getTimer(FLabel.PVP_TIMER).updateLabel();
-        player.getScoreboard().getTimer(FLabel.PVP_TIMER, HCFTimerFormat.HH_MM_SS)
-                .setTime(Factions.getInstance().getFactionsConfig().getPvpTimerRespawn())
-                .show();
-        player.getBukkitPlayer().sendMessage(FLang.format(FactionLang.PVP_TIMER_START,
-                player.getScoreboard().getTimer(FLabel.PVP_TIMER).getValue().getFullValue()
-                        .split(player.getScoreboard().getTimer(FLabel.PVP_TIMER).getKey())[1]));
+    public void onRespawn(final PlayerRespawnEvent e) {
+        new BukkitRunnable(){
+            @Override
+            public void run() {
+                HCFPlayer player = Factions.getInstance().getCache().getHCFPlayer(e.getPlayer());
+                player.getScoreboard().getTimer(FLabel.PVP_TIMER).setTime(Factions.getInstance().getFactionsConfig().getPvpTimerRespawn());
+                player.getBukkitPlayer().sendMessage(FLang.format(FactionLang.PVP_TIMER_START,
+                        player.getScoreboard().getTimer(FLabel.PVP_TIMER).getValue().getFullValue()
+                                .split(player.getScoreboard().getTimer(FLabel.PVP_TIMER).getKey())[1]));
+            }
+        }.runTaskLater(Factions.getInstance(), 20L);
     }
 
     @EventHandler
@@ -79,8 +87,12 @@ public class PvPTimerListener implements Listener {
 
     public boolean hasPvPTimer(Player pl) {
         HCFPlayer player = Factions.getInstance().getCache().getHCFPlayer(pl);
-        return player.getScoreboard().getTimer(FLabel.PVP_TIMER).getTime() > 0.1;
-
+        if(player != null) {
+            if(player.getScoreboard().getTimer(FLabel.PVP_TIMER) != null) {
+                return player.getScoreboard().getTimer(FLabel.PVP_TIMER).getTime() > 0.1;
+            }
+        }
+        return false;
     }
 
     @EventHandler
@@ -144,7 +156,7 @@ public class PvPTimerListener implements Listener {
 
         for(Claim c : Factions.getInstance().getLandBoard().getClaimsInRadius(e.getTo(), 25)) {
             Set<Location> toSend = c.getDynamicWall().getNear(e.getPlayer(), 25, 10);
-            if(!toSend.isEmpty()) {
+            if(toSend != null && !toSend.isEmpty()) {
                 c.getDynamicWall().getWallRadius().send(player, new ItemStack(Factions.getInstance().getFactionsConfig().getSpawnTagWallMaterial(), 1, (byte)Factions.getInstance().getFactionsConfig().getSpawnTagWallMaterialData()), toSend);
             }
         }
