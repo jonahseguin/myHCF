@@ -17,7 +17,6 @@ public class FEventManager {
 
     public FEventManager(Factions instance) {
         this.instance = instance;
-
         listeners.add(new EnderpearlListener());
         listeners.add(new BorderListener());
         listeners.add(new ChatListener());
@@ -33,6 +32,8 @@ public class FEventManager {
         listeners.add(new CombatLogListener());
         listeners.add(new SpawnTagListener());
         listeners.add(new BasicListener());
+        listeners.add(new KothCapListener());
+        listeners.add(new DeathbanListener());
     }
 
     public void add(Listener listener) {

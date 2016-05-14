@@ -13,37 +13,37 @@ import java.util.Set;
 
 public class KothSchedule {
 
-    private Map<String, ScheduledKoth> schedule = new HashMap<>();
-
-    public void scheduleKoth(ScheduledKoth scheduledKoth) {
-        schedule.put(scheduledKoth.getUniqueId(), scheduledKoth);
-    }
-
-    public void cancelKoth(ScheduledKoth scheduledKoth) {
-        schedule.remove(scheduledKoth.getUniqueId());
-    }
-
-    public Map<String, ScheduledKoth> getSchedule() {
-        return schedule;
-    }
-
-    public ScheduledKoth getScheduledKoth(String uniqueId) {
-        return schedule.get(uniqueId);
-    }
-
-    public boolean hasScheduledKoth(String uniqueId) {
-        return schedule.containsKey(uniqueId);
+    public KothSchedule() {
     }
 
     public void loadSchedule() {
-        Set<AutoDBable> results = Factions.getInstance().getDbHandler().fetchAll(new ScheduledKoth());
-        for(AutoDBable result : results){
-            if(result instanceof ScheduledKoth) {
-                ScheduledKoth scheduledKoth = (ScheduledKoth) result;
-                schedule.put(scheduledKoth.getUniqueId(), scheduledKoth);
-            }
-        }
+        Set<AutoDBable> result = Factions.getInstance().getDbHandler().fetchAll(new ScheduledKoth());
+        result.stream().filter(ret -> ret instanceof ScheduledKoth).forEach(ret -> {
+            ScheduledKoth sk = (ScheduledKoth) ret;
+            schedule.put(sk.getDate(), sk);
+        });
     }
 
+    private Map<Long, ScheduledKoth> schedule = new HashMap<>();
+
+    public void scheduleKoth(long time, Koth koth) {
+        ScheduledKoth scheduledKoth = new ScheduledKoth(koth.getName(), time);
+        schedule.put(time, scheduledKoth);
+        Factions.getInstance().getDbHandler().push(scheduledKoth);
+    }
+
+    public Map<Long, ScheduledKoth> getSchedule() {
+        return schedule;
+    }
+
+    public ScheduledKoth getNextKoth() {
+        ScheduledKoth current = null;
+        for(ScheduledKoth k : schedule.values()) {
+            if(current == null || k.getDate() < current.getDate()) {
+                current = k;
+            }
+        }
+        return current;
+    }
 
 }

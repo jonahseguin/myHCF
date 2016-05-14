@@ -7,6 +7,7 @@ import com.shawckz.myhcf.combatlog.CombatLogManager;
 import com.shawckz.myhcf.command.factions.FCommandManager;
 import com.shawckz.myhcf.command.normal.GCommandHandler;
 import com.shawckz.myhcf.command.normal.commands.CmdEconomy;
+import com.shawckz.myhcf.command.normal.commands.CmdKoth;
 import com.shawckz.myhcf.command.normal.commands.CmdPvPTimer;
 import com.shawckz.myhcf.command.normal.commands.CmdSetSpawn;
 import com.shawckz.myhcf.configuration.FactionsConfig;
@@ -23,6 +24,7 @@ import com.shawckz.myhcf.land.LandBoard;
 import com.shawckz.myhcf.land.claiming.VisualMap;
 import com.shawckz.myhcf.listener.FEventManager;
 import com.shawckz.myhcf.player.HCFCache;
+import com.shawckz.myhcf.scoreboard.hcf.FLabel;
 import com.shawckz.myhcf.spawn.Spawn;
 
 import org.bukkit.plugin.java.JavaPlugin;
@@ -61,43 +63,43 @@ public class Factions extends JavaPlugin {
     public void onEnable() {
         instance = this;
         factionsConfig = new FactionsConfig(this);
-      //  auth.auth(result -> {
-     //       if(result) {
-                lang = new LanguageConfig(this);
-                databaseManager = new DatabaseManager(this);
-                dbHandler = new AutoDBer(getDataMode());
-                cache = new HCFCache(this);
-                commandManager = new FCommandManager(this);
-                factionManager = new FactionManager();
-                landBoard = new LandBoard();
-                landBoard.loadClaims();
-                visualMap = new VisualMap(this);
-                claimSelector = new ClaimSelector();
-                fEventManager = new FEventManager(this);
-                fEventManager.register();
-                gCommandHandler = new GCommandHandler(this);
 
-                gCommandHandler.registerCommands(new CmdPvPTimer());
-                gCommandHandler.registerCommands(new CmdEconomy());
-                gCommandHandler.registerCommands(new CmdSetSpawn());
+        FLabel.ARMOR_CLASS.register();
+        FLabel.ENDER_PEARL.register();
+        FLabel.ENERGY.register();
+        FLabel.PVP_TIMER.register();
+        FLabel.SPAWN_TAG.register();
 
-                kothManager = new KothManager();
-                kothManager.loadKoths();
+        lang = new LanguageConfig(this);
+        databaseManager = new DatabaseManager(this);
+        dbHandler = new AutoDBer(getDataMode());
+        cache = new HCFCache(this);
+        commandManager = new FCommandManager(this);
+        factionManager = new FactionManager();
+        landBoard = new LandBoard();
+        landBoard.loadClaims();
+        visualMap = new VisualMap(this);
+        claimSelector = new ClaimSelector();
+        fEventManager = new FEventManager(this);
+        fEventManager.register();
+        gCommandHandler = new GCommandHandler(this);
 
-                armorClassManager = new ArmorClassManager(this);
-                armorClassManager.registerArmorClass(new Archer());
-                spawn = new Spawn(this);
-                combatLogManager = new CombatLogManager();
-       //     }
-       //     else{
-      //          log("myHCF is not authorized.  If you believe this is in error, please properly configure your server IP in the server.properties and auth key in the config.");
-      //      }
-     //   });
+        gCommandHandler.registerCommands(new CmdPvPTimer());
+        gCommandHandler.registerCommands(new CmdEconomy());
+        gCommandHandler.registerCommands(new CmdSetSpawn());
+        gCommandHandler.registerCommands(new CmdKoth());
+
+        kothManager = new KothManager(this);
+
+        armorClassManager = new ArmorClassManager(this);
+        armorClassManager.registerArmorClass(new Archer());
+        spawn = new Spawn(this);
+        combatLogManager = new CombatLogManager();
     }
 
     @Override
     public void onDisable() {
-        if(auth.isAuthorized()) {
+        if (auth.isAuthorized()) {
             databaseManager.shutdown();
             HCFCache.clear();
             fEventManager.unregister();
@@ -173,11 +175,11 @@ public class Factions extends JavaPlugin {
         return instance;
     }
 
-    public static boolean isDebug(){
+    public static boolean isDebug() {
         return getInstance().getFactionsConfig().isDebug();
     }
 
-    public static void log(String msg){
+    public static void log(String msg) {
         getInstance().getLogger().info(msg);
     }
 

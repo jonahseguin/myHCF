@@ -4,6 +4,8 @@ import com.shawckz.myhcf.Factions;
 import com.shawckz.myhcf.configuration.FLang;
 import com.shawckz.myhcf.configuration.FactionLang;
 import com.shawckz.myhcf.player.HCFPlayer;
+import com.shawckz.myhcf.util.TimeUtil;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -19,7 +21,7 @@ public class DeathbanListener implements Listener {
         HCFPlayer hcfPlayer = Factions.getInstance().getCache().getHCFPlayer(p);
         hcfPlayer.setDeathban(System.currentTimeMillis() + (hcfPlayer.getDeathbanRank().getSeconds() * 1000));
 
-        hcfPlayer.getBukkitPlayer().kickPlayer(Factions.getInstance().getLang().getFormattedLang(FactionLang.DEATHBAN_KICK, hcfPlayer.getLives() + "", "TODO: TIME"));
+        hcfPlayer.getBukkitPlayer().kickPlayer(Factions.getInstance().getLang().getFormattedLang(FactionLang.DEATHBAN_KICK, hcfPlayer.getLives() + "", TimeUtil.formatTime(hcfPlayer.getDeathban())));
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
@@ -32,7 +34,7 @@ public class DeathbanListener implements Listener {
                 hcfPlayer.setDeathban(0);
                 p.sendMessage(FLang.format(FactionLang.DEATHBAN_LIFE_USE, hcfPlayer.getLives() + ""));
             } else {
-                e.disallow(PlayerLoginEvent.Result.KICK_BANNED, FLang.format(FactionLang.DEATHBAN_KICK, hcfPlayer.getLives() + "", "TODO: Time"));
+                e.disallow(PlayerLoginEvent.Result.KICK_BANNED, FLang.format(FactionLang.DEATHBAN_KICK, hcfPlayer.getLives() + "", TimeUtil.formatTime(hcfPlayer.getDeathban())));
             }
         }
     }

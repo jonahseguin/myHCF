@@ -123,7 +123,12 @@ public enum FactionLang {
     CMD_ECONOMY_UPDATE("&9{0}&e's balance is now &a{1}&e."),
     CMD_ECONOMY_UPDATE_TARGET("&eYour balance was set to &9{0}&e."),
     FACTION_DAMAGE_MEMBER("&a{0}&e is in your faction."),
-    FACTION_DAMAGE_ALLY("&7[&9{1}&7] &9{0}&e is allied to your faction.")
+    FACTION_DAMAGE_ALLY("&7[&9{1}&7] &9{0}&e is allied to your faction."),
+    KOTH_ACTIVE("&7[&6Koth&7] &9{0}&e is now &aactive&e!"),
+    KOTH_KNOCK("&7[&6Koth&7] &9{0}&e has been knocked!"),
+    KOTH_CAP_START("&7[&6Koth&7] &9{0}&e is being capped by &b{1}&e &7[&a{2}&7]"),
+    KOTH_CAP_FINISH("&7[&6Koth&7] &9{0}&e has been caped by &b{1}&e!"),
+    KOTH_CANCEL("&7[&6Koth&7] &9{0}&e has been &ccancelled&e.")
     ;
 
     private final String defaultValue;

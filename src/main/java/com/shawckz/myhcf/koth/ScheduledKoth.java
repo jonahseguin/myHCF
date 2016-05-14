@@ -7,25 +7,24 @@ package com.shawckz.myhcf.koth;
 import com.shawckz.myhcf.database.AutoDBable;
 import com.shawckz.myhcf.database.annotations.CollectionName;
 import com.shawckz.myhcf.database.annotations.DBColumn;
-import com.shawckz.myhcf.database.annotations.JSONDirectory;
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
-@NoArgsConstructor
-@CollectionName(name = "myhcfscheduledkoths")
-@JSONDirectory(name = "scheduledkoths")
+@CollectionName(name = "myhcf_scheduledkoths")
 public class ScheduledKoth implements AutoDBable {
 
     @DBColumn(identifier = true)
-    private String uniqueId;
-
+    private String name;
     @DBColumn
-    private String koth;
+    private long date;
 
-    @DBColumn
-    private long time;
+    public ScheduledKoth() {
+    }
+
+
 
 }
