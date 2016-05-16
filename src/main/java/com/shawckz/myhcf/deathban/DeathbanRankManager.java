@@ -7,6 +7,10 @@ public class DeathbanRankManager {
 
     private final Map<String, DeathbanRank> ranks = new HashMap<>();
 
+    public DeathbanRankManager() {
+
+    }
+
     public DeathbanRank getRank(String rankName) {
         return ranks.get(rankName);
     }

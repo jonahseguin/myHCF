@@ -6,10 +6,11 @@
 package com.shawckz.myhcf.armorclass;
 
 import com.shawckz.myhcf.Factions;
-import com.shawckz.myhcf.armorclass.magicitems.MagicSpeed;
+import com.shawckz.myhcf.armorclass.magicitems.archer.MagicSpeed;
 import com.shawckz.myhcf.player.HCFPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
@@ -69,6 +70,9 @@ public class ArmorClassManager {
 
     public void registerArmorClass(ArmorClass armorClass) {
         armorClasses.put(armorClass.getType(), armorClass);
+        if(armorClass instanceof Listener) {
+            Bukkit.getPluginManager().registerEvents(((Listener)armorClass), Factions.getInstance());
+        }
     }
 
     public void registerMagicItem(MagicItem magicItem) {

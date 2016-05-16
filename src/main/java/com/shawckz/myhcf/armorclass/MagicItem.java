@@ -5,6 +5,8 @@
 
 package com.shawckz.myhcf.armorclass;
 
+import com.shawckz.myhcf.configuration.FLang;
+import com.shawckz.myhcf.configuration.FactionLang;
 import com.shawckz.myhcf.player.HCFPlayer;
 import com.shawckz.myhcf.scoreboard.hcf.FLabel;
 import lombok.Getter;
@@ -34,7 +36,7 @@ public abstract class MagicItem {
     public final boolean applyMagicItem(HCFPlayer player) {
         if (applicable(player)) {
             apply(player);
-            player.getScoreboard().getTimer(FLabel.ENERGY).setTime(player.getScoreboard().getTimer(FLabel.ENERGY).getTime() - energy);
+            player.getScoreboard().getTimer(FLabel.ENERGY).setTime(player.getScoreboard().getTimer(FLabel.ENERGY).getTime() - energy).unpauseTimer();
             return true;
         }
         return false;
@@ -43,7 +45,11 @@ public abstract class MagicItem {
     public abstract void apply(HCFPlayer player);
 
     public boolean applicable(HCFPlayer player) {
-        return player.getScoreboard().getTimer(FLabel.ENERGY).getTime() >= energy;
+        boolean applicable = player.getScoreboard().getTimer(FLabel.ENERGY).getTime() >= energy;
+        if(!applicable) {
+            FLang.send(player.getBukkitPlayer(), FactionLang.MAGIC_ITEM_NOT_ENOUGH_ENERGY, name, energy+"");
+        }
+        return applicable;
     }
 
 }

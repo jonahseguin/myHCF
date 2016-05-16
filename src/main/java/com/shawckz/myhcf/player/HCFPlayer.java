@@ -14,6 +14,7 @@ import com.shawckz.myhcf.scoreboard.hcf.HCFScoreboard;
 import com.shawckz.myhcf.scoreboard.hcf.timer.HCFTimer;
 import com.shawckz.myhcf.util.ChatMode;
 import com.shawckz.myhcf.util.FSelection;
+import com.shawckz.myhcf.util.Relation;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -69,6 +70,16 @@ public class HCFPlayer extends CachePlayer {
 
     private FSelection selection = null;
 
+    private long archerTag = 0;
+
+    public boolean isArcherTagged() {
+        return archerTag > System.currentTimeMillis();
+    }
+
+    public void archerTag() {
+        archerTag = (System.currentTimeMillis() + (Factions.getInstance().getFactionsConfig().getArcherTagTime() * 1000));
+    }
+
     public DeathbanRank getDeathbanRank() {
         DeathbanRank deathbanRank = Factions.getInstance().getDeathbanRankManager().getRank(this.deathbanRank);
         if (deathbanRank != null) {
@@ -113,6 +124,15 @@ public class HCFPlayer extends CachePlayer {
 
     public boolean inCombat() {
         return scoreboard.getTimer(FLabel.SPAWN_TAG).getTime() > 0.1;
+    }
+
+    public Relation getRelationTo(HCFPlayer player) {
+        if(getFaction() != null && player.getFaction() != null) {
+            return getFaction().getRelationTo(player.getFaction());
+        }
+        else{
+            return Relation.NEUTRAL;
+        }
     }
 
 }

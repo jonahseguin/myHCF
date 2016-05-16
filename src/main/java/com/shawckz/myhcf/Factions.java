@@ -6,15 +6,13 @@ import com.shawckz.myhcf.auth.XSocketAuth;
 import com.shawckz.myhcf.combatlog.CombatLogManager;
 import com.shawckz.myhcf.command.factions.FCommandManager;
 import com.shawckz.myhcf.command.normal.GCommandHandler;
-import com.shawckz.myhcf.command.normal.commands.CmdEconomy;
-import com.shawckz.myhcf.command.normal.commands.CmdKoth;
-import com.shawckz.myhcf.command.normal.commands.CmdPvPTimer;
-import com.shawckz.myhcf.command.normal.commands.CmdSetSpawn;
+import com.shawckz.myhcf.command.normal.commands.*;
 import com.shawckz.myhcf.configuration.FactionsConfig;
 import com.shawckz.myhcf.configuration.LanguageConfig;
 import com.shawckz.myhcf.database.AutoDB;
 import com.shawckz.myhcf.database.AutoDBer;
 import com.shawckz.myhcf.database.DatabaseManager;
+import com.shawckz.myhcf.deathban.DeathbanRank;
 import com.shawckz.myhcf.deathban.DeathbanRankManager;
 import com.shawckz.myhcf.faction.FDataMode;
 import com.shawckz.myhcf.faction.FactionManager;
@@ -23,10 +21,15 @@ import com.shawckz.myhcf.land.ClaimSelector;
 import com.shawckz.myhcf.land.LandBoard;
 import com.shawckz.myhcf.land.claiming.VisualMap;
 import com.shawckz.myhcf.listener.FEventManager;
+import com.shawckz.myhcf.nametag.HCFNametag;
+import com.shawckz.myhcf.nametag.NametagManager;
+import com.shawckz.myhcf.nametag.NametagPlayer;
 import com.shawckz.myhcf.player.HCFCache;
 import com.shawckz.myhcf.scoreboard.hcf.FLabel;
 import com.shawckz.myhcf.spawn.Spawn;
 
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
@@ -88,6 +91,7 @@ public class Factions extends JavaPlugin {
         gCommandHandler.registerCommands(new CmdEconomy());
         gCommandHandler.registerCommands(new CmdSetSpawn());
         gCommandHandler.registerCommands(new CmdKoth());
+        gCommandHandler.registerCommands(new CmdDeathban());
 
         kothManager = new KothManager(this);
 
@@ -95,11 +99,27 @@ public class Factions extends JavaPlugin {
         armorClassManager.registerArmorClass(new Archer());
         spawn = new Spawn(this);
         combatLogManager = new CombatLogManager();
+
+        HCFNametag.runUpdateTask();
+
+        if(deathbanRankManager.getRank("default") == null) {
+            deathbanRankManager.registerRank(new DeathbanRank("default", 7200));
+        }
     }
 
     @Override
     public void onDisable() {
         if (auth.isAuthorized()) {
+
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                if (NametagManager.contains(player)) {
+                    NametagPlayer nametagPlayer = NametagManager.getPlayer(player);
+                    nametagPlayer.reset();
+                    NametagManager.remove(player);
+                }
+            }
+            NametagManager.clear();
+
             databaseManager.shutdown();
             HCFCache.clear();
             fEventManager.unregister();

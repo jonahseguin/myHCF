@@ -208,10 +208,19 @@ public class FactionsConfig extends Configuration {
     private Material magicItemSpeedMaterial = Material.SUGAR;
 
     @ConfigData("magicitem.speed.energy")
-    private double magicItemSpeedEnergy = 10;
+    private double magicItemSpeedEnergy = 10.0D;
 
     @ConfigData("player.energy.maxenergy")
-    private double maxEnergy = 50D;
+    private double maxEnergy = 50.0D;
+
+    @ConfigData("armorclass.archer.archertag-time")
+    private int archerTagTime = 10;
+
+    @ConfigData("armorclass.archer.enable-archertag")
+    private boolean archerTag = true;
+
+    @ConfigData("armorclass.archer.archertag-damage-multiplier")
+    private double archerTagMultiplier = 1.2;//120%
 
     @ConfigData("armorclass.archer.speed.time")
     private int archerSpeedTime = 200;

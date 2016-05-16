@@ -50,8 +50,10 @@ public enum FactionLang {
     FACTION_CMD_MOD_ONLY("&cOnly faction moderators can do this."),
     FACTION_DESC_LENGTH("&cFaction description cannot be longer than 32 characters."),
     FACTION_DESC_LOCAL("&9{0}&e has changed the faction's description to '&9{1}&e'"),
-    DEATHBAN_KICK("&cYou have been deathbanned.\\n&cYou have {0} lives, login again to use one.\\n&cYour deathban expires in {1}."),
+    DEATHBAN_KICK("&cYou have been death-banned.\\n&cYou have {0} lives, login again to use one.\\n&cYour deathban expires in {1}."),
     DEATHBAN_LIFE_USE("&aYou used one of your lives to revive yourself.  You now have {0} lives."),
+    DEATHBAN_NOT_BANNED("&cThat player is not death-banned."),
+    DEATHBAN_REVIVE("&9Revived &e{0}&9."),
     BORDER_BLOCK_DENY("&cYou cannot modify blocks beyond the world border."),
     BORDER_PORTAL("&cThat portal's location is past the border. You have been moved inwards."),
     BORDER_TELEPORT("&cThat location is past the border."),
@@ -128,7 +130,11 @@ public enum FactionLang {
     KOTH_KNOCK("&7[&6Koth&7] &9{0}&e has been knocked!"),
     KOTH_CAP_START("&7[&6Koth&7] &9{0}&e is being capped by &b{1}&e &7[&a{2}&7]"),
     KOTH_CAP_FINISH("&7[&6Koth&7] &9{0}&e has been caped by &b{1}&e!"),
-    KOTH_CANCEL("&7[&6Koth&7] &9{0}&e has been &ccancelled&e.")
+    KOTH_CANCEL("&7[&6Koth&7] &9{0}&e has been &ccancelled&e."),
+    ARCHER_TAG("&c&lCRITICAL HIT!  &eArcher tagged &9{0}&e for &a{1}&e seconds."),
+    ARCHER_TAG_TARGET("&eYou have been Archer tagged by &9{0}&e for &a{1} &eseconds."),
+    NO_BUILD("&cYou cannot build in {0}'s land."),
+    MAGIC_ITEM_NOT_ENOUGH_ENERGY("&cYou do not have enough energy to use {0}.  ({1} energy)")
     ;
 
     private final String defaultValue;

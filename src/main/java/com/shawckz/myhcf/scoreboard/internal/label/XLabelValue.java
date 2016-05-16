@@ -1,9 +1,15 @@
+/*
+ * Copyright (c) Jonah Seguin (Shawckz) 2016.  You may not copy, re-sell, distribute, modify, or use any code contained in this document or file, collection of documents or files, or project.  Thank you.
+ */
+
 package com.shawckz.myhcf.scoreboard.internal.label;
 
 import com.shawckz.myhcf.scoreboard.internal.XScoreboard;
 import com.shawckz.myhcf.scoreboard.internal.util.FakeOfflinePlayer;
 import lombok.Getter;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.scoreboard.Team;
@@ -109,41 +115,44 @@ public class XLabelValue {
     }
 
     private void updateValues() {
-        if (fullValue.length() > 16) {
-            String[] splitter = splitter(fullValue, 3);
-            this.preValue = splitter[0];
-            this.value = splitter[1];
-            this.postValue = splitter[2];
-        } else {
+        List<String> split = splitEqually(fullValue, 16);
+        if(split.isEmpty()) {
             this.preValue = "";
-            this.value = fullValue;
+            this.value = "";
             this.postValue = "";
+        }
+        else if(split.size() == 1) {
+            this.preValue = "";
+            this.value = split.get(0);
+            this.postValue = "";
+        }
+        else if (split.size() == 2) {
+            this.preValue = "";
+            this.value = split.get(0);
+            this.postValue = split.get(1);
+        }
+        else if (split.size() == 3) {
+            this.preValue = split.get(0);
+            this.value = split.get(1);
+            this.postValue = split.get(2);
+        }
+        else{
+            this.preValue = "";
+            this.value = "";
+            this.postValue = "";
+            throw new RuntimeException("Value length is too long");
         }
     }
 
-    private String[] splitter(String word, int size) {
-        String[] val = new String[size];
-        int split = (int) Math.ceil(word.length() / size);
-        int index = 0;
-        int valIndex = 0;
-        char[] chars = word.toCharArray();
-        for (int i = 0; i < chars.length; i++) {
-            if (index > split) {
-                index = 0;
-                valIndex++;
-            }
-            if (val[valIndex] == null) {
-                val[valIndex] = "";
-            }
-            val[valIndex] += chars[i];
-            index++;
+    public List<String> splitEqually(String text, int size) {
+        // Give the list the right capacity to start with. You could use an array
+        // instead if you wanted.
+        List<String> ret = new ArrayList<>((text.length() + size - 1) / size);
+
+        for (int start = 0; start < text.length(); start += size) {
+            ret.add(text.substring(start, Math.min(text.length(), start + size)));
         }
-        for (int i = 0; i < size; i++) {
-            if (val[i] == null) {
-                val[i] = "";
-            }
-        }
-        return val;
+        return ret;
     }
 
 }

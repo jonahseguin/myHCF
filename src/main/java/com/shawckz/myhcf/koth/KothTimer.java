@@ -77,8 +77,8 @@ public abstract class KothTimer extends BukkitRunnable {
         }
         else{
             if(frozen) {
-                updateScoreboards();
                 frozen = false;
+                updateScoreboards();
             }
         }
         if(time > 0) {

@@ -2,6 +2,8 @@ package com.shawckz.myhcf.player;
 
 import com.shawckz.myhcf.Factions;
 import com.shawckz.myhcf.faction.Faction;
+import com.shawckz.myhcf.nametag.HCFNametag;
+import com.shawckz.myhcf.nametag.NametagManager;
 import com.shawckz.myhcf.player.cache.AbstractCache;
 import com.shawckz.myhcf.player.cache.CachePlayer;
 import com.shawckz.myhcf.scoreboard.hcf.HCFScoreboard;
@@ -58,6 +60,9 @@ public class HCFCache extends AbstractCache {
             hcfPlayer.setBukkitPlayer(player);
             hcfPlayer.setScoreboard(new HCFScoreboard(player));
             hcfPlayer.getScoreboard().sendToPlayer(player);
+
+            NametagManager.setup(player);
+            HCFNametag.refresh(player);
 
             player.sendMessage(ChatColor.GRAY + "Loading your faction from the database...");
             if (hcfPlayer.getFactionId() != null) {

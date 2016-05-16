@@ -17,11 +17,9 @@ import org.bukkit.block.CreatureSpawner;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockBurnEvent;
-import org.bukkit.event.block.BlockIgniteEvent;
+import org.bukkit.event.block.*;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
@@ -130,5 +128,38 @@ public class PreventionListener implements Listener {
             e.blockList().clear();
         }
     }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onBreak(BlockBreakEvent e) {
+        if(e.isCancelled()) return;
+        Player p = e.getPlayer();
+        HCFPlayer hcfPlayer = Factions.getInstance().getCache().getHCFPlayer(p);
+        Faction f = landBoard.getFactionAt(e.getBlock().getLocation());
+        if(f != null) {
+            if(!f.isRaidable() || !f.isNormal()) {
+                if(f.getRelationTo(hcfPlayer.getFaction()) != Relation.FACTION) {
+                    e.setCancelled(true);
+                    FLang.send(p, FactionLang.NO_BUILD, f.getDisplayName());
+                }
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onPlace(BlockPlaceEvent e) {
+        if(e.isCancelled()) return;
+        Player p = e.getPlayer();
+        HCFPlayer hcfPlayer = Factions.getInstance().getCache().getHCFPlayer(p);
+        Faction f = landBoard.getFactionAt(e.getBlock().getLocation());
+        if(f != null) {
+            if(!f.isRaidable() || !f.isNormal()) {
+                if(f.getRelationTo(hcfPlayer.getFaction()) != Relation.FACTION) {
+                    e.setCancelled(true);
+                    FLang.send(p, FactionLang.NO_BUILD, f.getDisplayName());
+                }
+            }
+        }
+    }
+
 
 }

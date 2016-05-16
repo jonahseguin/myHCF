@@ -19,7 +19,7 @@ public class HCFScoreboard extends XScoreboard {
 
     private final Player player;
     private static final TimerPool timerPool = new TimerPool(2L);
-    private int scoreIndex = 1;
+    public int scoreIndex = 1;
 
     private Map<String, HCFTimer> timers = new HashMap<>();
     private Map<String, HCFLabel> labels = new HashMap<>();

@@ -5,6 +5,7 @@ import com.shawckz.myhcf.scoreboard.internal.timer.TimerPool;
 import com.shawckz.myhcf.scoreboard.internal.timer.XScoreboardTimer;
 import lombok.Getter;
 import lombok.Setter;
+import net.md_5.bungee.api.ChatColor;
 
 import java.text.DecimalFormat;
 import java.util.concurrent.TimeUnit;
@@ -18,12 +19,18 @@ public class HCFTimer extends XScoreboardTimer {
     private double time = 0.0D;
     public static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.#");
 
+    public HCFTimer(XScoreboard scoreboard, String key, int score, TimerPool timerPool, HCFTimerFormat format, HCFTimerTask timerTask) {
+        super(scoreboard, key, score, timerPool);
+        this.key = ChatColor.translateAlternateColorCodes('&', key);
+        this.format = format;
+        getTimerPool().registerTimer(timerTask);
+    }
+
     public HCFTimer(XScoreboard scoreboard, String key, int score, TimerPool timerPool, HCFTimerFormat format, boolean registerTimer) {
         super(scoreboard, key, score, timerPool);
-        this.key = key;
+        this.key = ChatColor.translateAlternateColorCodes('&', key);
         this.format = format;
-
-        if(registerTimer) {
+        if (registerTimer) {
             getTimerPool().registerTimer(new HCFTimerTask(this, timerPool.getInterval()) {
                 @Override
                 public void run() {
@@ -45,8 +52,6 @@ public class HCFTimer extends XScoreboardTimer {
     public HCFTimer(XScoreboard scoreboard, String key, int score, TimerPool timerPool) {
         this(scoreboard, key, score, timerPool, HCFTimerFormat.TENTH_OF_SECOND);
     }
-
-
 
     public HCFTimer setTime(double time) {
         this.time = time;
@@ -101,19 +106,19 @@ public class HCFTimer extends XScoreboardTimer {
         else if (format == HCFTimerFormat.HH_MM_SS) {
             int millis = (int) Math.round(time);
             setValue(key + String.format("%02d:%02d:%02d",
-                            TimeUnit.SECONDS.toHours(millis),
-                            TimeUnit.SECONDS.toMinutes(millis) -
-                                    TimeUnit.HOURS.toMinutes(TimeUnit.SECONDS.toHours(millis)),
-                            TimeUnit.SECONDS.toSeconds(millis) -
-                                    TimeUnit.MINUTES.toSeconds(TimeUnit.SECONDS.toMinutes(millis))));
+                    TimeUnit.SECONDS.toHours(millis),
+                    TimeUnit.SECONDS.toMinutes(millis) -
+                            TimeUnit.HOURS.toMinutes(TimeUnit.SECONDS.toHours(millis)),
+                    TimeUnit.SECONDS.toSeconds(millis) -
+                            TimeUnit.MINUTES.toSeconds(TimeUnit.SECONDS.toMinutes(millis))));
         }
         else if (format == HCFTimerFormat.MM_SS) {
             int millis = (int) Math.round(time);
             setValue(key + String.format("%02d:%02d",
-                            TimeUnit.SECONDS.toMinutes(millis) -
-                                    TimeUnit.HOURS.toMinutes(TimeUnit.SECONDS.toHours(millis)),
-                            TimeUnit.SECONDS.toSeconds(millis) -
-                                    TimeUnit.MINUTES.toSeconds(TimeUnit.SECONDS.toMinutes(millis))));
+                    TimeUnit.SECONDS.toMinutes(millis) -
+                            TimeUnit.HOURS.toMinutes(TimeUnit.SECONDS.toHours(millis)),
+                    TimeUnit.SECONDS.toSeconds(millis) -
+                            TimeUnit.MINUTES.toSeconds(TimeUnit.SECONDS.toMinutes(millis))));
         }
     }
 

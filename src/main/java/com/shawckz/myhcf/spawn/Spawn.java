@@ -19,6 +19,7 @@ import com.shawckz.myhcf.land.LandBoard;
 import com.shawckz.myhcf.player.HCFPlayer;
 import com.shawckz.myhcf.scoreboard.hcf.FLabel;
 import com.shawckz.myhcf.util.Relation;
+import lombok.Setter;
 import net.md_5.bungee.api.ChatColor;
 import org.bson.Document;
 
@@ -41,6 +42,7 @@ import org.bukkit.inventory.ItemStack;
  * @author Shawckz
  *         Shawckz.com
  */
+@Setter
 public class Spawn implements Listener {
 
     private final WallRadius wallRadius;

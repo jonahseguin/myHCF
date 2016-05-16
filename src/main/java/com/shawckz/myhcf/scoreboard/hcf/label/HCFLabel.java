@@ -2,13 +2,14 @@ package com.shawckz.myhcf.scoreboard.hcf.label;
 
 import com.shawckz.myhcf.scoreboard.internal.XScoreboard;
 import com.shawckz.myhcf.scoreboard.internal.label.XScoreboardLabel;
+import net.md_5.bungee.api.ChatColor;
 
 public class HCFLabel extends XScoreboardLabel {
 
     private String endValue = "";
 
     public HCFLabel(XScoreboard scoreboard, String value, int score) {
-        super(scoreboard, value, score);
+        super(scoreboard, ChatColor.translateAlternateColorCodes('&', value), score);
     }
 
     public String getEndValue() {
@@ -16,6 +17,7 @@ public class HCFLabel extends XScoreboardLabel {
     }
 
     public HCFLabel setEndValue(String endValue) {
+        endValue = ChatColor.translateAlternateColorCodes('&', endValue);
         if (!this.endValue.equals("")) {
             setValue(getValue().getFullValue().replaceAll(this.endValue, endValue));
             this.endValue = endValue;

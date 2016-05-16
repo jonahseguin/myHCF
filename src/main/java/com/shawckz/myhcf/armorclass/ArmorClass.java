@@ -5,16 +5,20 @@
 
 package com.shawckz.myhcf.armorclass;
 
-import com.shawckz.myhcf.armorclass.label.EnergyTimer;
+import com.shawckz.myhcf.Factions;
 import com.shawckz.myhcf.configuration.FLang;
 import com.shawckz.myhcf.configuration.FactionLang;
 import com.shawckz.myhcf.player.HCFPlayer;
 import com.shawckz.myhcf.scoreboard.hcf.FLabel;
+import com.shawckz.myhcf.scoreboard.hcf.HCFScoreboard;
+import com.shawckz.myhcf.scoreboard.hcf.timer.HCFTimer;
+import com.shawckz.myhcf.scoreboard.hcf.timer.HCFTimerFormat;
 import lombok.Getter;
 
 import java.util.HashSet;
 import java.util.Set;
 
+import org.bukkit.Bukkit;
 import org.bukkit.potion.PotionEffect;
 
 /**
@@ -42,19 +46,47 @@ public abstract class ArmorClass {
         player.getScoreboard().getHCFLabel(FLabel.ARMOR_CLASS).setEndValue(name).show();
         FLang.send(player.getBukkitPlayer(), FactionLang.ARMOR_CLASS_EQUIP, name);
         if (!player.getScoreboard().hasTimer(FLabel.ENERGY)) {
-            EnergyTimer energyTimer =
-                    new EnergyTimer(
-                            player.getScoreboard(),
-                            player.getScoreboard().getKey(FLabel.ENERGY),
-                            player.getScoreboard().getNewScoreIndex()
-                    );
-            player.getScoreboard().registerTimer(FLabel.ENERGY, energyTimer);
-            energyTimer.setTime(10.0);
-            energyTimer.unpauseTimer();
-            energyTimer.show();
+            final double regen = Factions.getInstance().getFactionsConfig().getEnergyPerQuarterSecond();
+            final double maxEnergy = Factions.getInstance().getFactionsConfig().getMaxEnergy();
+            final HCFTimer hcfTimer = new HCFTimer(player.getScoreboard(),
+                    player.getScoreboard().getKey(FLabel.ENERGY),
+                    player.getScoreboard().scoreIndex++,
+                    HCFScoreboard.getTimerPool(),
+                    HCFTimerFormat.TENTH_OF_SECOND,
+                    true);
+
+            Bukkit.getLogger().info("Max Energy:" + maxEnergy);
+
+           // player.getScoreboard().registerTimer(FLabel.ENERGY, hcfTimer);
+
+           /* HCFScoreboard.getTimerPool().registerTimer(new HCFTimerTask(hcfTimer, HCFScoreboard.getTimerPool().getInterval()) {
+                @Override
+                public void run() {
+                    hcfTimer.setTime(hcfTimer.getTime() + 0.1D);
+                }
+
+                @Override
+                public boolean isFrozen() {
+                    return super.isFrozen();
+                }
+
+                @Override
+                public void onComplete() {
+                    super.onComplete();
+                    Bukkit.getLogger().info("TIMER CALL ONCOMPLETE");
+                }
+
+                @Override
+                public boolean isComplete() {
+                    return super.isComplete();
+                }
+            });*/
+
+            player.getScoreboard().getTimer(FLabel.ENERGY).setTime(10);
+
         }
         else {
-            player.getScoreboard().getTimer(FLabel.ENERGY).show();//shows & unpauses
+            player.getScoreboard().getTimer(FLabel.ENERGY).setTime(10);
         }
     }
 
@@ -71,13 +103,16 @@ public abstract class ArmorClass {
         FLang.send(player.getBukkitPlayer(), FactionLang.ARMOR_CLASS_REMOVE, name);
 
         if (player.getScoreboard().hasTimer(FLabel.ENERGY)) {
-            player.getScoreboard().getTimer(FLabel.ENERGY).setTime(10.0).pauseTimer().hide();
+            player.getScoreboard().getTimer(FLabel.ENERGY).setTime(0).pauseTimer().hide();
         }
 
     }
 
     public final void updateEffects(HCFPlayer player) {
         for (PotionEffect effect : effects) {
+            if(player.getBukkitPlayer().hasPotionEffect(effect.getType())) {
+                player.getBukkitPlayer().removePotionEffect(effect.getType());
+            }
             effect.apply(player.getBukkitPlayer());
         }
     }
