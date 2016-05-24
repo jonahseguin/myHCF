@@ -8,8 +8,11 @@ import com.shawckz.myhcf.Factions;
 import com.shawckz.myhcf.database.AutoDBable;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class KothSchedule {
 
@@ -36,10 +39,29 @@ public class KothSchedule {
         return schedule;
     }
 
+    public void removeFromSchedule(final ScheduledKoth koth) {
+        Iterator<Long> it = schedule.keySet().iterator();
+        while(it.hasNext()) {
+            Long key = it.next();
+            if(schedule.get(key).equals(koth)) {
+                schedule.remove(key);
+            }
+        }
+        if(schedule.containsKey(koth.getDate())) {
+            schedule.remove(koth.getDate());
+        }
+        new BukkitRunnable(){
+            @Override
+            public void run() {
+                Factions.getInstance().getDbHandler().delete(koth);
+            }
+        }.runTaskAsynchronously(Factions.getInstance());
+    }
+
     public ScheduledKoth getNextKoth() {
         ScheduledKoth current = null;
         for(ScheduledKoth k : schedule.values()) {
-            if(current == null || k.getDate() < current.getDate()) {
+            if((current == null || k.getDate() < current.getDate())) {
                 current = k;
             }
         }

@@ -34,9 +34,12 @@ public class KothManager {
             public void run() {
                 ScheduledKoth next = schedule.getNextKoth();
                 if(next != null) {
-                    Koth koth = getKoth(next.getName());
-                    if(koth != null) {
-                        activateKoth(koth);
+                    if(next.getDate() <= System.currentTimeMillis()) {
+                        Koth koth = getKoth(next.getName());
+                        if (koth != null) {
+                            activateKoth(koth);
+                            schedule.removeFromSchedule(next);
+                        }
                     }
                 }
             }

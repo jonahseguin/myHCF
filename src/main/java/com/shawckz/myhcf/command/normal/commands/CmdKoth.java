@@ -9,6 +9,8 @@ import com.shawckz.myhcf.Factions;
 import com.shawckz.myhcf.command.normal.GCmd;
 import com.shawckz.myhcf.command.normal.GCmdArgs;
 import com.shawckz.myhcf.command.normal.GCommand;
+import com.shawckz.myhcf.configuration.FLang;
+import com.shawckz.myhcf.configuration.FactionLang;
 import com.shawckz.myhcf.koth.Koth;
 import com.shawckz.myhcf.koth.KothSchedule;
 import com.shawckz.myhcf.koth.ScheduledKoth;
@@ -36,35 +38,56 @@ public class CmdKoth implements GCommand {
     public void onCmdHelp(GCmdArgs args) {
         CommandSender sender = args.getSender().getCommandSender();
 
-        msg(sender, "&7*** &6Koth Commands &7***");
-        msg(sender, "&7- &e/koth&9 ");
+        FLang.send(sender, FactionLang.HEADER_FOOTER);
+
+        msg(sender, "&6Koth Commands");
+        msg(sender, "&7- &e/koth&9 &7- View the koth schedule");
         if(sender.hasPermission("myhcf.koth.admin")) {
-            msg(sender, "&7- &e/koth&9 create");
-            msg(sender, "&7- &e/koth&9 delete");
-            msg(sender, "&7- &e/koth&9 schedule");
-            msg(sender, "&7- &e/koth&9 start");
-            msg(sender, "&7- &e/koth&9 stop");
-            msg(sender, "&7- &e/koth&9 setcap");
-            msg(sender, "&7- &e/koth&9 rename");
+            msg(sender, "&7- &e/koth&9 create &7<name>");
+            msg(sender, "&7- &e/koth&9 delete &7<koth>");
+            msg(sender, "&7- &e/koth&9 schedule &7<koth> <timestamp: MM-dd-hh-mm>");
+            msg(sender, "&7- &e/koth&9 start &7<koth>");
+            msg(sender, "&7- &e/koth&9 stop &7<koth>");
+            msg(sender, "&7- &e/koth&9 setcap &7<koth>");
+            msg(sender, "&7- &e/koth&9 rename &7<koth> <newname>");
         }
+
+        FLang.send(sender, FactionLang.HEADER_FOOTER);
+
     }
 
     @GCmd(name = "koth", aliases = {"koth time", "koth list", "koth times"})
     public void onCommand(GCmdArgs args) {
         CommandSender sender = args.getSender().getCommandSender();
 
-        msg(sender, "&7*** &6Koth Schedule &7***");
+        FLang.send(sender, FactionLang.HEADER_FOOTER);
+
+        msg(sender, "&6Koth Schedule");
 
         KothSchedule schedule = Factions.getInstance().getKothManager().getSchedule();
 
         TreeMap<Long, ScheduledKoth> koths = new TreeMap<>(descendingComp);
         koths.putAll(schedule.getSchedule());
 
+        {
+            long date = System.currentTimeMillis();
+            Calendar cal = Calendar.getInstance();
+            cal.setTimeInMillis(date);
+
+            int day = cal.get(Calendar.DAY_OF_MONTH);
+            int month = cal.get(Calendar.MONTH);
+            int hour = cal.get(Calendar.HOUR);
+            int minute = cal.get(Calendar.MINUTE);
+            boolean am = cal.get(Calendar.AM_PM) == Calendar.AM;
+
+            msg(sender, "&9The current time is: &e" + month+"/"+day+" &7-&e " + hour+":"+minute+ " " + (am ? "AM" : "PM") +"&7 (" + cal.getTimeZone().getDisplayName() + ")");
+        }
+
         for(long key : koths.descendingKeySet()) {
             ScheduledKoth koth = koths.get(key);
 
             long date = koth.getDate();
-            Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("est"));
+            Calendar cal = Calendar.getInstance();
             cal.setTimeInMillis(date);
 
             int day = cal.get(Calendar.DAY_OF_MONTH);
@@ -74,8 +97,15 @@ public class CmdKoth implements GCommand {
             boolean am = cal.get(Calendar.AM_PM) == Calendar.AM;
 
             // '4/29 @ 8:05PM EST'
-            msg(sender, "&7- &a" + koth.getName() + " &7- &e" + month+"/"+day+" @ " + hour+":"+minute+ " " + (am ? "AM" : "PM") +" EST");
+            msg(sender, "&7- &a" + koth.getName() + " &7- &e" + month+"/"+day+" &7@&e " + hour+":"+minute+ " " + (am ? "AM" : "PM") +" &7(" + cal.getTimeZone().getDisplayName()+")");
         }
+
+        if(sender.isOp()) {
+            msg(sender, ChatColor.RED + "For additional koth commands, type /koth help");
+        }
+
+        FLang.send(sender, FactionLang.HEADER_FOOTER);
+
     }
 
     @GCmd(name = "koth create", description = "Create a koth with your current selection", usage = "/koth create <name>", minArgs = 1, permission = "myhcf.koth.create", playerOnly = true)
@@ -238,12 +268,13 @@ public class CmdKoth implements GCommand {
                @Override
                public void run() {
                    String[] split = inputTime.split("-");
-                   if(split.length >= 5) {
+                   if(split.length >= 4) {
                        String formattedInputTime = split[0] + "-" + split[1] + " " +split[2] + ":" +split[3];
                        SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd hh:mm");
                        Date date;
                        try {
                            date = dateFormat.parse(formattedInputTime);
+                           date.setYear(new Date().getYear());
                        }
                        catch (java.text.ParseException expected) {
                            p.sendMessage(ChatColor.RED + "Time format must match [MM-dd-hh-mm]");

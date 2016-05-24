@@ -70,9 +70,9 @@ public abstract class KothTimer extends BukkitRunnable {
     public void run() {
         if(koth.getCapper() == null) {
             if(!frozen) {
+                frozen = true;
                 updateScoreboards();
             }
-            frozen = true;
             return;
         }
         else{

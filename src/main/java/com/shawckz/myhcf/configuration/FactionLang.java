@@ -29,6 +29,7 @@ public enum FactionLang {
     FACTION_NOT_SAME("&cPlayer '{0}' is not in your faction."),
     FACTION_NONE_OTHER("&cThat player is not in a faction."),
     FACTION_INFO_HEADER_FOOTER("&7&m------------------------"),
+    HEADER_FOOTER("&7&m------------------------"),
     FACTION_INFO_DESCRIPTION("&9{0}&7 - &6${1} &7- \"&e{2}&7\""),
     FACTION_INFO_DTR("&eDTR&7: {0} &7[{1}&7] - &7[{2}&7]"),
     FACTION_INFO_HOME("&eHome&7: &9{0}"),
