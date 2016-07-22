@@ -2,7 +2,6 @@ package com.shawckz.myhcf;
 
 import com.shawckz.myhcf.armorclass.ArmorClassManager;
 import com.shawckz.myhcf.armorclass.classes.Archer;
-import com.shawckz.myhcf.auth.XSocketAuth;
 import com.shawckz.myhcf.combatlog.CombatLogManager;
 import com.shawckz.myhcf.command.factions.FCommandManager;
 import com.shawckz.myhcf.command.normal.GCommandHandler;
@@ -60,8 +59,6 @@ public class Factions extends JavaPlugin {
     private ClaimSelector claimSelector;
     private CombatLogManager combatLogManager;
 
-    private final XSocketAuth auth = new XSocketAuth();
-
     @Override
     public void onEnable() {
         instance = this;
@@ -109,29 +106,26 @@ public class Factions extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        if (auth.isAuthorized()) {
-
-            for (Player player : Bukkit.getOnlinePlayers()) {
-                if (NametagManager.contains(player)) {
-                    NametagPlayer nametagPlayer = NametagManager.getPlayer(player);
-                    nametagPlayer.reset();
-                    NametagManager.remove(player);
-                }
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (NametagManager.contains(player)) {
+                NametagPlayer nametagPlayer = NametagManager.getPlayer(player);
+                nametagPlayer.reset();
+                NametagManager.remove(player);
             }
-            NametagManager.clear();
-
-            databaseManager.shutdown();
-            HCFCache.clear();
-            fEventManager.unregister();
-            factionsConfig.save();
-            lang.save();
-
-            fEventManager = null;
-            cache = null;
-            databaseManager = null;
-            factionsConfig = null;
-            lang = null;
         }
+        NametagManager.clear();
+
+        databaseManager.shutdown();
+        HCFCache.clear();
+        fEventManager.unregister();
+        factionsConfig.save();
+        lang.save();
+
+        fEventManager = null;
+        cache = null;
+        databaseManager = null;
+        factionsConfig = null;
+        lang = null;
         instance = null;
     }
 
