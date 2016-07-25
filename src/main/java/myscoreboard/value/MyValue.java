@@ -1,13 +1,18 @@
-package myscoreboard;
+/*
+ * Copyright (c) Jonah Seguin (Shawckz) 2016.  You may not copy, re-sell, distribute, modify, or use any code contained in this document or file, collection of documents or files, or project.  Thank you.
+ */
+
+package myscoreboard.value;
 
 import com.google.common.base.Splitter;
+import myscoreboard.MyScoreboard;
 import myscoreboard.label.MyLabel;
-import org.bukkit.ChatColor;
-import org.bukkit.scoreboard.Score;
-import org.bukkit.scoreboard.Team;
 
 import java.util.Iterator;
 import java.util.UUID;
+
+import org.bukkit.scoreboard.Score;
+import org.bukkit.scoreboard.Team;
 
 /**
  * Created by jonahseguin on 2016-07-22.
@@ -19,15 +24,10 @@ public class MyValue {
     private String name;
     private Team team;
     private Score score;
-    private int value;
-    private int count = 0;
-    private String origName;
 
-
-    public MyValue(MyScoreboard scoreboard, MyLabel label, String value) {
+    public MyValue(MyScoreboard scoreboard, MyLabel label) {
         this.scoreboard = scoreboard;
         this.label = label;
-        this.origName = value;
     }
 
     public String getName() {
@@ -43,7 +43,7 @@ public class MyValue {
     }
 
     public int getValue() {
-        return score != null ? (value = score.getScore()) : value;
+        return score != null ? (score.getScore()) : label.getScore();
     }
 
     public void setValue(int value) {
@@ -56,11 +56,7 @@ public class MyValue {
 
     public void update(String newName) {
         int value = getValue();
-        if (origName != null && newName.equals(origName)) {
-            for (int i = 0; i < count; i++) {
-                newName = ChatColor.RESET + newName;
-            }
-        } else if (newName.equals(name)) {
+        if (newName.equals(name)) {
             return;
         }
 
@@ -68,7 +64,7 @@ public class MyValue {
         setValue(value);
     }
 
-    void remove() {
+    public void remove() {
         if (score != null) {
             score.getScoreboard().resetScores(score.getEntry());
         }
@@ -86,19 +82,19 @@ public class MyValue {
             int value = getValue();
             score = scoreboard.getObjective().getScore(name);
             score.setScore(value);
-            return;
         }
+        else {
+            team = scoreboard.getScoreboard().registerNewTeam(UUID.randomUUID().toString().substring(0, 16));
+            Iterator<String> iterator = Splitter.fixedLength(16).split(name).iterator();
+            if (name.length() > 16)
+                team.setPrefix(iterator.next());
+            String entry = iterator.next();
+            score = scoreboard.getObjective().getScore(entry);
+            if (name.length() > 32)
+                team.setSuffix(iterator.next());
 
-        team = scoreboard.getScoreboard().registerNewTeam(UUID.randomUUID().toString().substring(0, 16));
-        Iterator<String> iterator = Splitter.fixedLength(16).split(name).iterator();
-        if (name.length() > 16)
-            team.setPrefix(iterator.next());
-        String entry = iterator.next();
-        score = scoreboard.getObjective().getScore(entry);
-        if (name.length() > 32)
-            team.setSuffix(iterator.next());
-
-        team.addEntry(entry);
+            team.addEntry(entry);
+        }
     }
 
 }

@@ -1,4 +1,10 @@
-package myscoreboard;
+/*
+ * Copyright (c) Jonah Seguin (Shawckz) 2016.  You may not copy, re-sell, distribute, modify, or use any code contained in this document or file, collection of documents or files, or project.  Thank you.
+ */
+
+package myscoreboard.label;
+
+import myscoreboard.util.MyScoreboardException;
 
 import org.bukkit.ChatColor;
 
@@ -7,12 +13,20 @@ import org.bukkit.ChatColor;
  */
 public class MyLabelBuilder {
 
-    private String value;
+    private String value = "";
+
+    public MyLabelBuilder(String value) {
+        then(value);
+    }
+
+    public MyLabelBuilder() {
+    }
 
     public MyLabelBuilder then(String s){
         if(tooLong(s + value)) {
             throw new MyScoreboardException("Value cannot be longer than 48 characters");
         }
+        value += s;
         return this;
     }
 
@@ -20,6 +34,7 @@ public class MyLabelBuilder {
         if(tooLong(color.toString() + value)) {
             throw new MyScoreboardException("Value cannot be longer than 48 characters");
         }
+        value += color.toString();
         return this;
     }
 
