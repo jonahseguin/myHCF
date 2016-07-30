@@ -129,6 +129,18 @@ public class FactionsConfig extends Configuration {
     @ConfigData("factions.dtr.max-dtr")
     private double maxDtr = 5.51;
 
+    @ConfigData("factions.dtr.regen-per-45seconds")
+    private double dtrRegen45s = 0.1;
+
+    @ConfigData("factions.dtr.death-penalty")
+    private double dtrDeathPenalty = 1D;
+
+    @ConfigData("factions.dtr.min-dtr")
+    private double dtrMinimum = -0.99D;
+
+    @ConfigData("factions.dtr.dtr-freeze-minutes")
+    private int dtrFreezeMinutes = 90;
+
     @ConfigData("factions.use-rally")
     private boolean factionsUseRally = true;
 

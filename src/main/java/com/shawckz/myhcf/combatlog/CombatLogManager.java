@@ -28,7 +28,7 @@ public class CombatLogManager {
                 }
             }
         }
-        toRemove.stream().forEach(Entity::remove);
+        toRemove.forEach(Entity::remove);
     }
 
     public CombatLogger spawnLogger(Player player) {

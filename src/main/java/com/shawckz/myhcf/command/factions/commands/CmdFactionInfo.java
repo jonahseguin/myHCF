@@ -86,7 +86,7 @@ public class CmdFactionInfo implements HCFCommand {
         FLang.send(p, FactionLang.FACTION_INFO_HEADER_FOOTER);
         if (f.isNormal()) {
             FLang.send(p, FactionLang.FACTION_INFO_DESCRIPTION, f.getDisplayName(), f.getBalance() + "", f.getDescription());
-            String dtr = (f.getDeathsUntilRaidable() >= 0 ? ChatColor.YELLOW : ChatColor.RED) + "" + f.getDeathsUntilRaidable();
+            String dtr = (f.getDeathsUntilRaidable() > 0 ? ChatColor.YELLOW : ChatColor.RED) + "" + f.getDeathsUntilRaidable();
             String dtrStatus = "";
             boolean hasOne = false;
             {

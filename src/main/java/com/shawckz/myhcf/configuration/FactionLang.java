@@ -135,7 +135,8 @@ public enum FactionLang {
     ARCHER_TAG("&c&lCRITICAL HIT!  &eArcher tagged &9{0}&e for &a{1}&e seconds."),
     ARCHER_TAG_TARGET("&eYou have been Archer tagged by &9{0}&e for &a{1} &eseconds."),
     NO_BUILD("&cYou cannot build in {0}'s land."),
-    MAGIC_ITEM_NOT_ENOUGH_ENERGY("&cYou do not have enough energy to use {0}.  ({1} energy)")
+    MAGIC_ITEM_NOT_ENOUGH_ENERGY("&cYou do not have enough energy to use {0}.  ({1} energy)"),
+    FACTION_MEMBER_DEATH("&a{0}&e died.  Faction DTR: {1} [{2}] - {3}")
     ;
 
     private final String defaultValue;

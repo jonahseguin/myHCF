@@ -8,6 +8,9 @@ import com.shawckz.myhcf.Factions;
 import com.shawckz.myhcf.player.HCFPlayer;
 import lombok.Getter;
 import myscoreboard.MyScoreboard;
+import myscoreboard.hcf.label.HCFEndLabel;
+import myscoreboard.hcf.label.HCFLabel;
+import myscoreboard.hcf.type.HCFSpacerLabel;
 import myscoreboard.label.MyLabel;
 
 import java.util.concurrent.ConcurrentHashMap;

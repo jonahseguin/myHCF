@@ -35,6 +35,7 @@ public class FEventManager {
         listeners.add(new KothCapListener());
         listeners.add(new DeathbanListener());
         listeners.add(new MagicItemListener());
+        listeners.add(new DTRListener());
     }
 
     public void add(Listener listener) {

@@ -38,7 +38,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class DBFaction implements AutoDBable, Faction {
 
     @NonNull
-    @DBColumn(name = "_id", identifier = false)
+    @DBColumn(name = "_id")
     private String id;
 
     @NonNull
@@ -244,7 +244,7 @@ public class DBFaction implements AutoDBable, Faction {
 
     @Override
     public boolean isRaidable() {
-        return deathsUntilRaidable < 0.0D;
+        return deathsUntilRaidable <= 0.0D;
     }
 
     @Override

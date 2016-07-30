@@ -13,6 +13,7 @@ import com.shawckz.myhcf.database.AutoDBer;
 import com.shawckz.myhcf.database.DatabaseManager;
 import com.shawckz.myhcf.deathban.DeathbanRank;
 import com.shawckz.myhcf.deathban.DeathbanRankManager;
+import com.shawckz.myhcf.dtr.DTRRegenerator;
 import com.shawckz.myhcf.faction.FDataMode;
 import com.shawckz.myhcf.faction.FactionManager;
 import com.shawckz.myhcf.koth.KothManager;
@@ -98,6 +99,7 @@ public class Factions extends JavaPlugin {
         combatLogManager = new CombatLogManager();
 
         HCFNametag.runUpdateTask();
+        new DTRRegenerator().run();
 
         if(deathbanRankManager.getRank("default") == null) {
             deathbanRankManager.registerRank(new DeathbanRank("default", 7200));
