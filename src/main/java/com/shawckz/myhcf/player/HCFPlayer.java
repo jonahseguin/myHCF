@@ -8,10 +8,9 @@ import com.shawckz.myhcf.database.annotations.JSONDirectory;
 import com.shawckz.myhcf.deathban.DeathbanRank;
 import com.shawckz.myhcf.faction.Faction;
 import com.shawckz.myhcf.faction.FactionRole;
+import com.shawckz.myhcf.myscoreboard.hcf.HCFLabelID;
+import com.shawckz.myhcf.myscoreboard.hcf.HCFScoreboardWrapper;
 import com.shawckz.myhcf.player.cache.CachePlayer;
-import com.shawckz.myhcf.scoreboard.hcf.FLabel;
-import com.shawckz.myhcf.scoreboard.hcf.HCFScoreboard;
-import com.shawckz.myhcf.scoreboard.hcf.timer.HCFTimer;
 import com.shawckz.myhcf.util.ChatMode;
 import com.shawckz.myhcf.util.FSelection;
 import com.shawckz.myhcf.util.Relation;
@@ -19,6 +18,9 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+
+import java.text.DecimalFormat;
+
 import org.bukkit.entity.Player;
 
 @CollectionName(name = "myhcfplayers")
@@ -27,6 +29,8 @@ import org.bukkit.entity.Player;
 @Setter
 @RequiredArgsConstructor
 public class HCFPlayer extends CachePlayer {
+
+    private static final DecimalFormat COOLDOWN_FORMAT = new DecimalFormat("#.#");
 
     public HCFPlayer() {
         //Leave empty constructor so that AutoMongo can instantiate
@@ -62,7 +66,7 @@ public class HCFPlayer extends CachePlayer {
     private boolean combatLogged = false;
 
     private Player bukkitPlayer;
-    private HCFScoreboard scoreboard;
+    private HCFScoreboardWrapper scoreboard;
     private ChatMode chatMode = ChatMode.PUBLIC;
     private ArmorClassType armorClassType = null;
 
@@ -107,23 +111,23 @@ public class HCFPlayer extends CachePlayer {
     }
 
     public void setSpawnTag(double tag) {
-        scoreboard.getTimer(FLabel.SPAWN_TAG).setTime(tag);
+        scoreboard.addLabel(HCFLabelID.SPAWN_TAG, true).getAsTimer().setTimerValue(tag).update();
     }
 
     public double getSpawnTag() {
-        return scoreboard.getTimer(FLabel.SPAWN_TAG).getTime();
+        return scoreboard.getLabel(HCFLabelID.SPAWN_TAG).getAsTimer().getTimerValue();
     }
 
     public float getCooldown(long finish) {
-        return Float.parseFloat(HCFTimer.DECIMAL_FORMAT.format((finish - System.currentTimeMillis()) / 1000.0));
+        return Float.parseFloat(COOLDOWN_FORMAT.format((finish - System.currentTimeMillis()) / 1000.0));
     }
 
     public double getEnderpearlCooldown() {
-        return getScoreboard().getTimer(FLabel.ENDER_PEARL).getTime();
+        return scoreboard.getLabel(HCFLabelID.ENDER_PEARL).getAsTimer().getTimerValue();
     }
 
     public boolean inCombat() {
-        return scoreboard.getTimer(FLabel.SPAWN_TAG).getTime() > 0.1;
+        return scoreboard.getLabel(HCFLabelID.SPAWN_TAG).getAsTimer().getTimerValue() > 0.0D;
     }
 
     public Relation getRelationTo(HCFPlayer player) {

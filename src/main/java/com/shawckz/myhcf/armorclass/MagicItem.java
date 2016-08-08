@@ -7,9 +7,10 @@ package com.shawckz.myhcf.armorclass;
 
 import com.shawckz.myhcf.configuration.FLang;
 import com.shawckz.myhcf.configuration.FactionLang;
+import com.shawckz.myhcf.myscoreboard.hcf.HCFLabelID;
 import com.shawckz.myhcf.player.HCFPlayer;
-import com.shawckz.myhcf.scoreboard.hcf.FLabel;
 import lombok.Getter;
+
 import org.bukkit.Material;
 
 /**
@@ -36,7 +37,8 @@ public abstract class MagicItem {
     public final boolean applyMagicItem(HCFPlayer player) {
         if (applicable(player)) {
             apply(player);
-            player.getScoreboard().getTimer(FLabel.ENERGY).setTime(player.getScoreboard().getTimer(FLabel.ENERGY).getTime() - energy).unpauseTimer();
+            double time = player.getScoreboard().getLabel(HCFLabelID.ENERGY).getAsTimer().getTimerValue();
+            player.getScoreboard().addLabel(HCFLabelID.ENERGY, true).getAsTimer().setTimerValue(Math.max(0, time - energy)).update();
             return true;
         }
         return false;
@@ -45,7 +47,7 @@ public abstract class MagicItem {
     public abstract void apply(HCFPlayer player);
 
     public boolean applicable(HCFPlayer player) {
-        boolean applicable = player.getScoreboard().getTimer(FLabel.ENERGY).getTime() >= energy;
+        boolean applicable = player.getScoreboard().getLabel(HCFLabelID.ENERGY).getAsTimer().getTimerValue() >= energy;
         if(!applicable) {
             FLang.send(player.getBukkitPlayer(), FactionLang.MAGIC_ITEM_NOT_ENOUGH_ENERGY, name, energy+"");
         }

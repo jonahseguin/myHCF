@@ -1,8 +1,7 @@
 package com.shawckz.myhcf.dtr;
 
 import com.shawckz.myhcf.Factions;
-import com.shawckz.myhcf.faction.Faction;
-import com.shawckz.myhcf.faction.FactionManager;
+
 import org.bukkit.scheduler.BukkitRunnable;
 
 /**
@@ -30,7 +29,6 @@ public class DTRRegenerator {
                                 ));
                 }
             }.runTaskTimerAsynchronously(Factions.getInstance(), (45  * 20), (45 * 20));
-
         }
     }
 

@@ -11,6 +11,7 @@ import com.shawckz.myhcf.command.normal.GCmdArgs;
 import com.shawckz.myhcf.command.normal.GCommand;
 import com.shawckz.myhcf.configuration.FLang;
 import com.shawckz.myhcf.configuration.FactionLang;
+import com.shawckz.myhcf.myscoreboard.hcf.HCFLabelID;
 import com.shawckz.myhcf.player.HCFPlayer;
 import com.shawckz.myhcf.scoreboard.hcf.FLabel;
 import com.shawckz.myhcf.scoreboard.hcf.timer.HCFTimerFormat;
@@ -47,8 +48,8 @@ public class CmdPvPTimer implements GCommand {
     public void onCommandEnable(GCmdArgs args) {
         Player pl = args.getSender().getPlayer();
         HCFPlayer player = Factions.getInstance().getCache().getHCFPlayer(pl);
-        if (player.getScoreboard().getTimer(FLabel.PVP_TIMER, HCFTimerFormat.HH_MM_SS).getTime() > 0.1) {
-            player.getScoreboard().getTimer(FLabel.PVP_TIMER, HCFTimerFormat.HH_MM_SS).setTime(0).hide();
+        if (player.getScoreboard().getLabel(HCFLabelID.PVP_TIMER).getAsTimer().getTimerValue() > 0.0D) {
+            player.getScoreboard().removeLabel(HCFLabelID.PVP_TIMER).getAsTimer().setTimerValue(0);
             player.getBukkitPlayer().sendMessage(FLang.format(FactionLang.PVP_TIMER_REMOVE));
         }
         else {
@@ -60,8 +61,8 @@ public class CmdPvPTimer implements GCommand {
     public void onCommandTime(GCmdArgs args) {
         Player pl = args.getSender().getPlayer();
         HCFPlayer player = Factions.getInstance().getCache().getHCFPlayer(pl);
-        if (player.getScoreboard().getTimer(FLabel.PVP_TIMER, HCFTimerFormat.HH_MM_SS).getTime() > 0.1) {
-            int seconds = (int) Math.round(player.getScoreboard().getTimer(FLabel.PVP_TIMER, HCFTimerFormat.HH_MM_SS).getTime());
+        if (player.getScoreboard().getLabel(HCFLabelID.PVP_TIMER).getAsTimer().getTimerValue() > 0.0D) {
+            int seconds = (int) Math.round(player.getScoreboard().getLabel(HCFLabelID.PVP_TIMER).getAsTimer().getTimerValue());
             long millis = seconds * 1000;
             String time = String.format("%02d:%02d:%02d",
                     TimeUnit.MILLISECONDS.toHours(millis),
@@ -94,6 +95,7 @@ public class CmdPvPTimer implements GCommand {
             int seconds = minutes * 60;
             HCFPlayer tHCF = Factions.getInstance().getCache().getHCFPlayer(target);
             tHCF.getScoreboard().getTimer(FLabel.PVP_TIMER, HCFTimerFormat.HH_MM_SS).setTime(seconds).show();
+            tHCF.getScoreboard().addLabel(HCFLabelID.PVP_TIMER, true).getAsTimer().setTimerValue(seconds).update();
 
             long millis = seconds * 1000;
             String time = String.format("%02d:%02d:%02d",
